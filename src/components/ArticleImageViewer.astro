@@ -1,0 +1,38 @@
+---
+interface Props {
+  src: string;
+  alt: string;
+  class?: string;
+}
+
+const { src, alt, class: className } = Astro.props;
+---
+
+<img
+  src={src}
+  alt={alt}
+  class={`${className || ''} cursor-pointer hover:opacity-90 transition-opacity`}
+  data-viewer
+/>
+
+<script>
+  import 'viewerjs/dist/viewer.css';
+  import Viewer from 'viewerjs';
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const images = document.querySelectorAll('img[data-viewer]');
+    if (images.length > 0) {
+      const viewer = new Viewer(Array.from(images), {
+        toolbar: true,
+        navbar: false,
+        title: true,
+        rotatable: true,
+        scalable: true,
+        zoomable: true,
+        movable: true,
+        keyboard: true,
+        url: 'src',
+      });
+    }
+  });
+</script> 
