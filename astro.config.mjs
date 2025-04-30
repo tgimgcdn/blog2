@@ -4,6 +4,7 @@ import tailwind from '@astrojs/tailwind';
 import sitemap from '@astrojs/sitemap';
 import robotsTxt from 'astro-robots-txt';
 import webmanifest from 'astro-webmanifest';
+import icon from 'astro-icon';
 
 export default defineConfig({
   site: 'https://blog.canjie.org',
@@ -31,5 +32,6 @@ export default defineConfig({
       themeColor: '#ffffff',
       backgroundColor: '#ffffff',
     }),
+    icon(),
   ],
 }); 
