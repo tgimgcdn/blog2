@@ -59,9 +59,10 @@ const {
 		</div>
 
 		<script>
-			import Viewer from 'viewerjs';
-
-			document.addEventListener('DOMContentLoaded', () => {
+			// 使用 CDN 版本的 viewerjs
+			const script = document.createElement('script');
+			script.src = 'https://cdn.jsdelivr.net/npm/viewerjs@1.11.7/dist/viewer.min.js';
+			script.onload = () => {
 				const images = document.querySelectorAll('img[data-viewer]');
 				if (images.length > 0) {
 					const viewer = new Viewer(Array.from(images), {
@@ -73,9 +74,11 @@ const {
 						zoomable: true,
 						movable: true,
 						keyboard: true,
+						url: 'src',
 					});
 				}
-			});
+			};
+			document.body.appendChild(script);
 		</script>
 	</body>
 </html>
