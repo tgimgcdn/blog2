@@ -22,6 +22,7 @@ const {
 >
 	<head>
 		<BaseHead articleDate={articleDate} description={description} ogImage={ogImage} title={title} />
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/viewerjs@1.11.7/dist/viewer.min.css" />
 	</head>
 	<body class="min-w-4xl relative m-auto min-h-screen w-full max-w-6xl grow bg-bgColor">
 		<ThemeProvider />
@@ -56,5 +57,25 @@ const {
 				</div>
 			</div>
 		</div>
+
+		<script>
+			import Viewer from 'viewerjs';
+
+			document.addEventListener('DOMContentLoaded', () => {
+				const images = document.querySelectorAll('img[data-viewer]');
+				if (images.length > 0) {
+					const viewer = new Viewer(Array.from(images), {
+						toolbar: true,
+						navbar: false,
+						title: true,
+						rotatable: true,
+						scalable: true,
+						zoomable: true,
+						movable: true,
+						keyboard: true,
+					});
+				}
+			});
+		</script>
 	</body>
 </html>
