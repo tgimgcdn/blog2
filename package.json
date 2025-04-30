@@ -4,14 +4,15 @@
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
-    "build": "astro build",
+    "build": "pnpm install unist-util-visit @types/unist @types/mdast && astro build",
     "postbuild": "pagefind --site dist",
     "preview": "astro preview",
     "lint": "biome lint .",
     "format": "pnpm run format:code && pnpm run format:imports",
     "format:code": "biome format . --write && prettier -w \"**/*\" \"!**/*.{md,mdx}\" --ignore-unknown --cache",
     "format:imports": "biome check --formatter-enabled=false --write",
-    "check": "astro check"
+    "check": "astro check",
+    "astro": "astro"
   },
   "dependencies": {
     "@astrojs/mdx": "4.0.3",
@@ -36,7 +37,9 @@
     "satori-html": "^0.3.2",
     "sharp": "^0.33.5",
     "unified": "^11.0.5",
-    "unist-util-visit": "^5.0.0"
+    "unist-util-visit": "^5.0.0",
+    "@types/unist": "^3.0.0",
+    "@types/mdast": "^4.0.0"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.4",
