@@ -143,7 +143,7 @@ Mozilla/5.0 (compatible; CensysInspect/1.1; +https://about.censys.io/)
 
 ## 11. 利用Snippets做一个简易的302 cookie验证
 
-当我们请求path.net时，会发现网站会返回307状态码，且在响应头里有一个名为CRANE的cookie，正常浏览器访问会根据网站响应头，设置cookie，这样第二次访问的时浏览器就会携带cookie访问 [path.net](https://www.nodeseek.com/jump?to=http%3A%2F%2Fpath.net)，而低级的自动化程序是无法自动获取并携带cookie去请求网站的，而这将会让程序陷入无尽的307循环，如下图所示。
+当我们请求path.net时，会发现网站会返回307状态码，且在响应头里有一个名为CRANE的cookie，正常浏览器访问会根据网站响应头，设置cookie，这样第二次访问的时浏览器就会携带cookie访问 [path.net](https://path.net)，而低级的自动化程序是无法自动获取并携带cookie去请求网站的，而这将会让程序陷入无尽的307循环，如下图所示。
 ![image](https://cdn.canjie.org/4035?fe2e6df4a65d463c.png)
 
 据此，我们可以利用Cloudflare的Snippets做一个类似的简易人机验证，我们将访客的IP、访客UA以及自定义key进行组合，然后sha256对组合进行加密，并通过响应头发送给访客，访客访问网站时需携带snippets发送的cookie进行请求，才能顺利访问网站。
