@@ -5,9 +5,9 @@ publishDate: "2024-04-30"
 updatedDate: "2025-04-30"
 tags: ['Cloudflare', 'WAF','Snippets','安全']
 author: "cmssky"
-seriesId: "cloudflare-waf"
-orderInSeries: 2
 ---
+
+# Cloudflare WAF 防护规则指南
 
 本文尝试分享一些基于Cloudflare Pro 以及 Snippets 的防护规则/配置/代码。在规则方面，尽可能做到精简。
 
