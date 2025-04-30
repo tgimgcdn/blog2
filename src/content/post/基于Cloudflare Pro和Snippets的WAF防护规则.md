@@ -1,6 +1,6 @@
 ---
-title: "新文章标题"
-description: "这里是文章的描述"
+title: "基于Cloudflare Pro和Snippets的WAF防护规则"
+description: "基于Cloudflare Pro和Snippets的WAF防护规则"
 publishDate: "2024-04-30"
 updatedDate: "2025-04-30"
 tags: ['Cloudflare', 'WAF','Snippets','安全']
