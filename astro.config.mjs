@@ -34,4 +34,8 @@ export default defineConfig({
     }),
     icon(),
   ],
+  env: {
+    WEBMENTION_URL: process.env.WEBMENTION_URL || '',
+    WEBMENTION_PINGBACK: process.env.WEBMENTION_PINGBACK || '',
+  },
 }); 
