@@ -1,0 +1,42 @@
+---
+interface Props {
+  images: Array<{
+    src: string;
+    alt: string;
+  }>;
+}
+
+const { images } = Astro.props;
+---
+
+<div id="gallery" class="grid grid-cols-2 md:grid-cols-3 gap-4">
+  {images.map((image: { src: string; alt: string }) => (
+    <img
+      src={image.src}
+      alt={image.alt}
+      class="w-full h-auto object-cover cursor-pointer hover:opacity-90 transition-opacity"
+      style="max-width: 300px;"
+    />
+  ))}
+</div>
+
+<script>
+  import 'viewerjs/dist/viewer.css';
+  import Viewer from 'viewerjs';
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const gallery = document.getElementById('gallery');
+    if (gallery) {
+      const viewer = new Viewer(gallery, {
+        toolbar: true,
+        navbar: false,
+        title: true,
+        rotatable: true,
+        scalable: true,
+        zoomable: true,
+        movable: true,
+        keyboard: true,
+      });
+    }
+  });
+</script> 
