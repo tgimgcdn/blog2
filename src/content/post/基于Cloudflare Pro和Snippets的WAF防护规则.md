@@ -5,6 +5,8 @@ publishDate: "2024-04-30"
 updatedDate: "2025-04-30"
 tags: ['Cloudflare', 'WAF','Snippets','安全']
 author: "cmssky"
+seriesId: "cloudflare-waf"
+orderInSeries: 2
 ---
 
 本文尝试分享一些基于Cloudflare Pro 以及 Snippets 的防护规则/配置/代码。在规则方面，尽可能做到精简。
@@ -15,7 +17,7 @@ author: "cmssky"
 
 ---
 
-# 1. 对搜索引擎等友好爬虫进行过白
+## 1. 对搜索引擎等友好爬虫进行过白
 
 后续的WAF规则会对爬虫进行拦截，在这些规则之前，我们需要对友好的爬虫进行过白。假设我们需要将搜索引擎以及指定IP（13.3.3.3）纳入白名单。
 
