@@ -63,12 +63,18 @@ const {
 			const script = document.createElement('script');
 			script.src = 'https://cdn.jsdelivr.net/npm/viewerjs@1.11.7/dist/viewer.min.js';
 			script.onload = () => {
+				console.log('Viewer.js loaded successfully');
+				
 				// 等待 DOM 完全加载
 				document.addEventListener('DOMContentLoaded', () => {
+					console.log('DOM fully loaded');
+					
 					const images = document.querySelectorAll('img[data-viewer]');
-					images.forEach(img => {
+					console.log('Found images with data-viewer:', images.length);
+					
+					if (images.length > 0) {
 						// @ts-ignore
-						const viewer = new window.Viewer(img, {
+						const viewer = new window.Viewer(Array.from(images), {
 							inline: false,
 							button: true,
 							navbar: true,
@@ -93,14 +99,27 @@ const {
 							keyboard: true,
 							url: 'src',
 						});
-
-						// 添加点击事件监听器
-						img.addEventListener('click', () => {
-							viewer.show();
+						
+						console.log('Viewer initialized');
+						
+						// 为每个图片添加点击事件
+						images.forEach(img => {
+							img.style.cursor = 'pointer';
+							img.addEventListener('click', () => {
+								console.log('Image clicked');
+								viewer.show();
+							});
 						});
-					});
+					} else {
+						console.log('No images found with data-viewer attribute');
+					}
 				});
 			};
+			
+			script.onerror = (error) => {
+				console.error('Failed to load viewer.js:', error);
+			};
+			
 			document.body.appendChild(script);
 
 			// 移动端切换按钮的 JavaScript 代码
