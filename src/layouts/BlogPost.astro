@@ -274,8 +274,8 @@ const { headings } = await render(post);
 				// 侧边栏宽度 (18rem = 288px)
 				const sidebarWidth = 288;
 				
-				// 计算侧边栏应该的left值：内容左边缘 - 2rem间距 - 侧边栏宽度
-				const gap = 32; // 2rem = 32px
+				// 计算侧边栏应该的left值：内容左边缘 - 1.5rem间距 - 侧边栏宽度
+				const gap = 24; // 1.5rem = 24px (原来是2rem = 32px)
 				const newLeft = Math.max(0, containerLeftEdge - gap - sidebarWidth);
 				
 				// 应用新位置
