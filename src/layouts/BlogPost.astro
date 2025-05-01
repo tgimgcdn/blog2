@@ -57,7 +57,7 @@ const randomTags = allTags.slice(0, 6) as string[];
 			</div>
 			
 			<!-- 侧边栏内容区 - 确保背景色跟随主题 -->
-			<div class="flex h-full min-h-screen flex-col px-8 pt-4 md:pt-8 w-screen md:w-72 md:min-w-72 md:max-w-72 bg-bgColor border-r border-special-light">
+			<div class="flex h-full min-h-screen flex-col px-8 pt-4 md:pt-8 w-screen md:w-72 md:min-w-72 md:max-w-72 bg-accent-base/5 border-r border-special-light">
 				<div class="flex gap-x-1">
 					<!-- 删除Sidebar标题 -->
 				</div>
@@ -70,35 +70,35 @@ const randomTags = allTags.slice(0, 6) as string[];
 				</button>
 
 				<!-- 侧边栏模块 1: 推荐文章 -->
-				<div class="mb-6 bg-bgColor/30 rounded-lg border border-special-light p-4 shadow-sm">
+				<div class="mb-6 bg-accent-base/10 rounded-lg border-2 border-special-light p-4 shadow-md">
 					<h5 class="font-semibold text-accent-base mb-2">Recommended Posts</h5>
 					<ul id="recommended-posts" class="text-sm font-medium text-light">
-						<li class="px-2 py-1 hover:bg-color-100 rounded-lg">
+						<li class="px-2 py-1 hover:bg-accent-base/5 rounded-lg">
 							<a href="/posts/post-without-tags/" class="hover:text-accent-two">
 								A post without tags
 							</a>
 						</li>
-						<li class="px-2 py-1 hover:bg-color-100 rounded-lg">
+						<li class="px-2 py-1 hover:bg-accent-base/5 rounded-lg">
 							<a href="/posts/example-of-60-chars-master-header-and-various-headings/" class="hover:text-accent-two">
 								Example of 60 chars Master Header and other Various Headings
 							</a>
 						</li>
-						<li class="px-2 py-1 hover:bg-color-100 rounded-lg">
+						<li class="px-2 py-1 hover:bg-accent-base/5 rounded-lg">
 							<a href="/posts/post-without-content/" class="hover:text-accent-two">
 								This post doesn't have any content
 							</a>
 						</li>
-						<li class="px-2 py-1 hover:bg-color-100 rounded-lg">
+						<li class="px-2 py-1 hover:bg-accent-base/5 rounded-lg">
 							<a href="/posts/fifth-post/" class="hover:text-accent-two">
 								Fifth Post
 							</a>
 						</li>
-						<li class="px-2 py-1 hover:bg-color-100 rounded-lg">
+						<li class="px-2 py-1 hover:bg-accent-base/5 rounded-lg">
 							<a href="/posts/fourth-post/" class="hover:text-accent-two">
 								Fourth Post
 							</a>
 						</li>
-						<li class="px-2 py-1 hover:bg-color-100 rounded-lg">
+						<li class="px-2 py-1 hover:bg-accent-base/5 rounded-lg">
 							<a href="/posts/first-post/" class="hover:text-accent-two">
 								First Post
 							</a>
@@ -107,20 +107,20 @@ const randomTags = allTags.slice(0, 6) as string[];
 				</div>
 
 				<!-- 侧边栏模块 2: 分类 -->
-				<div class="mb-6 bg-bgColor/30 rounded-lg border border-special-light p-4 shadow-sm">
+				<div class="mb-6 bg-accent-base/10 rounded-lg border-2 border-special-light p-4 shadow-md">
 					<h5 class="font-semibold text-accent-base mb-2">Categories</h5>
 					<ul class="text-sm font-medium text-light">
-						<li class="px-2 py-1 hover:bg-color-100 rounded-lg">
+						<li class="px-2 py-1 hover:bg-accent-base/5 rounded-lg">
 							<a href="/category/tutorials/" class="hover:text-accent-two">
 								Tutorials
 							</a>
 						</li>
-						<li class="px-2 py-1 hover:bg-color-100 rounded-lg">
+						<li class="px-2 py-1 hover:bg-accent-base/5 rounded-lg">
 							<a href="/category/documentation/" class="hover:text-accent-two">
 								Documentation
 							</a>
 						</li>
-						<li class="px-2 py-1 hover:bg-color-100 rounded-lg">
+						<li class="px-2 py-1 hover:bg-accent-base/5 rounded-lg">
 							<a href="/category/updates/" class="hover:text-accent-two">
 								Updates
 							</a>
@@ -129,12 +129,12 @@ const randomTags = allTags.slice(0, 6) as string[];
 				</div>
 
 				<!-- 侧边栏模块 3: 标签 -->
-				<div class="mb-6 bg-bgColor/30 rounded-lg border border-special-light p-4 shadow-sm">
+				<div class="mb-6 bg-accent-base/10 rounded-lg border-2 border-special-light p-4 shadow-md">
 					<h5 class="font-semibold text-accent-base mb-2">Tags</h5>
 					<div id="random-tags" class="flex flex-wrap gap-2">
 						{randomTags.length > 0 ? (
 							randomTags.map((tag) => (
-								<a href={`/tags/${String(tag).toLowerCase().replace(/\s+/g, '-')}/`} class="px-2 py-1 text-xs rounded-full bg-color-100 hover:bg-color-150 text-accent">
+								<a href={`/tags/${String(tag).toLowerCase().replace(/\s+/g, '-')}/`} class="px-2 py-1 text-xs rounded-full bg-color-150 hover:bg-color-200 text-accent">
 									{String(tag)}
 								</a>
 							))
