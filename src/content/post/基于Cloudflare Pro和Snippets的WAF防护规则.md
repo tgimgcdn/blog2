@@ -32,7 +32,7 @@ author: "cmssky"
 
 谷歌ip list可参考
 
-```
+```url
 https://developers.google.com/search/apis/ipranges/googlebot.json
 https://developers.google.com/search/apis/ipranges/user-triggered-fetchers.json
 https://developers.google.com/search/apis/ipranges/user-triggered-fetchers-google.json
