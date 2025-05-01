@@ -66,9 +66,9 @@ const {
 				// 等待 DOM 完全加载
 				document.addEventListener('DOMContentLoaded', () => {
 					const images = document.querySelectorAll('img[data-viewer]');
-					if (images.length > 0) {
+					images.forEach(img => {
 						// @ts-ignore
-						const viewer = new window.Viewer(Array.from(images), {
+						const viewer = new window.Viewer(img, {
 							inline: false,
 							button: true,
 							navbar: true,
@@ -93,7 +93,12 @@ const {
 							keyboard: true,
 							url: 'src',
 						});
-					}
+
+						// 添加点击事件监听器
+						img.addEventListener('click', () => {
+							viewer.show();
+						});
+					});
 				});
 			};
 			document.body.appendChild(script);
