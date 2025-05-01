@@ -25,7 +25,7 @@ if (seriesId) {
 
 <aside
 	id="series-panel"
-	class="hidden grid lg:block z-40 min-h-screen fixed lg:relative `shadow-[5px_0px_10px_rgba(0,0,0,0.05)]` transition-all duration-300 ease-in-out bg-bgColor"
+	class="hidden grid lg:block z-40 min-h-screen fixed lg:relative shadow-[5px_0px_10px_rgba(0,0,0,0.05)] transition-all duration-300 ease-in-out bg-bgColor"
 >	
 	<div class="fixed -z-10 top-0 w-screen md:w-72 md:min-w-72 md:max-w-72 h-screen bg-gradient-to-b from-orange-300 via-pink-300 to-purple-300 opacity-30 dark:opacity-0">
 	</div>
@@ -76,3 +76,21 @@ if (seriesId) {
 		</div>
 	</div>
 </aside>
+
+<script>
+	// 确保系列面板正确加载
+	document.addEventListener('DOMContentLoaded', () => {
+		const seriesPanel = document.getElementById('series-panel');
+		const closePanel = document.getElementById('close-panel');
+		
+		if (seriesPanel && closePanel) {
+			// 显示系列面板
+			seriesPanel.classList.remove('hidden');
+			
+			// 关闭按钮功能
+			closePanel.addEventListener('click', () => {
+				seriesPanel.classList.add('hidden');
+			});
+		}
+	});
+</script>
