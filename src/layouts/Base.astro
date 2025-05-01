@@ -23,6 +23,7 @@ const {
 	<head>
 		<BaseHead articleDate={articleDate} description={description} ogImage={ogImage} title={title} />
 		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/viewerjs@1.11.7/dist/viewer.min.css" />
+		<script src="https://cdn.jsdelivr.net/npm/viewerjs@1.11.7/dist/viewer.min.js" defer></script>
 	</head>
 	<body class="min-w-4xl relative m-auto min-h-screen w-full max-w-6xl grow bg-bgColor">
 		<ThemeProvider />
@@ -59,13 +60,19 @@ const {
 		</div>
 
 		<script>
-			// 使用 CDN 版本的 viewerjs
-			const script = document.createElement('script');
-			script.src = 'https://cdn.jsdelivr.net/npm/viewerjs@1.11.7/dist/viewer.min.js';
-			script.onload = () => {
+			// 等待 DOM 和 viewerjs 都加载完成
+			window.addEventListener('load', () => {
+				// 给所有文章中的图片添加 data-viewer 属性
+				const articleImages = document.querySelectorAll('article img');
+				articleImages.forEach(img => {
+					img.setAttribute('data-viewer', '');
+					img.classList.add('cursor-pointer', 'hover:opacity-90', 'transition-opacity');
+				});
+
+				// 初始化 viewerjs
 				const images = document.querySelectorAll('img[data-viewer]');
-				if (images.length > 0) {
-					const viewer = new Viewer(Array.from(images), {
+				if (images.length > 0 && typeof Viewer !== 'undefined') {
+					new Viewer(document.querySelector('article'), {
 						toolbar: true,
 						navbar: false,
 						title: true,
@@ -77,8 +84,7 @@ const {
 						url: 'src',
 					});
 				}
-			};
-			document.body.appendChild(script);
+			});
 		</script>
 	</body>
 </html>
