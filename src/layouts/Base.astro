@@ -63,21 +63,24 @@ const {
 			const script = document.createElement('script');
 			script.src = 'https://cdn.jsdelivr.net/npm/viewerjs@1.11.7/dist/viewer.min.js';
 			script.onload = () => {
-				const images = document.querySelectorAll('img[data-viewer]');
-				if (images.length > 0) {
-					// @ts-ignore
-					const viewer = new window.Viewer(Array.from(images), {
-						toolbar: true,
-						navbar: false,
-						title: true,
-						rotatable: true,
-						scalable: true,
-						zoomable: true,
-						movable: true,
-						keyboard: true,
-						url: 'src',
-					});
-				}
+				// 等待 DOM 完全加载
+				document.addEventListener('DOMContentLoaded', () => {
+					const images = document.querySelectorAll('img[data-viewer]');
+					if (images.length > 0) {
+						// @ts-ignore
+						const viewer = new window.Viewer(Array.from(images), {
+							toolbar: true,
+							navbar: false,
+							title: true,
+							rotatable: true,
+							scalable: true,
+							zoomable: true,
+							movable: true,
+							keyboard: true,
+							url: 'src',
+						});
+					}
+				});
 			};
 			document.body.appendChild(script);
 
