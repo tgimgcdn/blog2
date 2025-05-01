@@ -18,14 +18,19 @@ const socialImage = ogImage ?? `/og-image/${post.id}.png`;
 const articleDate = updatedDate?.toISOString() ?? publishDate.toISOString();
 const { headings } = await render(post);
 
-// 获取所有标签
-const allPosts = await getCollection('post');
-const allTags = [...new Set(
-  allPosts.flatMap((post: CollectionEntry<"post">) => (post.data.tags || []) as string[])
-)];
+// 获取所有文章
+const allPosts = await getCollection("post");
 
-// 随机选择6个标签
-const randomTags = allTags.slice(0, 6) as string[];
+// 提取所有文章的标签并去重
+const allTags = new Set<string>();
+allPosts.forEach((postItem: CollectionEntry<"post">) => {
+	if (postItem.data.tags && Array.isArray(postItem.data.tags)) {
+		postItem.data.tags.forEach((tag: string) => allTags.add(tag));
+	}
+});
+
+// 将Set转换为数组
+const uniqueTags = Array.from(allTags);
 ---
 
 <BaseLayout meta={{ articleDate, description, ogImage: socialImage, title }}>
@@ -128,19 +133,11 @@ const randomTags = allTags.slice(0, 6) as string[];
 					</ul>
 				</div>
 
-				<!-- 侧边栏模块 3: 标签 -->
+				<!-- 侧边栏模块 3: 标签 - 改为动态随机标签 -->
 				<div class="mb-6 bg-accent-base/10 rounded-lg border-2 border-special-light p-4 shadow-md">
 					<h5 class="font-semibold text-accent-base mb-2">Tags</h5>
-					<div id="random-tags" class="flex flex-wrap gap-2">
-						{randomTags.length > 0 ? (
-							randomTags.map((tag) => (
-								<a href={`/tags/${String(tag).toLowerCase().replace(/\s+/g, '-')}/`} class="px-2 py-1 text-xs rounded-full bg-color-150 hover:bg-color-200 text-accent">
-									{String(tag)}
-								</a>
-							))
-						) : (
-							<div class="text-lighter italic">No tags available</div>
-						)}
+					<div id="random-tags" class="flex flex-wrap gap-2" data-tags={JSON.stringify(uniqueTags)}>
+						<!-- 标签将通过JavaScript动态生成和随机化 -->
 					</div>
 				</div>
 				
@@ -492,4 +489,60 @@ const randomTags = allTags.slice(0, 6) as string[];
 			window.scrollTo({ top: 0, behavior: 'smooth' });
 		});
 	}
+</script>
+
+<!-- 随机标签生成脚本 -->
+<script>
+	// 随机标签生成函数
+	function generateRandomTags() {
+		const tagsContainer = document.getElementById('random-tags');
+		if (!tagsContainer) return;
+
+		// 从data-tags属性获取所有可能的标签
+		let allTags: string[] = [];
+		try {
+			allTags = JSON.parse(tagsContainer.getAttribute('data-tags') || '[]');
+		} catch (e) {
+			console.error('Error parsing tags:', e);
+			return;
+		}
+
+		// 如果没有标签，显示提示信息
+		if (!allTags.length) {
+			tagsContainer.innerHTML = '<div class="text-lighter italic">No tags available</div>';
+			return;
+		}
+
+		// 随机打乱标签顺序 - 使用Fisher-Yates算法
+		for (let i = allTags.length - 1; i > 0; i--) {
+			const j = Math.floor(Math.random() * (i + 1));
+			[allTags[i], allTags[j]] = [allTags[j], allTags[i]];
+		}
+
+		// 选择前6个标签，或者如果标签总数少于6个，则全部显示
+		const randomTags = allTags.slice(0, Math.min(12, allTags.length));
+		
+		// 清空现有内容
+		tagsContainer.innerHTML = '';
+		
+		// 生成标签HTML
+		randomTags.forEach((tag: string) => {
+			const tagLink = document.createElement('a');
+			tagLink.href = `/tags/${tag.toLowerCase().replace(/\s+/g, '-')}/`;
+			tagLink.className = 'px-2 py-1 text-xs rounded-full bg-color-150 hover:bg-color-200 text-accent';
+			tagLink.textContent = tag;
+			tagsContainer.appendChild(tagLink);
+		});
+	}
+
+	// 页面加载时生成随机标签
+	document.addEventListener('DOMContentLoaded', generateRandomTags);
+	
+	// 可选：为标签容器添加点击事件，点击后重新随机
+	document.getElementById('random-tags')?.addEventListener('click', function(e) {
+		// 只有当点击的是容器背景时才重新随机（不是点击标签链接时）
+		if (e.target === this) {
+			generateRandomTags();
+		}
+	});
 </script>
