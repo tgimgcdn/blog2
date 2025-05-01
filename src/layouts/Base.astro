@@ -65,21 +65,25 @@ const {
 			script.onload = () => {
 				// 等待 DOM 完全加载
 				document.addEventListener('DOMContentLoaded', () => {
-					const images = document.querySelectorAll('img[data-viewer]');
-					if (images.length > 0) {
-						// @ts-ignore
-						const viewer = new window.Viewer(Array.from(images), {
-							toolbar: true,
-							navbar: false,
-							title: true,
-							rotatable: true,
-							scalable: true,
-							zoomable: true,
-							movable: true,
-							keyboard: true,
-							url: 'src',
+					// 给所有图片添加点击事件
+					document.querySelectorAll('img[data-viewer]').forEach(img => {
+						img.style.cursor = 'pointer';
+						img.addEventListener('click', () => {
+							// @ts-ignore
+							const viewer = new window.Viewer(img, {
+								toolbar: true,
+								navbar: false,
+								title: true,
+								rotatable: true,
+								scalable: true,
+								zoomable: true,
+								movable: true,
+								keyboard: true,
+								url: 'src',
+							});
+							viewer.show();
 						});
-					}
+					});
 				});
 			};
 			document.body.appendChild(script);
