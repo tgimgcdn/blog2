@@ -98,14 +98,22 @@ const {
 							movable: true,
 							keyboard: true,
 							url: 'src',
+							shown: () => {
+								console.log('Viewer shown');
+							},
+							hidden: () => {
+								console.log('Viewer hidden');
+							}
 						});
 						
 						console.log('Viewer initialized');
 						
 						// 为每个图片添加点击事件
 						images.forEach(img => {
+							// @ts-ignore
 							img.style.cursor = 'pointer';
-							img.addEventListener('click', () => {
+							img.addEventListener('click', (e) => {
+								e.preventDefault();
 								console.log('Image clicked');
 								viewer.show();
 							});
