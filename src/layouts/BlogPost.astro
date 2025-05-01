@@ -18,33 +18,14 @@ const socialImage = ogImage ?? `/og-image/${post.id}.png`;
 const articleDate = updatedDate?.toISOString() ?? publishDate.toISOString();
 const { headings } = await render(post);
 
-// 获取所有文章（当前文章除外）
-const allPosts = await getCollection('post');
-const otherPosts = allPosts.filter((p: CollectionEntry<"post">) => p.id !== post.id);
-
-// 随机选择3篇文章，使用更强的随机方法
-// 通过URL请求参数确保是真正的随机，每次服务器渲染都重新计算
-const randomSeed = Astro.request.url + Date.now().toString();
-const otherPostsCopy = [...otherPosts];
-// 使用不同的随机种子排序
-otherPostsCopy.sort(() => {
-  // 使用一个更复杂的排序函数，确保真正的随机性
-  return 0.5 - Math.random() * Math.sin(randomSeed.length);
-});
-const randomPosts = otherPostsCopy.slice(0, 3);
-
 // 获取所有标签
+const allPosts = await getCollection('post');
 const allTags = [...new Set(
   allPosts.flatMap((post: CollectionEntry<"post">) => (post.data.tags || []) as string[])
 )];
 
-// 随机选择标签，使用相同的随机种子确保真正的随机性
-const allTagsCopy = [...allTags] as string[];
-allTagsCopy.sort(() => {
-  // 使用相同但稍微不同的排序函数，确保不同于文章排序
-  return 0.5 - Math.random() * Math.cos(randomSeed.length);
-});
-const randomTags = allTagsCopy.slice(0, 6);
+// 随机选择6个标签
+const randomTags = allTags.slice(0, 6) as string[];
 ---
 
 <BaseLayout meta={{ articleDate, description, ogImage: socialImage, title }}>
@@ -64,35 +45,6 @@ const randomTags = allTagsCopy.slice(0, 6);
 			<div class="absolute top-[-85%] right-[-30%] w-[85%] h-full bg-gradient-to-b from-orange-300 via-indigo-300 to-transparent rounded-full opacity-60 dark:opacity-5"></div>
 		</div>
 	</div>
- 	
-	<!-- NEEDS IMPROVEMENT!!! -->
-	<!-- Menu button instead of the main menu -->
-	<!--
-	<div class="left-0 right-0 top-0 z-30 ml-auto h-0 w-fit px-2 md:absolute">
-		<div class="fixed top-0 -ml-[4rem] flex space-x-2 bg-bgColor pt-8">
-	-->
-			<!-- Button background -->
-			<!--
-			<div class="fixed top-0 h-20 right-[0%] w-[50%] bg-gradient-to-l from-orange-300 via-pink-300 to-transparent  opacity-40 dark:opacity-10">
-			</div>
-			-->
-
-			<!--
-			 <button
-				aria-expanded="false"
-				aria-haspopup="menu"
-				aria-label="Open main menu"
-				class="hidden md:flex group text-sm relative h-8 w-16 font-medium items-center justify-center px-4 rounded-lg bg-accent-base/5 text-accent-base hover:bg-accent-base/10"
-				id="toggle-navigation-menu"
-				type="button"
-			>
-				Menu
-			</button>
-			-->
-	<!--	
-		</div>
-	</div>
-	-->
 
 	<!-- SeriesPanel is inserted into the named slot "sidebar" -->
 	<div slot="sidebar">
@@ -117,23 +69,40 @@ const randomTags = allTagsCopy.slice(0, 6);
 					<Icon class="h-6 w-6" name="hugeicons:cancel-01" />
 				</button>
 
-				<!-- 侧边栏模块 1: 随机文章 -->
+				<!-- 侧边栏模块 1: 推荐文章 -->
 				<div class="mb-8">
-					<h5 class="font-semibold text-accent-base mb-2">Random Posts</h5>
-					<ul id="random-posts" class="text-sm font-medium text-light">
-						{randomPosts.length > 0 ? (
-							randomPosts.map((p) => (
-								<li class="px-2 py-1 hover:bg-color-100 rounded-lg">
-									<a href={`/posts/${p.slug || p.id.replace(/^.*\//, '')}/`} class="hover:text-accent-two">
-										{p.data.title || "Untitled Post"}
-									</a>
-								</li>
-							))
-						) : (
-							<li class="px-2 py-1 hover:bg-color-100 rounded-lg">
-								<div class="text-lighter italic">No random posts available</div>
-							</li>
-						)}
+					<h5 class="font-semibold text-accent-base mb-2">Recommended Posts</h5>
+					<ul id="recommended-posts" class="text-sm font-medium text-light">
+						<li class="px-2 py-1 hover:bg-color-100 rounded-lg">
+							<a href="/posts/post-without-tags/" class="hover:text-accent-two">
+								A post without tags
+							</a>
+						</li>
+						<li class="px-2 py-1 hover:bg-color-100 rounded-lg">
+							<a href="/posts/example-of-60-chars-master-header-and-various-headings/" class="hover:text-accent-two">
+								Example of 60 chars Master Header and other Various Headings
+							</a>
+						</li>
+						<li class="px-2 py-1 hover:bg-color-100 rounded-lg">
+							<a href="/posts/post-without-content/" class="hover:text-accent-two">
+								This post doesn't have any content
+							</a>
+						</li>
+						<li class="px-2 py-1 hover:bg-color-100 rounded-lg">
+							<a href="/posts/fifth-post/" class="hover:text-accent-two">
+								Fifth Post
+							</a>
+						</li>
+						<li class="px-2 py-1 hover:bg-color-100 rounded-lg">
+							<a href="/posts/fourth-post/" class="hover:text-accent-two">
+								Fourth Post
+							</a>
+						</li>
+						<li class="px-2 py-1 hover:bg-color-100 rounded-lg">
+							<a href="/posts/first-post/" class="hover:text-accent-two">
+								First Post
+							</a>
+						</li>
 					</ul>
 				</div>
 
@@ -231,37 +200,6 @@ const randomTags = allTagsCopy.slice(0, 6);
 			</span>
 		</button>
 	</div>
-
-	<!-- Series button for mobile screens -->
-	<!--
-	{seriesId && (
-		<mobile-button
-			id="toggle-panel-mobile"
-			class="size-12 flex items-center justify-center block sm:hidden fixed bottom-4 shadow-[0px_10px_25px_rgba(0,0,0,0.15)] border border-special-lighter right-4 z-50 rounded-lg bg-bgColor text-accent-base hover:text-bg-accent-base/90"
-			aria-label="Toggle Series Panel"
-		>
-			<span class="absolute inset-0 rounded-lg flex items-center justify-center bg-special-light hover:text-accent-base/90">
-				<Icon class="size-8" name="solar:notes-bold"/>
-			</span>
-		</mobile-button>
-	)}
-	-->
-
-	<!-- NEEDS IMPROVEMENT!!! -->
-	<!-- Table of Contents button for mobile screens -->
-	<!--
-	{!!headings.length && (
-		<mobile-button
-			id="toggle-toc-mobile"
-			class="size-12 flex items-center justify-center block sm:hidden fixed bottom-20 shadow-[0px_10px_25px_rgba(0,0,0,0.15)] border border-special-lighter right-4 z-50 rounded-lg bg-bgColor text-accent-base hover:text-accent-base/90"
-			aria-label="Toggle TOC Panel"
-		>
-			<span class="absolute inset-0 rounded-lg flex items-center justify-center bg-special-light hover:text-accent-base/90">
-				<Icon class="size-8" name="solar:clipboard-list-bold"/>
-			</span>
-		</mobile-button>
-	)}
-	-->
 </BaseLayout>
 
 <!-- Copy code button -->
@@ -524,74 +462,7 @@ const randomTags = allTagsCopy.slice(0, 6);
 	observer.observe(targetHeader);
 </script>
 
-<!-- 随机排序文章和标签 -->
-<script>
-	document.addEventListener("DOMContentLoaded", () => {
-		// 随机排序文章列表（如果有客户端内容）
-		const randomPosts = document.getElementById('random-posts');
-		if (randomPosts && randomPosts.children.length > 1) { // 只有当有多个子元素时才随机排序
-			const postItems = Array.from(randomPosts.children);
-			// 使用Fisher-Yates洗牌算法打乱数组
-			for (let i = postItems.length - 1; i > 0; i--) {
-				const j = Math.floor(Math.random() * (i + 1));
-				[postItems[i], postItems[j]] = [postItems[j], postItems[i]];
-			}
-			// 清空并重新添加元素
-			randomPosts.innerHTML = '';
-			postItems.forEach(item => {
-				randomPosts.appendChild(item);
-			});
-		}
-
-		// 随机排序标签（如果有客户端内容）
-		const randomTags = document.getElementById('random-tags');
-		if (randomTags && randomTags.children.length > 1) { // 只有当有多个子元素时才随机排序
-			const tagItems = Array.from(randomTags.children);
-			// 使用Fisher-Yates洗牌算法打乱数组
-			for (let i = tagItems.length - 1; i > 0; i--) {
-				const j = Math.floor(Math.random() * (i + 1));
-				[tagItems[i], tagItems[j]] = [tagItems[j], tagItems[i]];
-			}
-			// 清空并重新添加元素
-			randomTags.innerHTML = '';
-			tagItems.forEach(item => {
-				randomTags.appendChild(item);
-			});
-		}
-	});
-</script>
-
-<!-- REQUIRES IMPROVEMENT!!! -->
-<!-- Menu button instead of the main menu -->
-<!--
-<script>
-	document.addEventListener("DOMContentLoaded", () => {
-		const menuButton = document.getElementById("toggle-navigation-menu");
-		const navigationMenu = document.getElementById("menu");
-
-		if (!menuButton || !navigationMenu) {
-			console.error("Menu button or navigation menu is missing in the DOM.");
-			return;
-		}
-
-		menuButton.addEventListener("click", () => {
-			const isOpen = menuButton.getAttribute("aria-expanded") === "true";
-
-			if (isOpen) {
-				// Close the menu
-				navigationMenu.classList.add("hidden");
-			} else {
-				// Open the menu
-				navigationMenu.classList.remove("hidden");
-			}
-
-			// Update the button state
-			menuButton.setAttribute("aria-expanded", (!isOpen).toString());
-		});
-	});
-</script>
--->
-
+<!-- 移动端目录切换 -->
 <script>
 	// 移动端目录切换
 	const toggleTocMobile = document.getElementById('toggle-toc-mobile');
