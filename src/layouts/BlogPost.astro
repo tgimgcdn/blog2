@@ -89,24 +89,13 @@ const { headings } = await render(post);
 					<Icon class="h-6 w-6" name="hugeicons:cancel-01" />
 				</button>
 
-				<!-- 侧边栏模块 1: 最近文章 -->
+				<!-- 侧边栏模块 1: 随机文章 -->
 				<div class="mb-8">
-					<h5 class="font-semibold text-accent-base mb-2">Recent Posts</h5>
-					<ul class="text-sm font-medium text-light">
+					<h5 class="font-semibold text-accent-base mb-2">Random Posts</h5>
+					<ul id="random-posts" class="text-sm font-medium text-light">
+						{/* 由Astro在服务器端随机生成文章列表 */}
 						<li class="px-2 py-1 hover:bg-color-100 rounded-lg">
-							<a href="/posts/introducing-astro-citrus/" class="hover:text-accent-two">
-								Introducing Astro Citrus!
-							</a>
-						</li>
-						<li class="px-2 py-1 hover:bg-color-100 rounded-lg">
-							<a href="/posts/citrus-docs/setup/" class="hover:text-accent-two">
-								Setup Citrus
-							</a>
-						</li>
-						<li class="px-2 py-1 hover:bg-color-100 rounded-lg">
-							<a href="/posts/citrus-docs/themes/" class="hover:text-accent-two">
-								Flexible Theming System
-							</a>
+							<div class="text-lighter italic">Random posts will appear here in production</div>
 						</li>
 					</ul>
 				</div>
@@ -136,11 +125,9 @@ const { headings } = await render(post);
 				<!-- 侧边栏模块 3: 标签 -->
 				<div class="mb-8">
 					<h5 class="font-semibold text-accent-base mb-2">Tags</h5>
-					<div class="flex flex-wrap gap-2">
-						<a href="/tags/astro/" class="px-2 py-1 text-xs rounded-full bg-color-100 hover:bg-color-150 text-accent">astro</a>
-						<a href="/tags/javascript/" class="px-2 py-1 text-xs rounded-full bg-color-100 hover:bg-color-150 text-accent">javascript</a>
-						<a href="/tags/tailwind/" class="px-2 py-1 text-xs rounded-full bg-color-100 hover:bg-color-150 text-accent">tailwind</a>
-						<a href="/tags/markdown/" class="px-2 py-1 text-xs rounded-full bg-color-100 hover:bg-color-150 text-accent">markdown</a>
+					<div id="random-tags" class="flex flex-wrap gap-2">
+						{/* 由Astro在服务器端随机生成标签 */}
+						<div class="text-lighter italic">Random tags will appear here in production</div>
 					</div>
 				</div>
 			</div>
@@ -491,6 +478,43 @@ const { headings } = await render(post);
 
 	const observer = new IntersectionObserver(callback);
 	observer.observe(targetHeader);
+</script>
+
+<!-- 随机排序文章和标签 -->
+<script>
+	document.addEventListener("DOMContentLoaded", () => {
+		// 随机排序文章列表（如果有客户端内容）
+		const randomPosts = document.getElementById('random-posts');
+		if (randomPosts && randomPosts.children.length > 1) { // 只有当有多个子元素时才随机排序
+			const postItems = Array.from(randomPosts.children);
+			// 使用Fisher-Yates洗牌算法打乱数组
+			for (let i = postItems.length - 1; i > 0; i--) {
+				const j = Math.floor(Math.random() * (i + 1));
+				[postItems[i], postItems[j]] = [postItems[j], postItems[i]];
+			}
+			// 清空并重新添加元素
+			randomPosts.innerHTML = '';
+			postItems.forEach(item => {
+				randomPosts.appendChild(item);
+			});
+		}
+
+		// 随机排序标签（如果有客户端内容）
+		const randomTags = document.getElementById('random-tags');
+		if (randomTags && randomTags.children.length > 1) { // 只有当有多个子元素时才随机排序
+			const tagItems = Array.from(randomTags.children);
+			// 使用Fisher-Yates洗牌算法打乱数组
+			for (let i = tagItems.length - 1; i > 0; i--) {
+				const j = Math.floor(Math.random() * (i + 1));
+				[tagItems[i], tagItems[j]] = [tagItems[j], tagItems[i]];
+			}
+			// 清空并重新添加元素
+			randomTags.innerHTML = '';
+			tagItems.forEach(item => {
+				randomTags.appendChild(item);
+			});
+		}
+	});
 </script>
 
 <!-- REQUIRES IMPROVEMENT!!! -->
