@@ -55,17 +55,8 @@ const uniqueTags = Array.from(allTags);
 	<div slot="sidebar">
 		<aside
 			id="custom-sidebar"
-			class="grid lg:block z-10 min-h-screen fixed top-16 md:top-20 left-0 w-72 shadow-[5px_0px_10px_rgba(0,0,0,0.05)] transition-all duration-300 ease-in-out"
+			class="grid fixed top-20 left-0 w-72 h-[calc(100vh-80px)] overflow-y-auto gap-6 p-4 lg:p-8 lg:grid lg:visible bg-accent-base/5 rounded-lg z-10"
 		>	
-			<!-- 向左的三角形 - 收起按钮 -->
-			<button
-				id="collapse-panel"
-				class="absolute top-4 right-4 md:top-8 md:right-8 h-8 w-8 flex items-center justify-center rounded-lg bg-accent-base/5 text-accent-base hover:bg-accent-base/10 z-20"
-				aria-label="Collapse Sidebar"
-			>
-				<Icon class="h-6 w-6" name="mdi:chevron-left" />
-			</button>
-			
 			<!-- 背景渐变效果 - 只在内容区域显示 -->
 			<div class="fixed -z-10 top-0 w-screen md:w-72 md:min-w-72 md:max-w-72 h-screen bg-gradient-to-b from-orange-300 via-pink-300 to-purple-300 opacity-30 dark:opacity-0">
 			</div>
@@ -142,9 +133,18 @@ const uniqueTags = Array.from(allTags);
 				<!-- 添加一个底部间隔，确保内容不会太靠近底部 -->
 				<div class="pb-8"></div>
 			</div>
+			
+			<!-- Close Button at top-right corner -->
+			<button
+				id="collapse-panel"
+				class="absolute top-4 right-4 md:top-8 md:right-4 h-8 w-8 flex items-center justify-center rounded-lg bg-accent-base/5 text-accent-base hover:bg-accent-base/10 z-20"
+				aria-label="Collapse Sidebar"
+			>
+				<Icon class="h-6 w-6" name="mdi:chevron-left" />
+			</button>
 		</aside>
 		
-		<!-- 折叠后的展开按钮 - 与侧边栏在相同位置 -->
+		<!-- 向左的三角形 - 收起按钮 - 修正位置到侧边栏右侧 -->
 		<button
 			id="expand-sidebar"
 			class="fixed hidden z-20 top-20 left-0 h-8 w-8 bg-accent-base/5 hover:bg-accent-base/10 border border-special-light rounded-lg items-center justify-center shadow-md transition-all duration-300"
@@ -226,6 +226,7 @@ const uniqueTags = Array.from(allTags);
 			left: '0px'  // 默认值
 		};
 		
+		// 记录侧边栏位置并设置初始状态
 		if (sidebar) {
 			// 记录初始位置
 			const rect = sidebar.getBoundingClientRect();
@@ -234,6 +235,17 @@ const uniqueTags = Array.from(allTags);
 			
 			// 移除相对定位类
 			sidebar.classList.remove('lg:relative');
+			
+			// 检查localStorage中保存的侧边栏状态
+			const isSidebarCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
+			
+			// 如果之前是收起状态，则自动收起侧边栏
+			if (isSidebarCollapsed && expandBtn) {
+				sidebar.style.display = 'none';
+				expandBtn.style.top = sidebarPosition.top;
+				expandBtn.style.left = sidebarPosition.left;
+				expandBtn.style.display = 'flex';
+			}
 		}
 		
 		// 侧边栏收起/展开功能
@@ -250,6 +262,9 @@ const uniqueTags = Array.from(allTags);
 					
 					// 显示展开按钮
 					expandBtn.style.display = 'flex';
+					
+					// 保存侧边栏收起状态到localStorage
+					localStorage.setItem('sidebarCollapsed', 'true');
 				}
 			});
 			
@@ -261,6 +276,9 @@ const uniqueTags = Array.from(allTags);
 					
 					// 隐藏展开按钮
 					expandBtn.style.display = 'none';
+					
+					// 保存侧边栏展开状态到localStorage
+					localStorage.setItem('sidebarCollapsed', 'false');
 				}
 			});
 		}
@@ -272,11 +290,17 @@ const uniqueTags = Array.from(allTags);
 					// 如果侧边栏是隐藏的，则显示
 					sidebar.style.display = 'grid';
 					expandBtn.style.display = 'none';
+					
+					// 保存侧边栏展开状态到localStorage
+					localStorage.setItem('sidebarCollapsed', 'false');
 				} else {
 					// 如果侧边栏是可见的，则隐藏
 					sidebar.style.display = 'none';
 					// 显示展开按钮
 					expandBtn.style.display = 'flex';
+					
+					// 保存侧边栏收起状态到localStorage
+					localStorage.setItem('sidebarCollapsed', 'true');
 				}
 			});
 		}
@@ -288,7 +312,7 @@ const uniqueTags = Array.from(allTags);
 				const containerRect = mainContainer.getBoundingClientRect();
 				const containerLeftEdge = containerRect.left;
 				
-				// 侧边栏宽度 (72px = 18rem)
+				// 侧边栏宽度 (18rem = 288px)
 				const sidebarWidth = 288;
 				
 				// 计算侧边栏应该的left值：内容左边缘 - 间距 - 侧边栏宽度
@@ -297,6 +321,11 @@ const uniqueTags = Array.from(allTags);
 				
 				// 更新侧边栏位置
 				sidebar.style.left = `${newLeft}px`;
+				
+				// 调整收起按钮位置为侧边栏右侧
+				if (collapseBtn) {
+					collapseBtn.style.right = `calc(100% - ${newLeft + sidebarWidth}px)`;
+				}
 				
 				// 更新保存的位置信息
 				sidebarPosition.left = `${newLeft}px`;
