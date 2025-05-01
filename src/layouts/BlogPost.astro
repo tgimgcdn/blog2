@@ -50,12 +50,14 @@ const randomTags = allTags.slice(0, 6) as string[];
 	<div slot="sidebar">
 		<aside
 			id="custom-sidebar"
-			class="grid lg:block z-10 min-h-screen fixed top-16 md:top-20 left-0 w-72 shadow-[5px_0px_10px_rgba(0,0,0,0.05)] transition-all duration-300 ease-in-out bg-bgColor"
+			class="grid lg:block z-10 min-h-screen fixed top-16 md:top-20 left-0 w-72 shadow-[5px_0px_10px_rgba(0,0,0,0.05)] transition-all duration-300 ease-in-out"
 		>	
+			<!-- 背景渐变效果 - 只在内容区域显示 -->
 			<div class="fixed -z-10 top-0 w-screen md:w-72 md:min-w-72 md:max-w-72 h-screen bg-gradient-to-b from-orange-300 via-pink-300 to-purple-300 opacity-30 dark:opacity-0">
 			</div>
 			
-			<div class="flex h-full flex-col px-8 pt-4 md:pt-8 w-screen md:w-72 md:min-w-72 md:max-w-72 bg-accent-base/5 border-r border-special-light">
+			<!-- 侧边栏内容区 - 确保背景色跟随主题 -->
+			<div class="flex h-full min-h-screen flex-col px-8 pt-4 md:pt-8 w-screen md:w-72 md:min-w-72 md:max-w-72 bg-bgColor border-r border-special-light">
 				<div class="flex gap-x-1">
 					<!-- 删除Sidebar标题 -->
 				</div>
@@ -141,6 +143,9 @@ const randomTags = allTags.slice(0, 6) as string[];
 						)}
 					</div>
 				</div>
+				
+				<!-- 添加一个底部间隔，确保内容不会太靠近底部 -->
+				<div class="pb-8"></div>
 			</div>
 		</aside>
 	</div>
