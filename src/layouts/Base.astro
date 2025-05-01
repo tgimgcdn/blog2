@@ -69,12 +69,24 @@ const {
 				document.addEventListener('DOMContentLoaded', () => {
 					console.log('DOM fully loaded');
 					
+					// 创建一个图片容器
+					const container = document.createElement('div');
+					container.id = 'viewer-container';
+					document.body.appendChild(container);
+					
+					// 获取所有图片
 					const images = document.querySelectorAll('img[data-viewer]');
 					console.log('Found images with data-viewer:', images.length);
 					
+					// 将图片添加到容器中
+					images.forEach(img => {
+						const clone = img.cloneNode(true);
+						container.appendChild(clone);
+					});
+					
 					if (images.length > 0) {
 						// @ts-ignore
-						const viewer = new window.Viewer(Array.from(images), {
+						const viewer = new window.Viewer(container, {
 							inline: false,
 							button: true,
 							navbar: true,
@@ -97,13 +109,7 @@ const {
 							zoomable: true,
 							movable: true,
 							keyboard: true,
-							url: 'src',
-							shown: () => {
-								console.log('Viewer shown');
-							},
-							hidden: () => {
-								console.log('Viewer hidden');
-							}
+							url: 'src'
 						});
 						
 						console.log('Viewer initialized');
@@ -115,7 +121,8 @@ const {
 							img.addEventListener('click', (e) => {
 								e.preventDefault();
 								console.log('Image clicked');
-								viewer.show();
+								const index = Array.from(images).indexOf(img);
+								viewer.view(index);
 							});
 						});
 					} else {
