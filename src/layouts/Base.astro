@@ -65,7 +65,8 @@ const {
 			script.onload = () => {
 				const images = document.querySelectorAll('img[data-viewer]');
 				if (images.length > 0) {
-					const viewer = new Viewer(Array.from(images), {
+					// @ts-ignore
+					const viewer = new window.Viewer(Array.from(images), {
 						toolbar: true,
 						navbar: false,
 						title: true,
