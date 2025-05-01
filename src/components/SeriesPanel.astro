@@ -9,7 +9,7 @@ const posts = await getCollection("post");
 const series = await getCollection("series");
 
 // Находим серию по переданному `seriesId` указанному в посте
-const postsSeries = series.find((s) => s.id === seriesId);
+const postsSeries = series.find((s: CollectionEntry<"series">) => s.id === seriesId);
 if (!postsSeries) {
   	throw new Error(`Post(s) with Series ID '${seriesId}' not found.`);
 }
@@ -18,14 +18,14 @@ if (!postsSeries) {
 let seriesPosts: CollectionEntry<"post">[] = [];
 if (seriesId) {
 	seriesPosts = posts
-		.filter((p) => p.data.seriesId === seriesId)
-		.sort((a, b) => (a.data.orderInSeries || 0) - (b.data.orderInSeries || 0));
+		.filter((p: CollectionEntry<"post">) => p.data.seriesId === seriesId)
+		.sort((a: CollectionEntry<"post">, b: CollectionEntry<"post">) => (a.data.orderInSeries || 0) - (b.data.orderInSeries || 0));
 }
 ---
 
 <aside
 	id="series-panel"
-	class="grid lg:block z-40 min-h-screen fixed lg:relative shadow-[5px_0px_10px_rgba(0,0,0,0.05)] transition-all duration-300 ease-in-out bg-bgColor"
+	class="hidden grid lg:block z-40 min-h-screen fixed lg:relative shadow-[5px_0px_10px_rgba(0,0,0,0.05)] transition-all duration-300 ease-in-out bg-bgColor"
 >	
 	<div class="fixed -z-10 top-0 w-screen md:w-72 md:min-w-72 md:max-w-72 h-screen bg-gradient-to-b from-orange-300 via-pink-300 to-purple-300 opacity-30 dark:opacity-0">
 	</div>
@@ -58,7 +58,7 @@ if (seriesId) {
 				</a>
 
 				<ul class="mt-[1.0625rem] text-sm font-medium text-light">
-					{seriesPosts.map((p) => {
+					{seriesPosts.map((p: CollectionEntry<"post">) => {
 						const isActive = currentPath === `/posts/${p.id}/`;
 						return (
 							<li class={`px-4 flex items-center line-clamp-2 pt-1 pb-1 ${isActive ? "rounded-lg bg-color-100" : ""}`}>
