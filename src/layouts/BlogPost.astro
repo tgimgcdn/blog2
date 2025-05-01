@@ -53,37 +53,25 @@ const uniqueTags = Array.from(allTags);
 
 	<!-- SeriesPanel is inserted into the named slot "sidebar" -->
 	<div slot="sidebar">
-		<!-- 折叠后的展开按钮 - 调整位置到侧边栏原位置的左上角 -->
-		<button
-			id="expand-sidebar"
-			class="fixed hidden z-20 top-20 left-0 h-8 w-8 bg-accent-base/5 hover:bg-accent-base/10 border border-special-light rounded-lg flex items-center justify-center shadow-md transition-all duration-300"
-			aria-label="Expand Sidebar"
-		>
-			<Icon class="h-6 w-6" name="mdi:chevron-right" />
-		</button>
-		
 		<aside
 			id="custom-sidebar"
 			class="grid lg:block z-10 min-h-screen fixed top-16 md:top-20 left-0 w-72 shadow-[5px_0px_10px_rgba(0,0,0,0.05)] transition-all duration-300 ease-in-out"
 		>	
+			<!-- 向左的三角形 - 收起按钮 -->
+			<button
+				id="collapse-panel"
+				class="absolute top-4 right-4 md:top-8 md:right-8 h-8 w-8 flex items-center justify-center rounded-lg bg-accent-base/5 text-accent-base hover:bg-accent-base/10 z-20"
+				aria-label="Collapse Sidebar"
+			>
+				<Icon class="h-6 w-6" name="mdi:chevron-left" />
+			</button>
+			
 			<!-- 背景渐变效果 - 只在内容区域显示 -->
 			<div class="fixed -z-10 top-0 w-screen md:w-72 md:min-w-72 md:max-w-72 h-screen bg-gradient-to-b from-orange-300 via-pink-300 to-purple-300 opacity-30 dark:opacity-0">
 			</div>
 			
 			<!-- 侧边栏内容区 - 确保背景色跟随主题 -->
 			<div class="flex h-full min-h-screen flex-col px-8 pt-4 md:pt-8 w-screen md:w-72 md:min-w-72 md:max-w-72 bg-accent-base/5 border-r border-special-light">
-				<div class="flex gap-x-1">
-					<!-- 删除Sidebar标题 -->
-				</div>
-				<!-- 收起按钮 - 向左的三角形 - 移到侧边栏右上角 -->
-				<button
-					id="collapse-panel"
-					class="absolute top-4 right-4 md:top-8 md:right-8 h-8 w-8 flex items-center justify-center rounded-lg bg-accent-base/5 text-accent-base hover:bg-accent-base/10"
-					aria-label="Collapse Sidebar"
-				>
-					<Icon class="h-6 w-6" name="mdi:chevron-left" />
-				</button>
-
 				<!-- 侧边栏模块 1: 推荐文章 -->
 				<div class="mb-6 bg-accent-base/10 rounded-lg border-2 border-special-light p-4 shadow-md">
 					<h5 class="font-semibold text-accent-base mb-2">Recommended Posts</h5>
@@ -155,6 +143,15 @@ const uniqueTags = Array.from(allTags);
 				<div class="pb-8"></div>
 			</div>
 		</aside>
+		
+		<!-- 折叠后的展开按钮 - 与侧边栏在相同位置 -->
+		<button
+			id="expand-sidebar"
+			class="fixed hidden z-20 top-20 left-0 h-8 w-8 bg-accent-base/5 hover:bg-accent-base/10 border border-special-light rounded-lg items-center justify-center shadow-md transition-all duration-300"
+			aria-label="Expand Sidebar"
+		>
+			<Icon class="h-6 w-6" name="mdi:chevron-right" />
+		</button>
 	</div>
 
 	<Masthead content={post} />
@@ -223,8 +220,19 @@ const uniqueTags = Array.from(allTags);
 		const togglePanelMobileBtn = document.getElementById("toggle-panel-mobile");
 		const mainContainer = document.getElementById("container");
 		
-		// 只移除相对定位类，不添加强制定位
+		// 获取侧边栏初始位置信息
+		let sidebarPosition = {
+			top: '80px', // 默认值 (md:top-20)
+			left: '0px'  // 默认值
+		};
+		
 		if (sidebar) {
+			// 记录初始位置
+			const rect = sidebar.getBoundingClientRect();
+			sidebarPosition.top = `${rect.top}px`;
+			sidebarPosition.left = `${rect.left}px`;
+			
+			// 移除相对定位类
 			sidebar.classList.remove('lg:relative');
 		}
 		
@@ -233,14 +241,15 @@ const uniqueTags = Array.from(allTags);
 			// 收起侧边栏
 			collapseBtn.addEventListener('click', () => {
 				if (sidebar && expandBtn) {
-					// 完全隐藏侧边栏
-					sidebar.classList.add('hidden');
+					// 隐藏侧边栏
+					sidebar.style.display = 'none';
 					
-					// 显示展开按钮在适当位置
-					const expandBtnLeft = '4px'; // 保持与原来侧边栏左侧有适当间距
-					expandBtn.style.left = expandBtnLeft;
-					expandBtn.classList.remove('hidden');
-					expandBtn.classList.add('flex');
+					// 调整展开按钮位置，与侧边栏上角位置一致
+					expandBtn.style.top = sidebarPosition.top;
+					expandBtn.style.left = sidebarPosition.left;
+					
+					// 显示展开按钮
+					expandBtn.style.display = 'flex';
 				}
 			});
 			
@@ -248,11 +257,10 @@ const uniqueTags = Array.from(allTags);
 			expandBtn.addEventListener('click', () => {
 				if (sidebar && expandBtn) {
 					// 显示侧边栏
-					sidebar.classList.remove('hidden');
+					sidebar.style.display = 'grid';
 					
 					// 隐藏展开按钮
-					expandBtn.classList.add('hidden');
-					expandBtn.classList.remove('flex');
+					expandBtn.style.display = 'none';
 				}
 			});
 		}
@@ -260,37 +268,41 @@ const uniqueTags = Array.from(allTags);
 		// 添加移动端侧边栏切换按钮功能（如果按钮存在）
 		if (togglePanelMobileBtn && sidebar && expandBtn) {
 			togglePanelMobileBtn.addEventListener('click', () => {
-				if (sidebar.classList.contains('hidden')) {
+				if (sidebar.style.display === 'none') {
 					// 如果侧边栏是隐藏的，则显示
-					sidebar.classList.remove('hidden');
-					expandBtn.classList.add('hidden');
-					expandBtn.classList.remove('flex');
+					sidebar.style.display = 'grid';
+					expandBtn.style.display = 'none';
 				} else {
 					// 如果侧边栏是可见的，则隐藏
-					sidebar.classList.add('hidden');
+					sidebar.style.display = 'none';
+					// 显示展开按钮
+					expandBtn.style.display = 'flex';
 				}
 			});
 		}
 
-		// 动态调整侧边栏位置，保持与内容区域的2rem间距
+		// 动态调整侧边栏位置，保持与内容区域的间距
 		function adjustSidebarPosition() {
 			if (sidebar && mainContainer && window.innerWidth >= 768) { // 仅在中等及以上屏幕执行
 				// 获取内容容器的位置信息
 				const containerRect = mainContainer.getBoundingClientRect();
 				const containerLeftEdge = containerRect.left;
 				
-				// 侧边栏宽度 (18rem = 288px)
+				// 侧边栏宽度 (72px = 18rem)
 				const sidebarWidth = 288;
 				
-				// 计算侧边栏应该的left值：内容左边缘 - 1.5rem间距 - 侧边栏宽度
-				const gap = 8; // 1.5rem = 24px (原来是2rem = 32px)
+				// 计算侧边栏应该的left值：内容左边缘 - 间距 - 侧边栏宽度
+				const gap = 8;
 				const newLeft = Math.max(0, containerLeftEdge - gap - sidebarWidth);
 				
-				// 应用新位置
+				// 更新侧边栏位置
 				sidebar.style.left = `${newLeft}px`;
 				
-				// 调整展开按钮位置，与侧边栏左上角匹配
-				if (expandBtn && !expandBtn.classList.contains('hidden')) {
+				// 更新保存的位置信息
+				sidebarPosition.left = `${newLeft}px`;
+				
+				// 如果展开按钮可见，同步更新其位置
+				if (expandBtn && expandBtn.style.display === 'flex') {
 					expandBtn.style.left = `${newLeft}px`;
 				}
 			}
@@ -356,19 +368,33 @@ const uniqueTags = Array.from(allTags);
 	const togglePanelMobileBtn = document.getElementById("toggle-panel-mobile");
 	const sidebar = document.getElementById("custom-sidebar");
 
+	// 获取侧边栏初始位置信息
+	let sidebarPosition = {
+		top: '80px', // 默认值 (md:top-20)
+		left: '0px'  // 默认值
+	};
+	
+	if (sidebar) {
+		// 记录初始位置
+		const rect = sidebar.getBoundingClientRect();
+		sidebarPosition.top = `${rect.top}px`;
+		sidebarPosition.left = `${rect.left}px`;
+	}
+
 	// 侧边栏折叠/展开功能
 	if (sidebar && collapseBtn && expandBtn) {
 		// 收起侧边栏
 		collapseBtn.addEventListener('click', () => {
 			if (sidebar && expandBtn) {
-				// 完全隐藏侧边栏
-				sidebar.classList.add('hidden');
+				// 隐藏侧边栏
+				sidebar.style.display = 'none';
 				
-				// 显示展开按钮在适当位置
-				const expandBtnLeft = '4px'; // 保持与原来侧边栏左侧有适当间距
-				expandBtn.style.left = expandBtnLeft;
-				expandBtn.classList.remove('hidden');
-				expandBtn.classList.add('flex');
+				// 调整展开按钮位置，与侧边栏上角位置一致
+				expandBtn.style.top = sidebarPosition.top;
+				expandBtn.style.left = sidebarPosition.left;
+				
+				// 显示展开按钮
+				expandBtn.style.display = 'flex';
 			}
 		});
 		
@@ -376,11 +402,10 @@ const uniqueTags = Array.from(allTags);
 		expandBtn.addEventListener('click', () => {
 			if (sidebar && expandBtn) {
 				// 显示侧边栏
-				sidebar.classList.remove('hidden');
+				sidebar.style.display = 'grid';
 				
 				// 隐藏展开按钮
-				expandBtn.classList.add('hidden');
-				expandBtn.classList.remove('flex');
+				expandBtn.style.display = 'none';
 			}
 		});
 	}
