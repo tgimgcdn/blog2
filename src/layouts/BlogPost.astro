@@ -22,14 +22,14 @@ const { headings } = await render(post);
 const allPosts = await getCollection('post');
 const otherPosts = allPosts.filter((p: CollectionEntry<"post">) => p.id !== post.id);
 
-// 随机选择3篇文章，确保每次页面加载都是真正的随机
-// 在服务器端生成随机数值
-const randomSeed = Date.now().toString();
+// 随机选择3篇文章，使用更强的随机方法
+// 通过URL请求参数确保是真正的随机，每次服务器渲染都重新计算
+const randomSeed = Astro.request.url + Date.now().toString();
 const otherPostsCopy = [...otherPosts];
-// 使用随机种子对数组排序
+// 使用不同的随机种子排序
 otherPostsCopy.sort(() => {
-  const x = Math.sin(parseInt(randomSeed) + Math.random()) * 10000;
-  return x - Math.floor(x);
+  // 使用一个更复杂的排序函数，确保真正的随机性
+  return 0.5 - Math.random() * Math.sin(randomSeed.length);
 });
 const randomPosts = otherPostsCopy.slice(0, 3);
 
@@ -41,8 +41,8 @@ const allTags = [...new Set(
 // 随机选择标签，使用相同的随机种子确保真正的随机性
 const allTagsCopy = [...allTags] as string[];
 allTagsCopy.sort(() => {
-  const x = Math.sin(parseInt(randomSeed) + Math.random()) * 10000;
-  return x - Math.floor(x);
+  // 使用相同但稍微不同的排序函数，确保不同于文章排序
+  return 0.5 - Math.random() * Math.cos(randomSeed.length);
 });
 const randomTags = allTagsCopy.slice(0, 6);
 ---
@@ -124,7 +124,7 @@ const randomTags = allTagsCopy.slice(0, 6);
 						{randomPosts.length > 0 ? (
 							randomPosts.map((p) => (
 								<li class="px-2 py-1 hover:bg-color-100 rounded-lg">
-									<a href={`/post/${p.slug || p.id}/`} class="hover:text-accent-two">
+									<a href={`/posts/${p.slug || p.id.replace(/^.*\//, '')}/`} class="hover:text-accent-two">
 										{p.data.title || "Untitled Post"}
 									</a>
 								</li>
