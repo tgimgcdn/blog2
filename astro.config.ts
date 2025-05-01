@@ -106,7 +106,9 @@ export default defineConfig({
             light: "rose-pine-dawn", // after changing the theme, the server needs to be restarted
             dark: "rose-pine", // after changing the theme, the server needs to be restarted
           },
-
+          defaultLang: "text", // 为未指定语言的代码块设置默认语言
+          keepBackground: true, // 保持背景样式
+          grid: false, // 不使用网格布局
           transformers: [transformerNotationDiff(), transformerMetaHighlight()],
         },
       ],
