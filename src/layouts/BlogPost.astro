@@ -242,12 +242,28 @@ const { headings } = await render(post);
 		
 		// 设置侧边栏为固定位置，不跟随滚动
 		if (customSidebar) {
-			// 移除滚动监听器，改为固定定位
+			// 设置固定定位，与顶部导航栏对齐
 			customSidebar.style.position = "fixed";
-			customSidebar.style.top = "0";
-			customSidebar.style.height = "100vh";
+			
+			// 响应式设置顶部距离
+			const setTopPosition = () => {
+				if (window.innerWidth >= 768) { // md断点
+					customSidebar.style.top = "20px"; // 中等及以上设备，与TOC相同
+					customSidebar.style.height = "calc(100vh - 20px)";
+				} else {
+					customSidebar.style.top = "16px"; // 移动设备上使用16px
+					customSidebar.style.height = "calc(100vh - 16px)";
+				}
+			};
+			
+			// 初始设置
+			setTopPosition();
+			
+			// 窗口大小改变时重新设置
+			window.addEventListener('resize', setTopPosition);
+			
 			customSidebar.style.overflowY = "auto";
-			customSidebar.style.paddingTop = "20px"; // 添加顶部内边距，避免内容被顶部遮挡
+			customSidebar.style.paddingTop = "0";
 		}
 		
 		// 桌面端和移动端都可以关闭侧边栏
