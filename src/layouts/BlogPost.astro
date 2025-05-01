@@ -57,9 +57,7 @@ const randomTags = allTags.slice(0, 6) as string[];
 			
 			<div class="flex h-full flex-col px-8 pt-4 md:pt-8 w-screen md:w-72 md:min-w-72 md:max-w-72 bg-accent-base/5 border-r border-special-light">
 				<div class="flex gap-x-1">
-					<h4 class="flex items-center title mb-[4.5rem]">
-						Sidebar
-					</h4>
+					<!-- 删除Sidebar标题 -->
 				</div>
 				<button
 					id="close-panel"
@@ -70,7 +68,7 @@ const randomTags = allTags.slice(0, 6) as string[];
 				</button>
 
 				<!-- 侧边栏模块 1: 推荐文章 -->
-				<div class="mb-8">
+				<div class="mb-6 bg-bgColor/30 rounded-lg border border-special-light p-4 shadow-sm">
 					<h5 class="font-semibold text-accent-base mb-2">Recommended Posts</h5>
 					<ul id="recommended-posts" class="text-sm font-medium text-light">
 						<li class="px-2 py-1 hover:bg-color-100 rounded-lg">
@@ -107,7 +105,7 @@ const randomTags = allTags.slice(0, 6) as string[];
 				</div>
 
 				<!-- 侧边栏模块 2: 分类 -->
-				<div class="mb-8">
+				<div class="mb-6 bg-bgColor/30 rounded-lg border border-special-light p-4 shadow-sm">
 					<h5 class="font-semibold text-accent-base mb-2">Categories</h5>
 					<ul class="text-sm font-medium text-light">
 						<li class="px-2 py-1 hover:bg-color-100 rounded-lg">
@@ -129,7 +127,7 @@ const randomTags = allTags.slice(0, 6) as string[];
 				</div>
 
 				<!-- 侧边栏模块 3: 标签 -->
-				<div class="mb-8">
+				<div class="mb-6 bg-bgColor/30 rounded-lg border border-special-light p-4 shadow-sm">
 					<h5 class="font-semibold text-accent-base mb-2">Tags</h5>
 					<div id="random-tags" class="flex flex-wrap gap-2">
 						{randomTags.length > 0 ? (
