@@ -202,6 +202,7 @@ const { headings } = await render(post);
 	</div>
 
 	<!-- Series button for mobile screens -->
+	<!--
 	<button
 		id="toggle-panel-mobile"
 		class="size-12 flex items-center justify-center block sm:hidden fixed bottom-4 shadow-[0px_10px_25px_rgba(0,0,0,0.15)] border border-special-lighter right-20 z-50 rounded-lg bg-bgColor text-accent-base hover:text-bg-accent-base/90"
@@ -211,6 +212,7 @@ const { headings } = await render(post);
 			<Icon class="size-8" name="solar:notes-bold"/>
 		</span>
 	</button>
+	-->
 
 	<!-- NEEDS IMPROVEMENT!!! -->
 	<!-- Table of Contents button for mobile screens -->
@@ -231,265 +233,6 @@ const { headings } = await render(post);
 
 <!-- Copy code button -->
 <script>
-	// Wait for the content to fully load
-	document.addEventListener("DOMContentLoaded", () => {
-		// 侧边栏功能
-		const customSidebar = document.getElementById("custom-sidebar");
-		const closePanel = document.getElementById("close-panel");
-		const togglePanelMobileBtn = document.getElementById("toggle-panel-mobile");
-		
-		if (customSidebar && closePanel) {
-			// 关闭按钮功能
-			closePanel.addEventListener('click', () => {
-				customSidebar.classList.add('hidden');
-				console.log("关闭侧边栏");
-			});
-		}
-		
-		// 添加移动端侧边栏切换按钮功能（如果按钮存在）
-		if (togglePanelMobileBtn && customSidebar) {
-			togglePanelMobileBtn.addEventListener('click', () => {
-				customSidebar.classList.toggle('hidden');
-				console.log("切换侧边栏");
-			});
-		}
-
-		// Find all pre blocks
-		document.querySelectorAll("pre").forEach((pre) => {
-			// Check if the button already exists
-			if (!pre.querySelector(".copy-code")) {
-				// Create the button
-				const copyButton = document.createElement("button");
-				copyButton.className =
-				"absolute flex items-center justify-center bg-bgColor h-6 font-medium overflow-hidden rounded-md text-light hover:text-accent-two font-sans text-sm font-medium top-2 right-2";
-
-				// Create the span element that will hold the button text
-				const buttonText = document.createElement("span");
-				buttonText.innerText = "Copy"; // Initial text
-				buttonText.className = "flex items-center block w-full h-full px-2 bg-[var(--code-title-bg)]"; // Set the span to take up full width with background color
-
-				copyButton.appendChild(buttonText); // Append span to the button
-
-				// Add the button inside pre
-				pre.appendChild(copyButton);
-
-				// Event handler for copying text
-				copyButton.addEventListener("click", async () => {
-					const code = pre.querySelector("code")?.textContent;
-					if (code) {
-						await navigator.clipboard.writeText(code);
-						buttonText.innerText = "Copied!"; // Change text to "Copied!"
-
-						// After 1.5 seconds, change the text back to "Copy"
-						setTimeout(() => {
-							buttonText.innerText = "Copy";
-						}, 1500);
-					}
-				});
-			}
-		});
-
-		// 其他按钮功能
-		const buttonsPanel = document.getElementById("buttons-panel");
-		
-		if (buttonsPanel) {
-			buttonsPanel.classList.add("fixed");
-		}
-	});
-</script>
-
-<script>
-	const ANIMATION_DURATION = 300;
-	// Get the button and panel elements
-	const togglePanelBtn = document.getElementById("toggle-panel");
-	const closePanelBtn = document.getElementById("close-panel");
-	const seriesPanel = document.getElementById("series-panel");
-	const togglePanelMobileBtn = document.getElementById("toggle-panel-mobile");
-
-	// 确保 seriesPanel 存在
-	if (seriesPanel) {
-		// Function to check if the panel is visible
-		const isPanelVisible = () => {
-			const isScreenLg = window.matchMedia("(min-width: 1024px)").matches;
-			return (
-				(isScreenLg && seriesPanel.classList.contains("lg:block")) ||
-				(!isScreenLg && !seriesPanel.classList.contains("hidden"))
-			);
-		};
-
-		// Function to hide the panel
-		const hidePanel = () => {
-			seriesPanel.classList.add("opacity-0", "-translate-x-full");
-			setTimeout(() => {
-				seriesPanel.classList.remove("block", "lg:block");
-				seriesPanel.classList.add("hidden");
-			}, ANIMATION_DURATION);
-		};
-
-		// Function to show the panel
-		const showPanel = () => {
-			seriesPanel.classList.remove("hidden");
-			seriesPanel.classList.add("block", "lg:block");
-			setTimeout(() => {
-				seriesPanel.classList.remove("opacity-0", "-translate-x-full");
-			}, 10);
-		};
-
-		// Common event handler for both buttons
-		const togglePanel = () => {
-			if (isPanelVisible()) {
-				hidePanel();
-			} else {
-				showPanel();
-			}
-		};
-
-		// Event handlers for both buttons
-		if (togglePanelBtn) {
-			togglePanelBtn.addEventListener("click", togglePanel);
-		}
-
-		if (togglePanelMobileBtn) {
-			togglePanelMobileBtn.addEventListener("click", togglePanel);
-		}
-
-		if (closePanelBtn) {
-			closePanelBtn.addEventListener("click", hidePanel);
-		}
-	}
-</script>
-
-<script>
-	// Get the button and panel elements
-	const toggleTocBtn = document.getElementById('toggle-toc');
-	const closeTocBtn = document.getElementById('close-toc');
-	const tocPanel = document.getElementById('toc-panel');
-	const toggleTocMobileBtn = document.getElementById("toggle-toc-mobile");
-
-	// Check for the panel's presence (required for functionality)
-	if (!tocPanel) {
-		console.error('Element toc-panel not found');
-		throw new Error('toc-panel is required');
-	}
-
-	// Function to check if the table of contents is visible
-	const isTocVisible = () => {
-		const isScreenMd = window.matchMedia("(min-width: 768px)").matches;
-		return (
-			(isScreenMd && tocPanel.classList.contains("md:block")) ||
-			(!isScreenMd && !tocPanel.classList.contains("hidden"))
-		);
-	};
-
-	// Function to hide the panel
-	const hideToc = () => {
-		tocPanel.classList.add('hidden');
-		tocPanel.classList.remove('md:block');
-	};
-
-	// Function to show the panel
-	const showToc = () => {
-		tocPanel.classList.remove('hidden');
-		tocPanel.classList.add('md:block');
-	};
-
-	// Common event handler for both buttons
-	const toggleToc = () => {
-		if (isTocVisible()) {
-			hideToc(); // If visible, hide it
-		} else {
-			showToc(); // If hidden, show it
-		}
-	};
-	
-	// Add event handler for the toggle button
-	if (toggleTocBtn) {
-		toggleTocBtn.addEventListener("click", toggleToc);
-	} else {
-		console.error('Element toggle-toc not found');
-	}
-
-	// Add event handler for the toggle button (mobile)
-	if (toggleTocMobileBtn) {
-		toggleTocMobileBtn.addEventListener("click", toggleToc);
-	} else {
-		console.error('Element toggle-toc-mobile not found');
-	}
-
-	// Add event handler for the close button
-	if (closeTocBtn) {
-		closeTocBtn.addEventListener('click', hideToc);
-	} else {
-		console.error('Element close-toc not found');
-	}
-</script>
-
-<script>
-	// Wait for the content to fully load
-	document.addEventListener("DOMContentLoaded", () => {
-		const buttonsPanel = document.getElementById("buttons-panel");
-		
-		if (buttonsPanel) {
-			buttonsPanel.classList.add("fixed");
-			console.log("Class 'fixed' added to the buttons-panel element.");
-		} else {
-			console.error("Element with ID 'buttons-panel' not found.");
-		}
-	});
-</script>
-
-<!-- Scroll to top button -->
-<script>
-	const scrollBtn = document.getElementById("to-top-button") as HTMLButtonElement;
-	const targetHeader = document.querySelector("header") as HTMLElement;
-
-	function callback(entries: IntersectionObserverEntry[]) {
-		entries.forEach((entry) => {
-			// Show the scroll to top button when the <header> is out of view
-			scrollBtn.dataset.show = (!entry.isIntersecting).toString();
-		});
-	}
-
-	scrollBtn.addEventListener("click", () => {
-		document.documentElement.scrollTo({ behavior: "smooth", top: 0 });
-	});
-
-	const observer = new IntersectionObserver(callback);
-	observer.observe(targetHeader);
-</script>
-
-<!-- REQUIRES IMPROVEMENT!!! -->
-<!-- Menu button instead of the main menu -->
-<!--
-<script>
-	document.addEventListener("DOMContentLoaded", () => {
-		const menuButton = document.getElementById("toggle-navigation-menu");
-		const navigationMenu = document.getElementById("menu");
-
-		if (!menuButton || !navigationMenu) {
-			console.error("Menu button or navigation menu is missing in the DOM.");
-			return;
-		}
-
-		menuButton.addEventListener("click", () => {
-			const isOpen = menuButton.getAttribute("aria-expanded") === "true";
-
-			if (isOpen) {
-				// Close the menu
-				navigationMenu.classList.add("hidden");
-			} else {
-				// Open the menu
-				navigationMenu.classList.remove("hidden");
-			}
-
-			// Update the button state
-			menuButton.setAttribute("aria-expanded", (!isOpen).toString());
-		});
-	});
-</script>
--->
-
-<script>
 	// 专门处理侧边栏和TOC功能
 	document.addEventListener("DOMContentLoaded", () => {
 		// -------- 侧边栏功能 --------
@@ -503,11 +246,12 @@ const { headings } = await render(post);
 				// 获取滚动位置
 				const scrollTop = window.scrollY;
 				
-				// 计算侧边栏顶部位置，确保不超过顶部
-				const topPosition = scrollTop > 0 ? Math.max(0, 0) : 0;
+				// 计算侧边栏顶部位置，确保不超过顶部但跟随滚动
+				const topPosition = Math.max(0, scrollTop - 20);
 				
 				// 设置侧边栏位置
 				customSidebar.style.top = `${topPosition}px`;
+				console.log("滚动位置:", topPosition);
 			}
 		});
 		
@@ -567,5 +311,67 @@ const { headings } = await render(post);
 				window.scrollTo({ top: 0, behavior: 'smooth' });
 			});
 		}
+		
+		// 其他按钮功能
+		const buttonsPanel = document.getElementById("buttons-panel");
+		
+		if (buttonsPanel) {
+			buttonsPanel.classList.add("fixed");
+			console.log("Class 'fixed' added to the buttons-panel element.");
+		}
+		
+		// 找到所有pre块并添加复制代码按钮
+		document.querySelectorAll("pre").forEach((pre) => {
+			// Check if the button already exists
+			if (!pre.querySelector(".copy-code")) {
+				// Create the button
+				const copyButton = document.createElement("button");
+				copyButton.className =
+				"absolute flex items-center justify-center bg-bgColor h-6 font-medium overflow-hidden rounded-md text-light hover:text-accent-two font-sans text-sm font-medium top-2 right-2";
+
+				// Create the span element that will hold the button text
+				const buttonText = document.createElement("span");
+				buttonText.innerText = "Copy"; // Initial text
+				buttonText.className = "flex items-center block w-full h-full px-2 bg-[var(--code-title-bg)]"; // Set the span to take up full width with background color
+
+				copyButton.appendChild(buttonText); // Append span to the button
+
+				// Add the button inside pre
+				pre.appendChild(copyButton);
+
+				// Event handler for copying text
+				copyButton.addEventListener("click", async () => {
+					const code = pre.querySelector("code")?.textContent;
+					if (code) {
+						await navigator.clipboard.writeText(code);
+						buttonText.innerText = "Copied!"; // Change text to "Copied!"
+
+						// After 1.5 seconds, change the text back to "Copy"
+						setTimeout(() => {
+							buttonText.innerText = "Copy";
+						}, 1500);
+					}
+				});
+			}
+		});
 	});
+</script>
+
+<script>
+	const scrollBtn = document.getElementById("to-top-button") as HTMLButtonElement;
+	const targetHeader = document.querySelector("header") as HTMLElement;
+
+	function callback(entries: IntersectionObserverEntry[]) {
+		entries.forEach((entry) => {
+			// Show the scroll to top button when the <header> is out of view
+			scrollBtn.dataset.show = (!entry.isIntersecting).toString();
+		});
+	}
+
+	scrollBtn.addEventListener("click", () => {
+		document.documentElement.scrollTo({ behavior: "smooth", top: 0 });
+	});
+
+	const observer = new IntersectionObserver(callback);
+	observer.observe(targetHeader);
 </script>
