@@ -363,3 +363,22 @@
 		@apply bg-transparent;
 	}
 }
+
+figure[data-rehype-pretty-code-figure] {
+	@apply relative;
+}
+
+figure[data-rehype-pretty-code-figure] pre {
+	@apply relative overflow-x-auto;
+}
+
+figure[data-rehype-pretty-code-figure] button {
+	@apply absolute top-2 right-2 z-10;
+	@apply p-2 rounded-md;
+	@apply bg-color-200 text-textColor;
+	@apply opacity-0 transition-opacity duration-200;
+}
+
+figure[data-rehype-pretty-code-figure]:hover button {
+	@apply opacity-100;
+}
