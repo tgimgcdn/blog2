@@ -53,6 +53,15 @@ const uniqueTags = Array.from(allTags);
 
 	<!-- SeriesPanel is inserted into the named slot "sidebar" -->
 	<div slot="sidebar">
+		<!-- 折叠后的展开按钮 -->
+		<button
+			id="expand-sidebar"
+			class="fixed hidden z-20 top-20 left-0 h-10 w-6 bg-accent-base/10 hover:bg-accent-base/20 border-r border-t border-b border-special-light rounded-r-lg flex items-center justify-center shadow-md transition-all duration-300"
+			aria-label="Expand Sidebar"
+		>
+			<Icon class="h-6 w-6" name="mdi:chevron-right" />
+		</button>
+		
 		<aside
 			id="custom-sidebar"
 			class="grid lg:block z-10 min-h-screen fixed top-16 md:top-20 left-0 w-72 shadow-[5px_0px_10px_rgba(0,0,0,0.05)] transition-all duration-300 ease-in-out"
@@ -66,12 +75,13 @@ const uniqueTags = Array.from(allTags);
 				<div class="flex gap-x-1">
 					<!-- 删除Sidebar标题 -->
 				</div>
+				<!-- 收起按钮 - 向左的三角形 -->
 				<button
-					id="close-panel"
+					id="collapse-panel"
 					class="absolute top-4 right-4 md:top-8 md:right-8 h-8 w-8 flex items-center justify-center rounded-lg bg-accent-base/5 text-accent-base hover:bg-accent-base/10"
-					aria-label="Close Sidebar"
+					aria-label="Collapse Sidebar"
 				>
-					<Icon class="h-6 w-6" name="hugeicons:cancel-01" />
+					<Icon class="h-6 w-6" name="mdi:chevron-left" />
 				</button>
 
 				<!-- 侧边栏模块 1: 推荐文章 -->
@@ -208,28 +218,49 @@ const uniqueTags = Array.from(allTags);
 	document.addEventListener("DOMContentLoaded", () => {
 		// 侧边栏功能
 		const sidebar = document.getElementById("custom-sidebar");
-		const closePanel = document.getElementById("close-panel");
+		const collapseBtn = document.getElementById("collapse-panel");
+		const expandBtn = document.getElementById("expand-sidebar");
 		const togglePanelMobileBtn = document.getElementById("toggle-panel-mobile");
 		const mainContainer = document.getElementById("container");
 		
 		// 只移除相对定位类，不添加强制定位
 		if (sidebar) {
 			sidebar.classList.remove('lg:relative');
-			// 不再添加position:fixed，避免遮盖内容
 		}
 		
-		if (sidebar && closePanel) {
-			// 关闭按钮功能 - 确保在所有屏幕尺寸下都能关闭
-			closePanel.addEventListener('click', () => {
-				sidebar.classList.add('hidden');
-				sidebar.classList.remove('lg:block'); // 移除lg:block类，确保在大屏幕上也能隐藏
+		// 侧边栏收起/展开功能
+		if (sidebar && collapseBtn && expandBtn) {
+			// 收起侧边栏
+			collapseBtn.addEventListener('click', () => {
+				if (sidebar && expandBtn) {
+					sidebar.style.transform = 'translateX(-100%)';
+					setTimeout(() => {
+						expandBtn.classList.remove('hidden');
+						expandBtn.classList.add('flex');
+					}, 300); // 等待侧边栏动画完成
+				}
+			});
+			
+			// 展开侧边栏
+			expandBtn.addEventListener('click', () => {
+				if (sidebar && expandBtn) {
+					sidebar.style.transform = 'translateX(0)';
+					expandBtn.classList.add('hidden');
+					expandBtn.classList.remove('flex');
+				}
 			});
 		}
 		
 		// 添加移动端侧边栏切换按钮功能（如果按钮存在）
-		if (togglePanelMobileBtn && sidebar) {
+		if (togglePanelMobileBtn && sidebar && expandBtn) {
 			togglePanelMobileBtn.addEventListener('click', () => {
-				sidebar.classList.toggle('hidden');
+				if (sidebar.style.transform === 'translateX(-100%)') {
+					sidebar.style.transform = 'translateX(0)';
+					expandBtn.classList.add('hidden');
+					expandBtn.classList.remove('flex');
+				} else {
+					sidebar.classList.toggle('hidden');
+				}
 			});
 		}
 
@@ -306,9 +337,34 @@ const uniqueTags = Array.from(allTags);
 	const ANIMATION_DURATION = 300;
 	// Get the button and panel elements
 	const togglePanelBtn = document.getElementById("toggle-panel");
-	const closePanelBtn = document.getElementById("close-panel");
+	const collapseBtn = document.getElementById("collapse-panel");
+	const expandBtn = document.getElementById("expand-sidebar");
 	const seriesPanel = document.getElementById("series-panel");
 	const togglePanelMobileBtn = document.getElementById("toggle-panel-mobile");
+	const sidebar = document.getElementById("custom-sidebar");
+
+	// 侧边栏折叠/展开功能
+	if (sidebar && collapseBtn && expandBtn) {
+		// 收起侧边栏
+		collapseBtn.addEventListener('click', () => {
+			if (sidebar && expandBtn) {
+				sidebar.style.transform = 'translateX(-100%)';
+				setTimeout(() => {
+					expandBtn.classList.remove('hidden');
+					expandBtn.classList.add('flex');
+				}, ANIMATION_DURATION); // 等待侧边栏动画完成
+			}
+		});
+		
+		// 展开侧边栏
+		expandBtn.addEventListener('click', () => {
+			if (sidebar && expandBtn) {
+				sidebar.style.transform = 'translateX(0)';
+				expandBtn.classList.add('hidden');
+				expandBtn.classList.remove('flex');
+			}
+		});
+	}
 
 	// 确保 seriesPanel 存在
 	if (seriesPanel) {
@@ -357,8 +413,8 @@ const uniqueTags = Array.from(allTags);
 			togglePanelMobileBtn.addEventListener("click", togglePanel);
 		}
 
-		if (closePanelBtn) {
-			closePanelBtn.addEventListener("click", hidePanel);
+		if (collapseBtn) {
+			collapseBtn.addEventListener("click", hidePanel);
 		}
 	}
 </script>
