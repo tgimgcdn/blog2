@@ -125,6 +125,12 @@ const {
 						window.scrollTo({ top: 0, behavior: 'smooth' });
 					});
 				}
+
+				// 修复按钮面板样式
+				const buttonsPanel = document.getElementById('buttons-panel');
+				if (buttonsPanel) {
+					buttonsPanel.classList.add('fixed', 'z-50');
+				}
 			});
 		</script>
 	</body>
