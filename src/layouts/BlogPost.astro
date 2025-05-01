@@ -241,6 +241,7 @@ const { headings } = await render(post);
 		const sidebar = document.getElementById("custom-sidebar");
 		const closePanel = document.getElementById("close-panel");
 		const togglePanelMobileBtn = document.getElementById("toggle-panel-mobile");
+		const mainContainer = document.getElementById("container");
 		
 		// 只移除相对定位类，不添加强制定位
 		if (sidebar) {
@@ -262,6 +263,31 @@ const { headings } = await render(post);
 				sidebar.classList.toggle('hidden');
 			});
 		}
+
+		// 动态调整侧边栏位置，保持与内容区域的2rem间距
+		function adjustSidebarPosition() {
+			if (sidebar && mainContainer && window.innerWidth >= 768) { // 仅在中等及以上屏幕执行
+				// 获取内容容器的位置信息
+				const containerRect = mainContainer.getBoundingClientRect();
+				const containerLeftEdge = containerRect.left;
+				
+				// 侧边栏宽度 (18rem = 288px)
+				const sidebarWidth = 288;
+				
+				// 计算侧边栏应该的left值：内容左边缘 - 2rem间距 - 侧边栏宽度
+				const gap = 32; // 2rem = 32px
+				const newLeft = Math.max(0, containerLeftEdge - gap - sidebarWidth);
+				
+				// 应用新位置
+				sidebar.style.left = `${newLeft}px`;
+			}
+		}
+
+		// 初始调整
+		adjustSidebarPosition();
+		
+		// 窗口大小变化时重新调整
+		window.addEventListener('resize', adjustSidebarPosition);
 
 		// Find all pre blocks
 		document.querySelectorAll("pre").forEach((pre) => {
