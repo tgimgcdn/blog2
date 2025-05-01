@@ -57,10 +57,10 @@ const uniqueTags = Array.from(allTags);
 			id="custom-sidebar"
 			class="grid lg:block z-10 min-h-screen fixed top-16 md:top-20 left-0 w-72 shadow-[5px_0px_10px_rgba(0,0,0,0.05)] transition-all duration-300 ease-in-out"
 		>	
-			<!-- 向左的三角形 - 收起按钮 - 与展开按钮位置相同 -->
+			<!-- 向左的三角形 - 收起按钮 - 放在侧边栏右侧 -->
 			<button
 				id="collapse-panel"
-				class="fixed z-20 top-20 left-0 h-8 w-8 flex items-center justify-center rounded-lg bg-accent-base/5 text-accent-base hover:bg-accent-base/10 border border-special-light shadow-md"
+				class="fixed z-20 top-20 left-[272px] h-8 w-8 flex items-center justify-center rounded-lg bg-accent-base/5 text-accent-base hover:bg-accent-base/10 border border-special-light shadow-md"
 				aria-label="Collapse Sidebar"
 			>
 				<Icon class="h-6 w-6" name="mdi:chevron-left" />
@@ -235,6 +235,18 @@ const uniqueTags = Array.from(allTags);
 			// 移除相对定位类
 			sidebar.classList.remove('lg:relative');
 		}
+
+		// 检查localStorage中保存的侧边栏状态
+		const isSidebarCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
+		
+		// 如果之前是收起状态，则自动收起侧边栏
+		if (isSidebarCollapsed && sidebar && expandBtn) {
+			// 隐藏侧边栏
+			sidebar.style.display = 'none';
+			
+			// 显示展开按钮
+			expandBtn.style.display = 'flex';
+		}
 		
 		// 侧边栏收起/展开功能
 		if (sidebar && collapseBtn && expandBtn) {
@@ -250,6 +262,9 @@ const uniqueTags = Array.from(allTags);
 					
 					// 显示展开按钮
 					expandBtn.style.display = 'flex';
+					
+					// 保存侧边栏收起状态到localStorage
+					localStorage.setItem('sidebarCollapsed', 'true');
 				}
 			});
 			
@@ -261,6 +276,9 @@ const uniqueTags = Array.from(allTags);
 					
 					// 隐藏展开按钮
 					expandBtn.style.display = 'none';
+					
+					// 保存侧边栏展开状态到localStorage
+					localStorage.setItem('sidebarCollapsed', 'false');
 				}
 			});
 		}
