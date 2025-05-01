@@ -53,10 +53,10 @@ const uniqueTags = Array.from(allTags);
 
 	<!-- SeriesPanel is inserted into the named slot "sidebar" -->
 	<div slot="sidebar">
-		<!-- 折叠后的展开按钮 -->
+		<!-- 折叠后的展开按钮 - 调整位置到侧边栏原位置的左上角 -->
 		<button
 			id="expand-sidebar"
-			class="fixed hidden z-20 top-20 left-0 h-10 w-6 bg-accent-base/10 hover:bg-accent-base/20 border-r border-t border-b border-special-light rounded-r-lg flex items-center justify-center shadow-md transition-all duration-300"
+			class="fixed hidden z-20 top-20 left-0 h-8 w-8 bg-accent-base/5 hover:bg-accent-base/10 border border-special-light rounded-lg flex items-center justify-center shadow-md transition-all duration-300"
 			aria-label="Expand Sidebar"
 		>
 			<Icon class="h-6 w-6" name="mdi:chevron-right" />
@@ -75,7 +75,7 @@ const uniqueTags = Array.from(allTags);
 				<div class="flex gap-x-1">
 					<!-- 删除Sidebar标题 -->
 				</div>
-				<!-- 收起按钮 - 向左的三角形 -->
+				<!-- 收起按钮 - 向左的三角形 - 移到侧边栏右上角 -->
 				<button
 					id="collapse-panel"
 					class="absolute top-4 right-4 md:top-8 md:right-8 h-8 w-8 flex items-center justify-center rounded-lg bg-accent-base/5 text-accent-base hover:bg-accent-base/10"
@@ -233,18 +233,24 @@ const uniqueTags = Array.from(allTags);
 			// 收起侧边栏
 			collapseBtn.addEventListener('click', () => {
 				if (sidebar && expandBtn) {
-					sidebar.style.transform = 'translateX(-100%)';
-					setTimeout(() => {
-						expandBtn.classList.remove('hidden');
-						expandBtn.classList.add('flex');
-					}, 300); // 等待侧边栏动画完成
+					// 完全隐藏侧边栏
+					sidebar.classList.add('hidden');
+					
+					// 显示展开按钮在适当位置
+					const expandBtnLeft = '4px'; // 保持与原来侧边栏左侧有适当间距
+					expandBtn.style.left = expandBtnLeft;
+					expandBtn.classList.remove('hidden');
+					expandBtn.classList.add('flex');
 				}
 			});
 			
 			// 展开侧边栏
 			expandBtn.addEventListener('click', () => {
 				if (sidebar && expandBtn) {
-					sidebar.style.transform = 'translateX(0)';
+					// 显示侧边栏
+					sidebar.classList.remove('hidden');
+					
+					// 隐藏展开按钮
 					expandBtn.classList.add('hidden');
 					expandBtn.classList.remove('flex');
 				}
@@ -254,12 +260,14 @@ const uniqueTags = Array.from(allTags);
 		// 添加移动端侧边栏切换按钮功能（如果按钮存在）
 		if (togglePanelMobileBtn && sidebar && expandBtn) {
 			togglePanelMobileBtn.addEventListener('click', () => {
-				if (sidebar.style.transform === 'translateX(-100%)') {
-					sidebar.style.transform = 'translateX(0)';
+				if (sidebar.classList.contains('hidden')) {
+					// 如果侧边栏是隐藏的，则显示
+					sidebar.classList.remove('hidden');
 					expandBtn.classList.add('hidden');
 					expandBtn.classList.remove('flex');
 				} else {
-					sidebar.classList.toggle('hidden');
+					// 如果侧边栏是可见的，则隐藏
+					sidebar.classList.add('hidden');
 				}
 			});
 		}
@@ -280,6 +288,11 @@ const uniqueTags = Array.from(allTags);
 				
 				// 应用新位置
 				sidebar.style.left = `${newLeft}px`;
+				
+				// 调整展开按钮位置，与侧边栏左上角匹配
+				if (expandBtn && !expandBtn.classList.contains('hidden')) {
+					expandBtn.style.left = `${newLeft}px`;
+				}
 			}
 		}
 
@@ -348,18 +361,24 @@ const uniqueTags = Array.from(allTags);
 		// 收起侧边栏
 		collapseBtn.addEventListener('click', () => {
 			if (sidebar && expandBtn) {
-				sidebar.style.transform = 'translateX(-100%)';
-				setTimeout(() => {
-					expandBtn.classList.remove('hidden');
-					expandBtn.classList.add('flex');
-				}, ANIMATION_DURATION); // 等待侧边栏动画完成
+				// 完全隐藏侧边栏
+				sidebar.classList.add('hidden');
+				
+				// 显示展开按钮在适当位置
+				const expandBtnLeft = '4px'; // 保持与原来侧边栏左侧有适当间距
+				expandBtn.style.left = expandBtnLeft;
+				expandBtn.classList.remove('hidden');
+				expandBtn.classList.add('flex');
 			}
 		});
 		
 		// 展开侧边栏
 		expandBtn.addEventListener('click', () => {
 			if (sidebar && expandBtn) {
-				sidebar.style.transform = 'translateX(0)';
+				// 显示侧边栏
+				sidebar.classList.remove('hidden');
+				
+				// 隐藏展开按钮
 				expandBtn.classList.add('hidden');
 				expandBtn.classList.remove('flex');
 			}
@@ -411,10 +430,6 @@ const uniqueTags = Array.from(allTags);
 
 		if (togglePanelMobileBtn) {
 			togglePanelMobileBtn.addEventListener("click", togglePanel);
-		}
-
-		if (collapseBtn) {
-			collapseBtn.addEventListener("click", hidePanel);
 		}
 	}
 </script>
