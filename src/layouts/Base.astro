@@ -60,11 +60,8 @@ const {
 
 		<script>
 			function initializeViewer() {
-				console.log('Initializing viewer...');
-				
 				// 获取所有图片
 				const images = document.querySelectorAll('img[data-viewer]');
-				console.log('Found images with data-viewer:', images.length);
 				
 				if (images.length > 0) {
 					// 创建一个图片容器
@@ -104,16 +101,8 @@ const {
 						zoomable: true,
 						movable: true,
 						keyboard: true,
-						url: 'src',
-						shown: () => {
-							console.log('Viewer shown');
-						},
-						hidden: () => {
-							console.log('Viewer hidden');
-						}
+						url: 'src'
 					});
-					
-					console.log('Viewer initialized');
 					
 					// 为每个图片添加点击事件
 					images.forEach((img, index) => {
@@ -121,12 +110,9 @@ const {
 						img.style.cursor = 'pointer';
 						img.addEventListener('click', (e) => {
 							e.preventDefault();
-							console.log('Image clicked, index:', index);
 							viewer.view(index);
 						});
 					});
-				} else {
-					console.log('No images found with data-viewer attribute');
 				}
 			}
 
@@ -134,8 +120,6 @@ const {
 			const script = document.createElement('script');
 			script.src = 'https://cdn.jsdelivr.net/npm/viewerjs@1.11.7/dist/viewer.min.js';
 			script.onload = () => {
-				console.log('Viewer.js loaded successfully');
-				
 				// 如果 DOM 已经加载完成，直接初始化
 				if (document.readyState === 'complete' || document.readyState === 'interactive') {
 					initializeViewer();
