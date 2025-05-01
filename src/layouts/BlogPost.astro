@@ -70,7 +70,7 @@ const { headings } = await render(post);
 	<div slot="sidebar">
 		<aside
 			id="custom-sidebar"
-			class="grid lg:block z-40 min-h-screen fixed top-16 md:top-20 shadow-[5px_0px_10px_rgba(0,0,0,0.05)] transition-all duration-300 ease-in-out bg-bgColor"
+			class="grid lg:block z-10 min-h-screen fixed top-16 md:top-20 left-0 w-72 shadow-[5px_0px_10px_rgba(0,0,0,0.05)] transition-all duration-300 ease-in-out bg-bgColor"
 		>	
 			<div class="fixed -z-10 top-0 w-screen md:w-72 md:min-w-72 md:max-w-72 h-screen bg-gradient-to-b from-orange-300 via-pink-300 to-purple-300 opacity-30 dark:opacity-0">
 			</div>
@@ -241,6 +241,12 @@ const { headings } = await render(post);
 		const sidebar = document.getElementById("custom-sidebar");
 		const closePanel = document.getElementById("close-panel");
 		const togglePanelMobileBtn = document.getElementById("toggle-panel-mobile");
+		
+		// 只移除相对定位类，不添加强制定位
+		if (sidebar) {
+			sidebar.classList.remove('lg:relative');
+			// 不再添加position:fixed，避免遮盖内容
+		}
 		
 		if (sidebar && closePanel) {
 			// 关闭按钮功能 - 确保在所有屏幕尺寸下都能关闭
