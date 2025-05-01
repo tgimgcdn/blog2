@@ -1,5 +1,5 @@
 ---
-import { type CollectionEntry, render } from "astro:content";
+import { type CollectionEntry, render, getCollection } from "astro:content";
 import Masthead from "@/components/blog/Masthead.astro";
 import TOC from "@/components/blog/TOC.astro";
 import WebMentions from "@/components/blog/webmentions/index.astro";
@@ -17,6 +17,25 @@ const { ogImage, title, description, updatedDate, publishDate, seriesId } = post
 const socialImage = ogImage ?? `/og-image/${post.id}.png`;
 const articleDate = updatedDate?.toISOString() ?? publishDate.toISOString();
 const { headings } = await render(post);
+
+// 获取所有文章（当前文章除外）
+const allPosts = await getCollection('post');
+const otherPosts = allPosts.filter((p: CollectionEntry<"post">) => p.id !== post.id);
+
+// 随机选择3篇文章
+const randomPosts = [...otherPosts]
+  .sort(() => Math.random() - 0.5)
+  .slice(0, 3);
+
+// 获取所有标签
+const allTags = [...new Set(
+  allPosts.flatMap((post: CollectionEntry<"post">) => (post.data.tags || []) as string[])
+)];
+
+// 随机选择标签
+const randomTags = ([...allTags] as string[])
+  .sort(() => Math.random() - 0.5)
+  .slice(0, 6);
 ---
 
 <BaseLayout meta={{ articleDate, description, ogImage: socialImage, title }}>
@@ -93,10 +112,17 @@ const { headings } = await render(post);
 				<div class="mb-8">
 					<h5 class="font-semibold text-accent-base mb-2">Random Posts</h5>
 					<ul id="random-posts" class="text-sm font-medium text-light">
-						{/* 由Astro在服务器端随机生成文章列表 */}
-						<li class="px-2 py-1 hover:bg-color-100 rounded-lg">
-							<div class="text-lighter italic">Random posts will appear here in production</div>
-						</li>
+						{randomPosts.length > 0 ? (
+							randomPosts.map((p) => (
+								<li class="px-2 py-1 hover:bg-color-100 rounded-lg">
+									<a href={`/posts/${p.slug}/`} class="hover:text-accent-two">{p.data.title}</a>
+								</li>
+							))
+						) : (
+							<li class="px-2 py-1 hover:bg-color-100 rounded-lg">
+								<div class="text-lighter italic">No random posts available</div>
+							</li>
+						)}
 					</ul>
 				</div>
 
@@ -126,8 +152,15 @@ const { headings } = await render(post);
 				<div class="mb-8">
 					<h5 class="font-semibold text-accent-base mb-2">Tags</h5>
 					<div id="random-tags" class="flex flex-wrap gap-2">
-						{/* 由Astro在服务器端随机生成标签 */}
-						<div class="text-lighter italic">Random tags will appear here in production</div>
+						{randomTags.length > 0 ? (
+							randomTags.map((tag) => (
+								<a href={`/tags/${String(tag).toLowerCase().replace(/\s+/g, '-')}/`} class="px-2 py-1 text-xs rounded-full bg-color-100 hover:bg-color-150 text-accent">
+									{String(tag)}
+								</a>
+							))
+						) : (
+							<div class="text-lighter italic">No tags available</div>
+						)}
 					</div>
 				</div>
 			</div>
