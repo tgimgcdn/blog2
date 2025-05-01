@@ -23,7 +23,6 @@ const {
 	<head>
 		<BaseHead articleDate={articleDate} description={description} ogImage={ogImage} title={title} />
 		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/viewerjs@1.11.7/dist/viewer.min.css" />
-		<script src="https://cdn.jsdelivr.net/npm/viewerjs@1.11.7/dist/viewer.min.js" defer></script>
 	</head>
 	<body class="min-w-4xl relative m-auto min-h-screen w-full max-w-6xl grow bg-bgColor">
 		<ThemeProvider />
@@ -60,19 +59,13 @@ const {
 		</div>
 
 		<script>
-			// 等待 DOM 和 viewerjs 都加载完成
-			window.addEventListener('load', () => {
-				// 给所有文章中的图片添加 data-viewer 属性
-				const articleImages = document.querySelectorAll('article img');
-				articleImages.forEach(img => {
-					img.setAttribute('data-viewer', '');
-					img.classList.add('cursor-pointer', 'hover:opacity-90', 'transition-opacity');
-				});
-
-				// 初始化 viewerjs
+			// 使用 CDN 版本的 viewerjs
+			const script = document.createElement('script');
+			script.src = 'https://cdn.jsdelivr.net/npm/viewerjs@1.11.7/dist/viewer.min.js';
+			script.onload = () => {
 				const images = document.querySelectorAll('img[data-viewer]');
-				if (images.length > 0 && typeof Viewer !== 'undefined') {
-					new Viewer(document.querySelector('article'), {
+				if (images.length > 0) {
+					const viewer = new Viewer(Array.from(images), {
 						toolbar: true,
 						navbar: false,
 						title: true,
@@ -82,6 +75,53 @@ const {
 						movable: true,
 						keyboard: true,
 						url: 'src',
+					});
+				}
+			};
+			document.body.appendChild(script);
+
+			// 移动端切换按钮的 JavaScript 代码
+			document.addEventListener('DOMContentLoaded', () => {
+				// 系列面板切换
+				const togglePanelMobile = document.getElementById('toggle-panel-mobile');
+				const seriesPanel = document.getElementById('series-panel');
+				const closePanel = document.getElementById('close-panel');
+
+				if (togglePanelMobile && seriesPanel) {
+					togglePanelMobile.addEventListener('click', () => {
+						seriesPanel.classList.toggle('hidden');
+					});
+				}
+
+				if (closePanel && seriesPanel) {
+					closePanel.addEventListener('click', () => {
+						seriesPanel.classList.add('hidden');
+					});
+				}
+
+				// 目录面板切换
+				const toggleTocMobile = document.getElementById('toggle-toc-mobile');
+				const tocPanel = document.getElementById('toc-panel');
+
+				if (toggleTocMobile && tocPanel) {
+					toggleTocMobile.addEventListener('click', () => {
+						tocPanel.classList.toggle('hidden');
+					});
+				}
+
+				// 回到顶部按钮
+				const toTopButton = document.getElementById('to-top-button');
+				if (toTopButton) {
+					window.addEventListener('scroll', () => {
+						if (window.scrollY > 300) {
+							toTopButton.setAttribute('data-show', 'true');
+						} else {
+							toTopButton.setAttribute('data-show', 'false');
+						}
+					});
+
+					toTopButton.addEventListener('click', () => {
+						window.scrollTo({ top: 0, behavior: 'smooth' });
 					});
 				}
 			});
