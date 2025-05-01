@@ -70,12 +70,12 @@ const { headings } = await render(post);
 	<div slot="sidebar">
 		<aside
 			id="custom-sidebar"
-			class="grid lg:block z-40 min-h-screen fixed overflow-y-auto max-h-screen shadow-[5px_0px_10px_rgba(0,0,0,0.05)] transition-all duration-300 ease-in-out bg-bgColor"
+			class="grid lg:block z-40 min-h-screen fixed lg:relative overflow-y-auto max-h-screen shadow-[5px_0px_10px_rgba(0,0,0,0.05)] transition-all duration-300 ease-in-out bg-bgColor"
 		>	
-			<div class="fixed -z-10 top-0 w-screen md:w-72 md:min-w-72 md:max-w-72 h-screen bg-gradient-to-b from-orange-300 via-pink-300 to-purple-300 opacity-30 dark:opacity-0">
+			<div class="fixed -z-10 top-0 w-full md:w-72 md:min-w-72 md:max-w-72 h-screen bg-gradient-to-b from-orange-300 via-pink-300 to-purple-300 opacity-30 dark:opacity-0">
 			</div>
 			
-			<div class="flex h-full flex-col px-8 pt-4 md:pt-8 w-screen md:w-72 md:min-w-72 md:max-w-72 bg-accent-base/5 border-r border-special-light">
+			<div class="flex h-full flex-col px-8 pt-4 md:pt-8 w-full md:w-72 md:min-w-72 md:max-w-72 bg-accent-base/5 border-r border-special-light">
 				<div class="flex gap-x-1">
 					<h4 class="flex items-center title mb-[4.5rem]">
 						Sidebar
@@ -202,7 +202,7 @@ const { headings } = await render(post);
 	</div>
 
 	<!-- Series button for mobile screens -->
-	<mobile-button
+	<button
 		id="toggle-panel-mobile"
 		class="size-12 flex items-center justify-center block sm:hidden fixed bottom-4 shadow-[0px_10px_25px_rgba(0,0,0,0.15)] border border-special-lighter right-20 z-50 rounded-lg bg-bgColor text-accent-base hover:text-bg-accent-base/90"
 		aria-label="Toggle Sidebar"
@@ -210,7 +210,7 @@ const { headings } = await render(post);
 		<span class="absolute inset-0 rounded-lg flex items-center justify-center bg-special-light hover:text-accent-base/90">
 			<Icon class="size-8" name="solar:notes-bold"/>
 		</span>
-	</mobile-button>
+	</button>
 
 	<!-- NEEDS IMPROVEMENT!!! -->
 	<!-- Table of Contents button for mobile screens -->
@@ -511,18 +511,31 @@ const { headings } = await render(post);
 			}
 		});
 		
-		// 关闭按钮功能
+		// 桌面端和移动端都可以关闭侧边栏
 		if (closeBtn && customSidebar) {
 			closeBtn.addEventListener('click', () => {
+				// 在桌面端，添加hidden类
 				customSidebar.classList.add('hidden');
+				// 确保桌面端的lg:block也被清除
+				customSidebar.classList.remove('lg:block');
 				console.log("关闭侧边栏");
 			});
 		}
 		
-		// 切换按钮功能
+		// 添加移动端侧边栏切换按钮功能（如果按钮存在）
 		if (toggleBtn && customSidebar) {
 			toggleBtn.addEventListener('click', () => {
-				customSidebar.classList.toggle('hidden');
+				if (customSidebar.classList.contains('hidden')) {
+					customSidebar.classList.remove('hidden');
+					// 在大屏幕上重新添加lg:block
+					if (window.innerWidth >= 1024) {
+						customSidebar.classList.add('lg:block');
+					}
+				} else {
+					customSidebar.classList.add('hidden');
+					// 确保移除lg:block
+					customSidebar.classList.remove('lg:block');
+				}
 				console.log("切换侧边栏");
 			});
 		}
