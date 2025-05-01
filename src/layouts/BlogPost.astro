@@ -74,11 +74,10 @@ const sidebarCollapsed = false; // 默认展开
 			id="custom-sidebar"
 			class="grid lg:block z-10 min-h-screen fixed top-16 md:top-20 left-0 w-72 shadow-[5px_0px_10px_rgba(0,0,0,0.05)] transition-all duration-300 ease-in-out"
 		>	
-			<!-- 收起按钮 - 确保样式与展开按钮一致，只是位置在右侧 -->
+			<!-- 收起按钮 - 修改位置和样式确保可见 -->
 			<button
 				id="collapse-panel"
-				class="fixed top-20 right-0 h-8 w-8 bg-accent-base/5 hover:bg-accent-base/10 border border-special-light rounded-lg flex items-center justify-center shadow-md z-20"
-				style="margin-right: -36px;"
+				class="absolute top-4 right-[-24px] h-8 w-8 bg-accent-base/10 hover:bg-accent-base/20 border border-special-light rounded-lg flex items-center justify-center shadow-md z-50"
 				aria-label="Collapse Sidebar"
 			>
 				<Icon class="h-6 w-6" name="mdi:chevron-left" />
@@ -234,6 +233,7 @@ const sidebarCollapsed = false; // 默认展开
     document.addEventListener('DOMContentLoaded', function() {
       const sidebar = document.getElementById('custom-sidebar');
       const expandBtn = document.getElementById('expand-sidebar');
+      const collapseBtn = document.getElementById('collapse-panel');
 
       // 检查localStorage中的状态值
       const isSidebarCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
@@ -245,6 +245,8 @@ const sidebarCollapsed = false; // 默认展开
       } else {
         if (sidebar) sidebar.style.display = 'grid';
         if (expandBtn) expandBtn.style.display = 'none';
+        // 确保折叠按钮可见
+        if (collapseBtn) collapseBtn.style.display = 'flex';
       }
     });
   })();
