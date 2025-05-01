@@ -206,65 +206,56 @@ const { headings } = await render(post);
 	const seriesPanel = document.getElementById("series-panel");
 	const togglePanelMobileBtn = document.getElementById("toggle-panel-mobile");
 
-	// Ensure the seriesPanel exists
-	if (!seriesPanel) {
-		console.error("Element series-panel not found");
-		throw new Error("series-panel is required");
-	}
+	// 确保 seriesPanel 存在
+	if (seriesPanel) {
+		// Function to check if the panel is visible
+		const isPanelVisible = () => {
+			const isScreenLg = window.matchMedia("(min-width: 1024px)").matches;
+			return (
+				(isScreenLg && seriesPanel.classList.contains("lg:block")) ||
+				(!isScreenLg && !seriesPanel.classList.contains("hidden"))
+			);
+		};
 
-	// Function to check if the panel is visible
-	const isPanelVisible = () => {
-		const isScreenLg = window.matchMedia("(min-width: 1024px)").matches; // Large screens
-		return (
-			(isScreenLg && seriesPanel.classList.contains("lg:block")) ||
-			(!isScreenLg && !seriesPanel.classList.contains("hidden"))
-		);
-	};
+		// Function to hide the panel
+		const hidePanel = () => {
+			seriesPanel.classList.add("opacity-0", "-translate-x-full");
+			setTimeout(() => {
+				seriesPanel.classList.remove("block", "lg:block");
+				seriesPanel.classList.add("hidden");
+			}, ANIMATION_DURATION);
+		};
 
-	// Function to hide the panel
-	const hidePanel = () => {
-		seriesPanel.classList.add("opacity-0", "-translate-x-full");
-		setTimeout(() => {
-			seriesPanel.classList.remove("block", "lg:block");
-			seriesPanel.classList.add("hidden");
-		}, ANIMATION_DURATION);
-	};
+		// Function to show the panel
+		const showPanel = () => {
+			seriesPanel.classList.remove("hidden");
+			seriesPanel.classList.add("block", "lg:block");
+			setTimeout(() => {
+				seriesPanel.classList.remove("opacity-0", "-translate-x-full");
+			}, 10);
+		};
 
-	// Function to show the panel
-	const showPanel = () => {
-		seriesPanel.classList.remove("hidden");
-		seriesPanel.classList.add("block", "lg:block");
-		setTimeout(() => {
-			seriesPanel.classList.remove("opacity-0", "-translate-x-full");
-		}, 10);
-	};
+		// Common event handler for both buttons
+		const togglePanel = () => {
+			if (isPanelVisible()) {
+				hidePanel();
+			} else {
+				showPanel();
+			}
+		};
 
-	// Common event handler for both buttons
-	const togglePanel = () => {
-		if (isPanelVisible()) {
-			hidePanel(); // If visible, hide it
-		} else {
-			showPanel(); // If hidden, show it
+		// Event handlers for both buttons
+		if (togglePanelBtn) {
+			togglePanelBtn.addEventListener("click", togglePanel);
 		}
-	};
 
-	// Event handlers for both buttons
-	if (togglePanelBtn) {
-		togglePanelBtn.addEventListener("click", togglePanel);
-	} else {
-		console.error("Element toggle-panel not found");
-	}
+		if (togglePanelMobileBtn) {
+			togglePanelMobileBtn.addEventListener("click", togglePanel);
+		}
 
-	if (togglePanelMobileBtn) {
-		togglePanelMobileBtn.addEventListener("click", togglePanel);
-	} else {
-		console.error("Element toggle-panel-mobile not found");
-	}
-
-	if (closePanelBtn) {
-		closePanelBtn.addEventListener("click", hidePanel);
-	} else {
-		console.error("Element close-panel not found");
+		if (closePanelBtn) {
+			closePanelBtn.addEventListener("click", hidePanel);
+		}
 	}
 </script>
 
