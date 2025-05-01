@@ -9,17 +9,17 @@ const posts = await getCollection("post");
 const series = await getCollection("series");
 
 // Находим серию по переданному `seriesId` указанному в посте
-const postsSeries = series.find((s: CollectionEntry<"series">) => s.id === seriesId);
+const postsSeries = series.find((s) => s.id === seriesId);
 if (!postsSeries) {
   	throw new Error(`Post(s) with Series ID '${seriesId}' not found.`);
 }
 // console.log("Post(s) Series:", postsSeries); // Debug. Логируем найденную серию
 
-let seriesPosts: CollectionEntry<"post">[] = [];
+let seriesPosts = [];
 if (seriesId) {
 	seriesPosts = posts
-		.filter((p: CollectionEntry<"post">) => p.data.seriesId === seriesId)
-		.sort((a: CollectionEntry<"post">, b: CollectionEntry<"post">) => (a.data.orderInSeries || 0) - (b.data.orderInSeries || 0));
+		.filter((p) => p.data.seriesId === seriesId)
+		.sort((a, b) => (a.data.orderInSeries || 0) - (b.data.orderInSeries || 0));
 }
 ---
 
@@ -58,7 +58,7 @@ if (seriesId) {
 				</a>
 
 				<ul class="mt-[1.0625rem] text-sm font-medium text-light">
-					{seriesPosts.map((p: CollectionEntry<"post">) => {
+					{seriesPosts.map((p) => {
 						const isActive = currentPath === `/posts/${p.id}/`;
 						return (
 							<li class={`px-4 flex items-center line-clamp-2 pt-1 pb-1 ${isActive ? "rounded-lg bg-color-100" : ""}`}>
