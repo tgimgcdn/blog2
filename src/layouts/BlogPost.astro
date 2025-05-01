@@ -67,7 +67,11 @@ const { headings } = await render(post);
 	-->
 
 	<!-- SeriesPanel is inserted into the named slot "sidebar" -->
-	{seriesId && (<SeriesPanel seriesId={seriesId} />)}
+	{seriesId && (
+		<div class="relative">
+			<SeriesPanel seriesId={seriesId} />
+		</div>
+	)}
 
 	<Masthead content={post} />
 	
