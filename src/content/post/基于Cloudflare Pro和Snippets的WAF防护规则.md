@@ -1,6 +1,6 @@
 ---
 title: "基于Cloudflare Pro和Snippets的WAF防护规则"
-description: "基于Cloudflare Pro和Snippets的WAF防护规则"
+description: "本文尝试分享一些基于Cloudflare Pro 以及 Snippets 的防护规则/配置/代码。在规则方面，尽可能做到精简。"
 publishDate: "2024-04-30"
 updatedDate: "2025-04-30"
 tags: ['Cloudflare', 'WAF','Snippets','安全']
@@ -8,8 +8,6 @@ author: "cmssky"
 ---
 
 # Cloudflare WAF 防护规则指南
-
-本文尝试分享一些基于Cloudflare Pro 以及 Snippets 的防护规则/配置/代码。在规则方面，尽可能做到精简。
 
 世界上不可能有两个一模一样的站点（就算内容、程序一样，流量也不可能完全一样），所以也不可能有适配所有网站的通用WAF规则。本文例子中的站点为虚构站点（`f47fb81b34.com`），该网站是使用了开源程序typecho搭建的个人博客，日流量2000 IP左右），以下规则是针对该站点的。
 
