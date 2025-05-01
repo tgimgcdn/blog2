@@ -57,10 +57,10 @@ const uniqueTags = Array.from(allTags);
 			id="custom-sidebar"
 			class="grid lg:block z-10 min-h-screen fixed top-16 md:top-20 left-0 w-72 shadow-[5px_0px_10px_rgba(0,0,0,0.05)] transition-all duration-300 ease-in-out"
 		>	
-			<!-- 向左的三角形 - 收起按钮 - 修正位置到侧边栏右侧 -->
+			<!-- 向左的三角形 - 收起按钮 - 与展开按钮位置相同 -->
 			<button
 				id="collapse-panel"
-				class="fixed z-20 top-20 left-[272px] h-8 w-8 flex items-center justify-center rounded-lg bg-accent-base/5 text-accent-base hover:bg-accent-base/10 shadow-md"
+				class="fixed z-20 top-20 left-0 h-8 w-8 flex items-center justify-center rounded-lg bg-accent-base/5 text-accent-base hover:bg-accent-base/10 border border-special-light shadow-md"
 				aria-label="Collapse Sidebar"
 			>
 				<Icon class="h-6 w-6" name="mdi:chevron-left" />
