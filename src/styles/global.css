@@ -338,7 +338,7 @@
 
 	/* Основной стиль для блока pre */
 	pre {
-		@apply bg-[var(--code-bg)] text-[var(--theme-text)] rounded-lg leading-loose m-0;
+		@apply bg-[var(--code-bg)] text-[var(--theme-text)] rounded-lg leading-loose m-0 relative;
 		/* @apply bg-[var(--code-bg)] text-[var(--theme-accent)] rounded-lg leading-loose m-0; */
 	}
 
@@ -347,13 +347,11 @@
 		@apply bg-[var(--code-inline-bg)] px-2 py-1 text-sm rounded-lg;
 	}
 
-	/* Стиль для кнопки копирования кода rehype-pretty-copy (кнопка реализована отдельно) */
-	/*
+	/* Стиль для кнопки копирования кода rehype-pretty-copy */
 	button.rehype-pretty-copy {
-		@apply absolute top-1 right-1 bg-transparent m-auto size-8 rounded-md p-1 backdrop-blur-none;
+		@apply fixed top-1 right-1 bg-transparent m-auto size-8 rounded-md p-1 backdrop-blur-none;
 		filter: brightness(var(--brightness)) saturate(0%);
 	}
-	*/
 }
 
 /* ПЕРЕПРОВЕРИТЬ !!! */
@@ -362,23 +360,4 @@
 	article mark {
 		@apply bg-transparent;
 	}
-}
-
-figure[data-rehype-pretty-code-figure] {
-	@apply relative;
-}
-
-figure[data-rehype-pretty-code-figure] pre {
-	@apply relative overflow-x-auto;
-}
-
-figure[data-rehype-pretty-code-figure] button {
-	@apply absolute top-2 right-2 z-10;
-	@apply p-2 rounded-md;
-	@apply bg-color-200 text-textColor;
-	@apply opacity-0 transition-opacity duration-200;
-}
-
-figure[data-rehype-pretty-code-figure]:hover button {
-	@apply opacity-100;
 }
