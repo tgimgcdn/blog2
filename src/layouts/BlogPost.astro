@@ -67,11 +67,7 @@ const { headings } = await render(post);
 	-->
 
 	<!-- SeriesPanel is inserted into the named slot "sidebar" -->
-	{seriesId && (
-		<div class="relative">
-			<SeriesPanel seriesId={seriesId} />
-		</div>
-	)}
+	{seriesId && (<SeriesPanel slot="sidebar" seriesId={seriesId} />)}
 
 	<Masthead content={post} />
 	
@@ -129,15 +125,15 @@ const { headings } = await render(post);
 
 	<!-- Series button for mobile screens -->
 	{seriesId && (
-		<button
+		<mobile-button
 			id="toggle-panel-mobile"
-			class="md:hidden fixed bottom-4 right-4 z-50 flex h-12 w-12 items-center justify-center rounded-lg bg-bgColor text-accent-base hover:text-bg-accent-base/90 shadow-[0px_10px_25px_rgba(0,0,0,0.15)] border border-special-lighter"
+			class="size-12 flex items-center justify-center block sm:hidden fixed bottom-4 shadow-[0px_10px_25px_rgba(0,0,0,0.15)] border border-special-lighter right-4 z-50 rounded-lg bg-bgColor text-accent-base hover:text-bg-accent-base/90"
 			aria-label="Toggle Series Panel"
 		>
 			<span class="absolute inset-0 rounded-lg flex items-center justify-center bg-special-light hover:text-accent-base/90">
-				<Icon class="h-6 w-6" name="solar:notes-bold"/>
+				<Icon class="size-8" name="solar:notes-bold"/>
 			</span>
-		</button>
+		</mobile-button>
 	)}
 
 	<!-- NEEDS IMPROVEMENT!!! -->
