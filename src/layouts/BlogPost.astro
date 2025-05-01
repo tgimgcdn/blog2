@@ -70,7 +70,7 @@ const { headings } = await render(post);
 	<div slot="sidebar">
 		<aside
 			id="custom-sidebar"
-			class="grid lg:block z-40 min-h-screen fixed lg:relative shadow-[5px_0px_10px_rgba(0,0,0,0.05)] transition-all duration-300 ease-in-out bg-bgColor"
+			class="grid lg:block z-40 min-h-screen fixed overflow-y-auto max-h-screen shadow-[5px_0px_10px_rgba(0,0,0,0.05)] transition-all duration-300 ease-in-out bg-bgColor"
 		>	
 			<div class="fixed -z-10 top-0 w-screen md:w-72 md:min-w-72 md:max-w-72 h-screen bg-gradient-to-b from-orange-300 via-pink-300 to-purple-300 opacity-30 dark:opacity-0">
 			</div>
@@ -202,19 +202,15 @@ const { headings } = await render(post);
 	</div>
 
 	<!-- Series button for mobile screens -->
-	<!--
-	{seriesId && (
-		<mobile-button
-			id="toggle-panel-mobile"
-			class="size-12 flex items-center justify-center block sm:hidden fixed bottom-4 shadow-[0px_10px_25px_rgba(0,0,0,0.15)] border border-special-lighter right-4 z-50 rounded-lg bg-bgColor text-accent-base hover:text-bg-accent-base/90"
-			aria-label="Toggle Series Panel"
-		>
-			<span class="absolute inset-0 rounded-lg flex items-center justify-center bg-special-light hover:text-accent-base/90">
-				<Icon class="size-8" name="solar:notes-bold"/>
-			</span>
-		</mobile-button>
-	)}
-	-->
+	<mobile-button
+		id="toggle-panel-mobile"
+		class="size-12 flex items-center justify-center block sm:hidden fixed bottom-4 shadow-[0px_10px_25px_rgba(0,0,0,0.15)] border border-special-lighter right-20 z-50 rounded-lg bg-bgColor text-accent-base hover:text-bg-accent-base/90"
+		aria-label="Toggle Sidebar"
+	>
+		<span class="absolute inset-0 rounded-lg flex items-center justify-center bg-special-light hover:text-accent-base/90">
+			<Icon class="size-8" name="solar:notes-bold"/>
+		</span>
+	</mobile-button>
 
 	<!-- NEEDS IMPROVEMENT!!! -->
 	<!-- Table of Contents button for mobile screens -->
@@ -238,21 +234,23 @@ const { headings } = await render(post);
 	// Wait for the content to fully load
 	document.addEventListener("DOMContentLoaded", () => {
 		// 侧边栏功能
-		const sidebar = document.getElementById("custom-sidebar");
+		const customSidebar = document.getElementById("custom-sidebar");
 		const closePanel = document.getElementById("close-panel");
 		const togglePanelMobileBtn = document.getElementById("toggle-panel-mobile");
 		
-		if (sidebar && closePanel) {
+		if (customSidebar && closePanel) {
 			// 关闭按钮功能
 			closePanel.addEventListener('click', () => {
-				sidebar.classList.add('hidden');
+				customSidebar.classList.add('hidden');
+				console.log("关闭侧边栏");
 			});
 		}
 		
 		// 添加移动端侧边栏切换按钮功能（如果按钮存在）
-		if (togglePanelMobileBtn && sidebar) {
+		if (togglePanelMobileBtn && customSidebar) {
 			togglePanelMobileBtn.addEventListener('click', () => {
-				sidebar.classList.toggle('hidden');
+				customSidebar.classList.toggle('hidden');
+				console.log("切换侧边栏");
 			});
 		}
 
@@ -492,29 +490,69 @@ const { headings } = await render(post);
 -->
 
 <script>
-	// 移动端目录切换
-	const toggleTocMobile = document.getElementById('toggle-toc-mobile');
-	const tocPanel = document.getElementById('toc-panel');
-	
-	if (toggleTocMobile && tocPanel) {
-		toggleTocMobile.addEventListener('click', () => {
-			tocPanel.classList.toggle('hidden');
-		});
-	}
-
-	// 回到顶部按钮
-	const toTopButton = document.getElementById('to-top-button');
-	if (toTopButton) {
+	// 专门处理侧边栏和TOC功能
+	document.addEventListener("DOMContentLoaded", () => {
+		// -------- 侧边栏功能 --------
+		const customSidebar = document.getElementById("custom-sidebar");
+		const closeBtn = document.getElementById("close-panel");
+		const toggleBtn = document.getElementById("toggle-panel-mobile");
+		
+		// 监听滚动事件，确保侧边栏跟随滚动
 		window.addEventListener('scroll', () => {
-			if (window.scrollY > 300) {
-				toTopButton.setAttribute('data-show', 'true');
-			} else {
-				toTopButton.setAttribute('data-show', 'false');
+			if (customSidebar) {
+				// 获取滚动位置
+				const scrollTop = window.scrollY;
+				
+				// 计算侧边栏顶部位置，确保不超过顶部
+				const topPosition = scrollTop > 0 ? Math.max(0, 0) : 0;
+				
+				// 设置侧边栏位置
+				customSidebar.style.top = `${topPosition}px`;
 			}
 		});
-
-		toTopButton.addEventListener('click', () => {
-			window.scrollTo({ top: 0, behavior: 'smooth' });
-		});
-	}
+		
+		// 关闭按钮功能
+		if (closeBtn && customSidebar) {
+			closeBtn.addEventListener('click', () => {
+				customSidebar.classList.add('hidden');
+				console.log("关闭侧边栏");
+			});
+		}
+		
+		// 切换按钮功能
+		if (toggleBtn && customSidebar) {
+			toggleBtn.addEventListener('click', () => {
+				customSidebar.classList.toggle('hidden');
+				console.log("切换侧边栏");
+			});
+		}
+		
+		// -------- 目录功能 --------
+		// 移动端目录切换
+		const toggleTocMobile = document.getElementById('toggle-toc-mobile');
+		const tocPanel = document.getElementById('toc-panel');
+		
+		if (toggleTocMobile && tocPanel) {
+			toggleTocMobile.addEventListener('click', () => {
+				tocPanel.classList.toggle('hidden');
+				console.log("切换目录");
+			});
+		}
+		
+		// 回到顶部按钮
+		const toTopButton = document.getElementById('to-top-button');
+		if (toTopButton) {
+			window.addEventListener('scroll', () => {
+				if (window.scrollY > 300) {
+					toTopButton.setAttribute('data-show', 'true');
+				} else {
+					toTopButton.setAttribute('data-show', 'false');
+				}
+			});
+			
+			toTopButton.addEventListener('click', () => {
+				window.scrollTo({ top: 0, behavior: 'smooth' });
+			});
+		}
+	});
 </script>
