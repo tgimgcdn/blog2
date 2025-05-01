@@ -67,7 +67,85 @@ const { headings } = await render(post);
 	-->
 
 	<!-- SeriesPanel is inserted into the named slot "sidebar" -->
-	{seriesId && (<SeriesPanel slot="sidebar" seriesId={seriesId} />)}
+	<div slot="sidebar">
+		<aside
+			id="custom-sidebar"
+			class="grid lg:block z-40 min-h-screen fixed lg:relative shadow-[5px_0px_10px_rgba(0,0,0,0.05)] transition-all duration-300 ease-in-out bg-bgColor"
+		>	
+			<div class="fixed -z-10 top-0 w-screen md:w-72 md:min-w-72 md:max-w-72 h-screen bg-gradient-to-b from-orange-300 via-pink-300 to-purple-300 opacity-30 dark:opacity-0">
+			</div>
+			
+			<div class="flex h-full flex-col px-8 pt-4 md:pt-8 w-screen md:w-72 md:min-w-72 md:max-w-72 bg-accent-base/5 border-r border-special-light">
+				<div class="flex gap-x-1">
+					<h4 class="flex items-center title mb-[4.5rem]">
+						Sidebar
+					</h4>
+				</div>
+				<button
+					id="close-panel"
+					class="absolute top-4 right-4 md:top-8 md:right-8 h-8 w-8 flex items-center justify-center rounded-lg bg-accent-base/5 text-accent-base hover:bg-accent-base/10"
+					aria-label="Close Sidebar"
+				>
+					<Icon class="h-6 w-6" name="hugeicons:cancel-01" />
+				</button>
+
+				<!-- 侧边栏模块 1: 最近文章 -->
+				<div class="mb-8">
+					<h5 class="font-semibold text-accent-base mb-2">Recent Posts</h5>
+					<ul class="text-sm font-medium text-light">
+						<li class="px-2 py-1 hover:bg-color-100 rounded-lg">
+							<a href="/posts/introducing-astro-citrus/" class="hover:text-accent-two">
+								Introducing Astro Citrus!
+							</a>
+						</li>
+						<li class="px-2 py-1 hover:bg-color-100 rounded-lg">
+							<a href="/posts/citrus-docs/setup/" class="hover:text-accent-two">
+								Setup Citrus
+							</a>
+						</li>
+						<li class="px-2 py-1 hover:bg-color-100 rounded-lg">
+							<a href="/posts/citrus-docs/themes/" class="hover:text-accent-two">
+								Flexible Theming System
+							</a>
+						</li>
+					</ul>
+				</div>
+
+				<!-- 侧边栏模块 2: 分类 -->
+				<div class="mb-8">
+					<h5 class="font-semibold text-accent-base mb-2">Categories</h5>
+					<ul class="text-sm font-medium text-light">
+						<li class="px-2 py-1 hover:bg-color-100 rounded-lg">
+							<a href="/category/tutorials/" class="hover:text-accent-two">
+								Tutorials
+							</a>
+						</li>
+						<li class="px-2 py-1 hover:bg-color-100 rounded-lg">
+							<a href="/category/documentation/" class="hover:text-accent-two">
+								Documentation
+							</a>
+						</li>
+						<li class="px-2 py-1 hover:bg-color-100 rounded-lg">
+							<a href="/category/updates/" class="hover:text-accent-two">
+								Updates
+							</a>
+						</li>
+					</ul>
+				</div>
+
+				<!-- 侧边栏模块 3: 标签 -->
+				<div class="mb-8">
+					<h5 class="font-semibold text-accent-base mb-2">Tags</h5>
+					<div class="flex flex-wrap gap-2">
+						<a href="/tags/astro/" class="px-2 py-1 text-xs rounded-full bg-color-100 hover:bg-color-150 text-accent">astro</a>
+						<a href="/tags/javascript/" class="px-2 py-1 text-xs rounded-full bg-color-100 hover:bg-color-150 text-accent">javascript</a>
+						<a href="/tags/tailwind/" class="px-2 py-1 text-xs rounded-full bg-color-100 hover:bg-color-150 text-accent">tailwind</a>
+						<a href="/tags/markdown/" class="px-2 py-1 text-xs rounded-full bg-color-100 hover:bg-color-150 text-accent">markdown</a>
+					</div>
+				</div>
+			</div>
+		</aside>
+	</div>
 
 	<Masthead content={post} />
 	
@@ -159,6 +237,25 @@ const { headings } = await render(post);
 <script>
 	// Wait for the content to fully load
 	document.addEventListener("DOMContentLoaded", () => {
+		// 侧边栏功能
+		const sidebar = document.getElementById("custom-sidebar");
+		const closePanel = document.getElementById("close-panel");
+		const togglePanelMobileBtn = document.getElementById("toggle-panel-mobile");
+		
+		if (sidebar && closePanel) {
+			// 关闭按钮功能
+			closePanel.addEventListener('click', () => {
+				sidebar.classList.add('hidden');
+			});
+		}
+		
+		// 添加移动端侧边栏切换按钮功能（如果按钮存在）
+		if (togglePanelMobileBtn && sidebar) {
+			togglePanelMobileBtn.addEventListener('click', () => {
+				sidebar.classList.toggle('hidden');
+			});
+		}
+
 		// Find all pre blocks
 		document.querySelectorAll("pre").forEach((pre) => {
 			// Check if the button already exists
@@ -193,6 +290,13 @@ const { headings } = await render(post);
 				});
 			}
 		});
+
+		// 其他按钮功能
+		const buttonsPanel = document.getElementById("buttons-panel");
+		
+		if (buttonsPanel) {
+			buttonsPanel.classList.add("fixed");
+		}
 	});
 </script>
 
