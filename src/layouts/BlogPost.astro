@@ -34,6 +34,29 @@ const uniqueTags = Array.from(allTags);
 ---
 
 <BaseLayout meta={{ articleDate, description, ogImage: socialImage, title }}>
+	<!-- 防止侧边栏闪现的内联脚本 -->
+	<script is:inline>
+		// 在DOM渲染前检查侧边栏状态并应用
+		(function() {
+			const isSidebarCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
+			if (isSidebarCollapsed) {
+				// 创建样式元素
+				const style = document.createElement('style');
+				style.id = 'prevent-sidebar-flash';
+				style.textContent = '#custom-sidebar { display: none !important; } #expand-sidebar { display: flex !important; }';
+				document.head.appendChild(style);
+				
+				// 在页面完全加载后移除这个样式，让JavaScript接管控制
+				window.addEventListener('load', () => {
+					setTimeout(() => {
+						const styleElem = document.getElementById('prevent-sidebar-flash');
+						if (styleElem) styleElem.remove();
+					}, 100);
+				});
+			}
+		})();
+	</script>
+	
 	<div class="fixed left-0 top-0 z-10 flex h-16 md:h-20 w-full bg-bgColor overflow-hidden">
 		<!-- Background 
 			TODO: This approach is not optimal and requires improvements. 
