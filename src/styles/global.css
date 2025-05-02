@@ -7,6 +7,7 @@
 figure[data-rehype-pretty-code-figure] pre code,
 pre code {
 	counter-reset: line;
+	position: relative;
 }
 
 /* 为每行代码添加行号 */
@@ -15,19 +16,22 @@ pre code[data-line-numbers] > [data-line]::before {
 	counter-increment: line;
 	content: counter(line);
 	display: inline-block;
-	width: 1.5rem;
+	width: 2rem;
 	margin-right: 1rem;
 	text-align: right;
 	color: rgba(115, 138, 148, 0.6);
+	position: absolute;
+	left: 0;
+	padding-left: 0.5rem;
 }
 
 /* 调整行内间距和高度 */
 figure[data-rehype-pretty-code-figure] code > [data-line],
 pre code > [data-line] {
-	padding-left: 1rem;
+	padding-left: 3rem;
 	min-height: 1.5rem;
-	display: flex;
-	align-items: center;
+	display: block;
+	position: relative;
 }
 
 @font-face {
