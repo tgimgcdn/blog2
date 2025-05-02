@@ -113,8 +113,8 @@ const uniqueTags = Array.from(allTags);
 	</div>
 
 	<!-- 内容区域 - 文章网格 -->
-	<div class="container mx-auto py-8 min-h-screen flex flex-col h-full animate-content-appear" style="margin-top: -5.5rem">
-		<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 flex-grow">
+	<div class="container mx-auto py-8 min-h-screen flex flex-col h-full animate-content-appear px-4 md:px-8" style="margin-top: -5.5rem">
+		<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 flex-grow max-w-4xl mx-auto">
 			{
 				sortedPosts.map((post) => {
 					// 从文件路径中提取文件名作为slug
