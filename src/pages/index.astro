@@ -4,15 +4,40 @@ import { Icon } from "astro-icon/components";
 import { getCollection, type CollectionEntry } from "astro:content";
 import { getFormattedDate } from "@/utils/date";
 
-// 获取分页参数
-const { page = 1 } = Astro.url.searchParams;
-const currentPage = parseInt(page.toString()) || 1;
+// 获取分页参数 - 多种方式尝试获取当前页码
+let currentPage = 1;
+try {
+	// 方法1: 直接从URL对象获取
+	const url = new URL(Astro.request.url);
+	const pageParam = url.searchParams.get('page');
+	if (pageParam && !isNaN(parseInt(pageParam))) {
+		currentPage = parseInt(pageParam);
+	}
+} catch (error) {
+	console.error('URL参数解析错误:', error);
+	// 回退到方法2: 尝试从Astro对象获取
+	try {
+		if (Astro.url.searchParams.has('page')) {
+			const pageParam = Astro.url.searchParams.get('page');
+			if (pageParam && !isNaN(parseInt(pageParam.toString()))) {
+				currentPage = parseInt(pageParam.toString());
+			}
+		}
+	} catch (e) {
+		console.error('Astro参数解析错误:', e);
+	}
+}
+
 const articlesPerPage = 9;
 
 // 获取所有文章（包括子文件夹，但排除local-gitignore文件夹）
 const allPosts = await getCollection("post", ({ id }) => {
-	return !id.startsWith("local-gitignore/");
+	// 检查ID的任何部分是否包含local-gitignore
+	return !id.includes("local-gitignore");
 });
+
+// 日志输出方便调试
+console.log(`当前页码: ${currentPage}, URL: ${Astro.request.url}`);
 
 // 计算分页信息
 const totalArticles = allPosts.length;
@@ -264,8 +289,8 @@ const uniqueTags = Array.from(allTags);
 				<div class="flex space-x-2">
 					{currentPage > 1 && (
 						<a 
-							href={`/?page=${currentPage - 1}`} 
-							class="px-4 py-2 rounded-md bg-accent-base/10 hover:bg-accent-base/20 text-accent-base transition-colors"
+							href={`/?page=${currentPage - 1}`}
+							class="pagination-link px-4 py-2 rounded-md bg-accent-base/10 hover:bg-accent-base/20 text-accent-base transition-colors"
 						>
 							<Icon class="h-5 w-5" name="mdi:chevron-left" />
 						</a>
@@ -276,7 +301,7 @@ const uniqueTags = Array.from(allTags);
 						return (
 							<a 
 								href={`/?page=${pageNum}`}
-								class={`px-4 py-2 rounded-md transition-colors ${
+								class={`pagination-link px-4 py-2 rounded-md transition-colors ${
 									currentPage === pageNum 
 										? "bg-accent-base text-white" 
 										: "bg-accent-base/10 hover:bg-accent-base/20 text-accent-base"
@@ -289,8 +314,8 @@ const uniqueTags = Array.from(allTags);
 					
 					{currentPage < totalPages && (
 						<a 
-							href={`/?page=${currentPage + 1}`} 
-							class="px-4 py-2 rounded-md bg-accent-base/10 hover:bg-accent-base/20 text-accent-base transition-colors"
+							href={`/?page=${currentPage + 1}`}
+							class="pagination-link px-4 py-2 rounded-md bg-accent-base/10 hover:bg-accent-base/20 text-accent-base transition-colors"
 						>
 							<Icon class="h-5 w-5" name="mdi:chevron-right" />
 						</a>
@@ -471,5 +496,36 @@ const uniqueTags = Array.from(allTags);
 		
 		// 窗口大小变化时重新调整
 		window.addEventListener('resize', adjustSidebarPosition);
+	});
+</script>
+
+<!-- 分页脚本 -->
+<script>
+	document.addEventListener('DOMContentLoaded', () => {
+		// 获取所有分页链接
+		const paginationLinks = document.querySelectorAll('.pagination-link');
+		
+		// 为每个链接添加点击处理
+		paginationLinks.forEach(link => {
+			link.addEventListener('click', (e) => {
+				e.preventDefault();
+				
+				// 获取目标页码
+				const href = link.getAttribute('href');
+				if (!href) return;
+				
+				// 提取页码参数
+				const url = new URL(href, window.location.origin);
+				const pageParam = url.searchParams.get('page');
+				if (!pageParam) return;
+				
+				// 构建新的URL
+				const newUrl = new URL(window.location.pathname, window.location.origin);
+				newUrl.searchParams.set('page', pageParam);
+				
+				// 页面跳转
+				window.location.href = newUrl.toString();
+			});
+		});
 	});
 </script>
