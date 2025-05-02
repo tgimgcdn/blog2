@@ -2,32 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/* 防止移动端出现水平滚动条 */
-html, body {
-	max-width: 100%;
-	overflow-x: hidden;
-}
-
-/* 移动端菜单项响应式处理 */
-@media (max-width: 640px) {
-	#main-header, 
-	#drawer, 
-	#nav-menu-mobile,
-	#main-navigation-menu {
-		max-width: 100vw;
-		overflow-x: hidden;
-	}
-	
-	#nav-menu-mobile a {
-		padding: 0.5rem 1rem;
-		width: auto;
-		max-width: 90vw;
-		white-space: nowrap;
-		overflow: hidden;
-		text-overflow: ellipsis;
-	}
-}
-
 /* 代码行号样式 */
 /* 为代码块添加行号容器样式 */
 figure[data-rehype-pretty-code-figure] pre code,
