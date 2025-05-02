@@ -17,12 +17,28 @@ const uniqueTags = Array.from(allTags);
 ---
 
 <PageLayout meta={{ title: "Home" }}>
-	<!-- 在首页添加侧边栏但隐藏收起/展开按钮 -->
+	<!-- 在首页隐藏收起/展开按钮的样式 -->
+	<style is:inline>
+		#collapse-panel, #expand-sidebar {
+			display: none !important;
+		}
+	</style>
+
+	<!-- 完全复制原有的侧边栏代码 -->
 	<div slot="sidebar">
 		<aside
 			id="custom-sidebar"
 			class="grid lg:block z-10 min-h-screen fixed top-16 md:top-20 left-0 w-72 shadow-[5px_0px_10px_rgba(0,0,0,0.05)] transition-all duration-300 ease-in-out"
 		>	
+			<!-- 向左的三角形 - 收起按钮 - 放在侧边栏右上角 -->
+			<button
+				id="collapse-panel"
+				class="absolute z-20 top-0 -right-0 h-8 w-8 flex items-center justify-center rounded-lg bg-accent-base/5 text-accent-base hover:bg-accent-base/10 border border-special-light shadow-md"
+				aria-label="Collapse Sidebar"
+			>
+				<Icon class="h-6 w-6" name="mdi:chevron-left" />
+			</button>
+			
 			<!-- 背景渐变效果 - 只在内容区域显示 -->
 			<div class="fixed -z-10 top-0 w-screen md:w-72 md:min-w-72 md:max-w-72 h-screen bg-gradient-to-b from-orange-300 via-pink-300 to-purple-300 opacity-30 dark:opacity-0">
 			</div>
@@ -100,9 +116,18 @@ const uniqueTags = Array.from(allTags);
 				<div class="pb-8"></div>
 			</div>
 		</aside>
+		
+		<!-- 折叠后的展开按钮 - 与侧边栏在相同位置 -->
+		<button
+			id="expand-sidebar"
+			class="fixed hidden z-20 top-20 left-0 h-8 w-8 bg-accent-base/5 hover:bg-accent-base/10 border border-special-light rounded-lg items-center justify-center shadow-md transition-all duration-300"
+			aria-label="Expand Sidebar"
+		>
+			<Icon class="h-6 w-6" name="mdi:chevron-right" />
+		</button>
 	</div>
 
-	<!-- 空白首页 - 准备重新设计 -->
+	<!-- 内容区域，保留左边距以避免被侧边栏遮挡 -->
 	<div class="container mx-auto py-8 ml-72">
 		<!-- 这里是空白的内容区域，可以根据需求重新设计 -->
 	</div>
