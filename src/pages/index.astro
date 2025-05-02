@@ -210,7 +210,7 @@ const uniqueTags = Array.from(allTags);
 	</div>
 
 	<!-- 内容区域 - 文章网格 -->
-	<div class="container mx-auto py-8 min-h-screen flex flex-col h-full" style="margin-top: -5.5rem">
+	<div class="container mx-auto py-8 min-h-screen flex flex-col h-full animate-content-appear" style="margin-top: -5.5rem">
 		<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 flex-grow">
 			{
 				sortedPosts.map((post) => {
@@ -505,3 +505,26 @@ const uniqueTags = Array.from(allTags);
 		});
 	});
 </script>
+
+<!-- 添加内容区域动画 -->
+<style>
+@keyframes contentAppear {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-content-appear {
+  animation: contentAppear 600ms ease-out 100ms forwards;
+  /* 动画持续时间: 600ms (比侧边栏的300ms慢) */
+  /* 延迟时间: 100ms */
+  /* 缓动函数: ease-out (更自然的减速效果) */
+  /* forwards: 保持动画结束状态 */
+  opacity: 0; /* 初始不可见 */
+}
+</style>
