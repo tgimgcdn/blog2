@@ -31,24 +31,7 @@ allPosts.forEach((postItem: CollectionEntry<"post">) => {
 
 // 将Set转换为数组
 const uniqueTags = Array.from(allTags);
-
-// 确定侧边栏的初始状态
-const sidebarCollapsed = false; // 默认展开
 ---
-
-<!-- 防止侧边栏闪现 - 页面渲染前执行 -->
-<script is:inline>
-	(function() {
-		// 在页面渲染之前立即执行检查localStorage状态
-		if (localStorage.getItem('sidebarCollapsed') === 'true') {
-			// 添加样式到head，确保DOM构建前就应用样式
-			document.write('<style>#custom-sidebar{display:none !important;}#expand-sidebar{display:flex !important;}</style>');
-		} else {
-			// 确保展开状态时向右箭头不显示
-			document.write('<style>#expand-sidebar{display:none !important;}</style>');
-		}
-	})();
-</script>
 
 <BaseLayout meta={{ articleDate, description, ogImage: socialImage, title }}>
 	<div class="fixed left-0 top-0 z-10 flex h-16 md:h-20 w-full bg-bgColor overflow-hidden">
@@ -74,10 +57,10 @@ const sidebarCollapsed = false; // 默认展开
 			id="custom-sidebar"
 			class="grid lg:block z-10 min-h-screen fixed top-16 md:top-20 left-0 w-72 shadow-[5px_0px_10px_rgba(0,0,0,0.05)] transition-all duration-300 ease-in-out"
 		>	
-			<!-- 收起按钮 - 修改位置和样式确保可见 -->
+			<!-- 向左的三角形 - 收起按钮 - 放在侧边栏右上角 -->
 			<button
 				id="collapse-panel"
-				class="absolute top-4 right-[-24px] h-8 w-8 bg-accent-base/10 hover:bg-accent-base/20 border border-special-light rounded-lg flex items-center justify-center shadow-md z-50"
+				class="absolute z-20 top-4 -right-4 h-8 w-8 flex items-center justify-center rounded-lg bg-accent-base/5 text-accent-base hover:bg-accent-base/10 border border-special-light shadow-md"
 				aria-label="Collapse Sidebar"
 			>
 				<Icon class="h-6 w-6" name="mdi:chevron-left" />
@@ -164,7 +147,7 @@ const sidebarCollapsed = false; // 默认展开
 		<!-- 折叠后的展开按钮 - 与侧边栏在相同位置 -->
 		<button
 			id="expand-sidebar"
-			class="fixed z-20 top-20 left-0 h-8 w-8 bg-accent-base/5 hover:bg-accent-base/10 border border-special-light rounded-lg flex items-center justify-center shadow-md transition-all duration-300"
+			class="fixed hidden z-20 top-20 left-0 h-8 w-8 bg-accent-base/5 hover:bg-accent-base/10 border border-special-light rounded-lg items-center justify-center shadow-md transition-all duration-300"
 			aria-label="Expand Sidebar"
 		>
 			<Icon class="h-6 w-6" name="mdi:chevron-right" />
@@ -226,32 +209,6 @@ const sidebarCollapsed = false; // 默认展开
 	</div>
 </BaseLayout>
 
-<!-- 全局侧边栏状态管理 - 确保页面间跳转后仍然能够正确显示/隐藏侧边栏 -->
-<script is:inline>
-  (function() {
-    // 当DOM加载完成后执行
-    document.addEventListener('DOMContentLoaded', function() {
-      const sidebar = document.getElementById('custom-sidebar');
-      const expandBtn = document.getElementById('expand-sidebar');
-      const collapseBtn = document.getElementById('collapse-panel');
-
-      // 检查localStorage中的状态值
-      const isSidebarCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
-
-      // 根据localStorage的值设置初始状态
-      if (isSidebarCollapsed) {
-        if (sidebar) sidebar.style.display = 'none';
-        if (expandBtn) expandBtn.style.display = 'flex';
-      } else {
-        if (sidebar) sidebar.style.display = 'grid';
-        if (expandBtn) expandBtn.style.display = 'none';
-        // 确保折叠按钮可见
-        if (collapseBtn) collapseBtn.style.display = 'flex';
-      }
-    });
-  })();
-</script>
-
 <!-- Copy code button -->
 <script>
 	// Wait for the content to fully load
@@ -277,6 +234,18 @@ const sidebarCollapsed = false; // 默认展开
 			
 			// 移除相对定位类
 			sidebar.classList.remove('lg:relative');
+		}
+
+		// 检查localStorage中保存的侧边栏状态
+		const isSidebarCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
+		
+		// 如果之前是收起状态，则自动收起侧边栏
+		if (isSidebarCollapsed && sidebar && expandBtn) {
+			// 隐藏侧边栏
+			sidebar.style.display = 'none';
+			
+			// 显示展开按钮
+			expandBtn.style.display = 'flex';
 		}
 		
 		// 侧边栏收起/展开功能
@@ -321,13 +290,11 @@ const sidebarCollapsed = false; // 默认展开
 					// 如果侧边栏是隐藏的，则显示
 					sidebar.style.display = 'grid';
 					expandBtn.style.display = 'none';
-					localStorage.setItem('sidebarCollapsed', 'false');
 				} else {
 					// 如果侧边栏是可见的，则隐藏
 					sidebar.style.display = 'none';
 					// 显示展开按钮
 					expandBtn.style.display = 'flex';
-					localStorage.setItem('sidebarCollapsed', 'true');
 				}
 			});
 		}
