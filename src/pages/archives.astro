@@ -1,0 +1,154 @@
+---
+import PageLayout from "@/layouts/Base.astro";
+import { Icon } from "astro-icon/components";
+import { getCollection, type CollectionEntry } from "astro:content";
+import { getFormattedDate } from "@/utils/date";
+
+// 获取所有文章（排除local-gitignore文件夹）
+const allPosts = await getCollection("post", ({ id }) => {
+	return !id.includes("local-gitignore");
+});
+
+// 按发布日期从新到旧排序
+const sortedAllPosts = allPosts.sort((a: CollectionEntry<"post">, b: CollectionEntry<"post">) => 
+	b.data.publishDate.valueOf() - a.data.publishDate.valueOf()
+);
+
+// 将文章按年份和月份分组
+type PostsByYear = {
+  [year: string]: {
+    [month: string]: CollectionEntry<"post">[];
+    postCount: number;
+  };
+};
+
+const postsByYear: PostsByYear = {};
+
+sortedAllPosts.forEach((post) => {
+  const date = post.data.publishDate;
+  const year = date.getFullYear().toString();
+  const month = (date.getMonth() + 1).toString().padStart(2, "0");
+  
+  if (!postsByYear[year]) {
+    postsByYear[year] = { postCount: 0 };
+  }
+  
+  if (!postsByYear[year][month]) {
+    postsByYear[year][month] = [];
+  }
+  
+  postsByYear[year][month].push(post);
+  postsByYear[year].postCount += 1;
+});
+
+// 获取年份列表并按倒序排序
+const years = Object.keys(postsByYear).sort((a, b) => parseInt(b) - parseInt(a));
+
+// 月份名称映射
+const monthNames: { [key: string]: string } = {
+  "01": "01",
+  "02": "02",
+  "03": "03",
+  "04": "04",
+  "05": "05",
+  "06": "06",
+  "07": "07",
+  "08": "08",
+  "09": "09",
+  "10": "10",
+  "11": "11",
+  "12": "12"
+};
+---
+
+<PageLayout meta={{ title: "Archives" }}>
+  <main class="container mx-auto px-4 py-8 animate-content-appear">
+    <h1 class="text-3xl font-bold mb-8 text-accent-base text-center">归档</h1>
+    
+    <div class="max-w-3xl mx-auto">
+      {years.map((year) => (
+        <div class="mb-10">
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="text-2xl font-bold text-accent-base">{year}</h2>
+            <span class="text-light text-sm bg-accent-base/10 px-3 py-1 rounded-full">
+              {postsByYear[year].postCount}篇文章
+            </span>
+          </div>
+          
+          {Object.keys(postsByYear[year])
+            .filter(month => month !== "postCount")
+            .sort((a, b) => parseInt(b) - parseInt(a))
+            .map((month) => (
+              <div class="mb-6">
+                <h3 class="text-xl font-semibold mb-3 text-accent-base flex items-center">
+                  <span class="inline-block w-12 h-12 bg-accent-base/5 rounded-full mr-2 flex items-center justify-center border border-special-light">
+                    {monthNames[month]}
+                  </span>
+                </h3>
+                
+                <ul class="space-y-3 pl-16">
+                  {postsByYear[year][month].map((post) => {
+                    // 从文件路径中提取文件名作为slug
+                    const id = post.id;
+                    // 移除扩展名并将空格替换为连字符
+                    const slug = id.replace(/\.md(\.md)?$/, '').replace(/\s+/g, '-').toLowerCase();
+                    
+                    const day = post.data.publishDate.getDate().toString().padStart(2, "0");
+                    
+                    return (
+                      <li class="group">
+                        <div class="flex items-start">
+                          <time class="text-sm text-lighter block w-14 pt-1">
+                            {month}-{day}
+                          </time>
+                          <div class="flex-1">
+                            <a 
+                              href={`/posts/${slug}/`} 
+                              class="text-base font-medium text-accent-base hover:text-accent-two transition-colors"
+                            >
+                              {post.data.title}
+                            </a>
+                            
+                            {post.data.tags && post.data.tags.length > 0 && (
+                              <div class="mt-1.5 flex flex-wrap gap-1.5">
+                                {post.data.tags.map((tag: string) => (
+                                  <a 
+                                    href={`/tags/${tag.toLowerCase().replace(/\s+/g, '-')}/`}
+                                    class="text-xs px-2 py-0.5 bg-color-150 hover:bg-color-200 rounded-full text-accent transition-colors"
+                                  >
+                                    #{tag}
+                                  </a>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+            ))}
+        </div>
+      ))}
+    </div>
+  </main>
+</PageLayout>
+
+<style>
+@keyframes contentAppear {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-content-appear {
+  animation: contentAppear 600ms ease-out 100ms forwards;
+  opacity: 0;
+}
+</style> 
