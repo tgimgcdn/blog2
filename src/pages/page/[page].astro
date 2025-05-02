@@ -1,0 +1,492 @@
+import PageLayout from "@/layouts/Base.astro";
+import { Icon } from "astro-icon/components";
+import { getCollection, type CollectionEntry } from "astro:content";
+import { getFormattedDate } from "@/utils/date";
+
+// 从URL路径获取当前页码
+export async function getStaticPaths() {
+  const allPosts = await getCollection("post", ({ id }) => {
+    return !id.includes("local-gitignore");
+  });
+  
+  const articlesPerPage = 9;
+  const totalPages = Math.ceil(allPosts.length / articlesPerPage);
+  
+  // 生成除第一页外的所有页面
+  return Array.from({ length: totalPages - 1 }, (_, i) => {
+    return {
+      params: { page: String(i + 2) },
+      props: { page: i + 2 },
+    };
+  });
+}
+
+const { page } = Astro.props;
+const currentPage = page;
+const articlesPerPage = 9;
+
+// 获取所有文章（包括子文件夹，但排除local-gitignore文件夹）
+const allPosts = await getCollection("post", ({ id }) => {
+	// 检查ID的任何部分是否包含local-gitignore
+	return !id.includes("local-gitignore");
+});
+
+// 计算分页信息
+const totalArticles = allPosts.length;
+const totalPages = Math.ceil(totalArticles / articlesPerPage);
+
+// 按发布日期从新到旧排序
+const sortedAllPosts = allPosts.sort((a: CollectionEntry<"post">, b: CollectionEntry<"post">) => 
+	b.data.publishDate.valueOf() - a.data.publishDate.valueOf()
+);
+
+// 获取当前页的文章
+const startIndex = (currentPage - 1) * articlesPerPage;
+const endIndex = startIndex + articlesPerPage;
+const sortedPosts = sortedAllPosts.slice(startIndex, endIndex);
+
+// 提取所有文章的标签并去重
+const allTags = new Set<string>();
+allPosts.forEach((postItem: CollectionEntry<"post">) => {
+	if (postItem.data.tags && Array.isArray(postItem.data.tags)) {
+		postItem.data.tags.forEach((tag: string) => allTags.add(tag));
+	}
+});
+
+// 将Set转换为数组
+const uniqueTags = Array.from(allTags);
+
+<PageLayout meta={{ title: `Page ${currentPage}` }}>
+	<!-- 防止侧边栏闪现的内联脚本 -->
+	<script is:inline>
+		// 在DOM渲染前检查侧边栏状态并应用
+		(function() {
+			// 检测是否为移动设备
+			const isMobile = window.innerWidth < 768 || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+			
+			// 如果是移动设备，则禁用侧边栏功能
+			if (isMobile) {
+				// 创建样式元素，禁用侧边栏和相关按钮
+				const style = document.createElement('style');
+				style.id = 'mobile-disable-features';
+				style.textContent = `
+					#custom-sidebar { display: none !important; }
+					#expand-sidebar { display: none !important; }
+					#collapse-panel { display: none !important; }
+					#toggle-toc-mobile { display: none !important; }
+					
+					/* 阻止图片点击放大 */
+					.prose img { pointer-events: none !important; cursor: default !important; }
+				`;
+				document.head.appendChild(style);
+				
+				// 设置移动设备标记
+				localStorage.setItem('isMobileDevice', 'true');
+				return;
+			}
+			
+			// 桌面设备正常显示侧边栏，除非被收起
+			const isSidebarCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
+			if (isSidebarCollapsed) {
+				// 创建样式元素
+				const style = document.createElement('style');
+				style.id = 'prevent-sidebar-flash';
+				style.textContent = '#custom-sidebar { display: none !important; } #expand-sidebar { display: flex !important; }';
+				document.head.appendChild(style);
+				
+				// 在页面完全加载后移除这个样式，让JavaScript接管控制
+				window.addEventListener('load', () => {
+					setTimeout(() => {
+						const styleElem = document.getElementById('prevent-sidebar-flash');
+						if (styleElem) styleElem.remove();
+					}, 100);
+				});
+			}
+		})();
+	</script>
+	
+	<div class="fixed left-0 top-0 z-10 flex h-16 md:h-20 w-full bg-bgColor overflow-hidden">
+		<!-- Background 
+			TODO: This approach is not optimal and requires improvements. 
+  			- Too many absolutely positioned elements can affect performance. 
+  		-->	
+		<div class="absolute top-0 left-1/2 -ml-[50vw] w-screen min-h-screen pointer-events-none blur-2xl">
+			<div class="absolute top-[-90%] right-[25%] w-[75%] h-full bg-gradient-to-b from-blue-300 via-pink-300 to-transparent rounded-full opacity-40 dark:opacity-5"></div>
+			<div class="absolute top-[-90%] left-[25%] w-[75%] h-full bg-gradient-to-b from-blue-300 via-pink-300 to-transparent rounded-full opacity-40 dark:opacity-5"></div>
+			<div class="absolute top-[-85%] right-[25%] w-[55%] h-full bg-gradient-to-b from-purple-300 via-blue-300 to-transparent rounded-full opacity-40 dark:opacity-5"></div>
+			<div class="absolute top-[-85%] left-[25%] w-[55%] h-full bg-gradient-to-b from-indigo-300 via-orange-300 to-transparent rounded-full opacity-40 dark:opacity-5"></div>
+			<div class="absolute top-[-75%] left-[-25%] w-[65%] h-full bg-gradient-to-b from-blue-300 via-pink-300 to-transparent rounded-full opacity-30 dark:opacity-5"></div>
+			<div class="absolute top-[-75%] right-[-25%] w-[65%] h-full bg-gradient-to-b from-purple-300 via-blue-300 to-transparent rounded-full opacity-30 dark:opacity-5"></div>
+			<div class="absolute top-[-85%] left-[-30%] w-[85%] h-full bg-gradient-to-b from-indigo-300 via-orange-300 to-transparent rounded-full opacity-60 dark:opacity-5"></div>
+			<div class="absolute top-[-85%] right-[-30%] w-[85%] h-full bg-gradient-to-b from-orange-300 via-indigo-300 to-transparent rounded-full opacity-60 dark:opacity-5"></div>
+		</div>
+	</div>
+
+	<!-- SeriesPanel is inserted into the named slot "sidebar" -->
+	<div slot="sidebar">
+		<aside
+			id="custom-sidebar"
+			class="grid lg:block z-10 min-h-screen fixed top-16 md:top-20 left-0 w-72 shadow-[5px_0px_10px_rgba(0,0,0,0.05)] transition-all duration-300 ease-in-out"
+		>	
+			<!-- 向左的三角形 - 收起按钮 - 放在侧边栏右上角 -->
+			<button
+				id="collapse-panel"
+				class="absolute z-20 top-0 -right-0 h-8 w-8 flex items-center justify-center rounded-lg bg-accent-base/5 text-accent-base hover:bg-accent-base/10 border border-special-light shadow-md"
+				aria-label="Collapse Sidebar"
+			>
+				<Icon class="h-6 w-6" name="mdi:chevron-left" />
+			</button>
+			
+			<!-- 背景渐变效果 - 只在内容区域显示 -->
+			<div class="fixed -z-10 top-0 w-screen md:w-72 md:min-w-72 md:max-w-72 h-screen bg-gradient-to-b from-orange-300 via-pink-300 to-purple-300 opacity-30 dark:opacity-0">
+			</div>
+			
+			<!-- 侧边栏内容区 - 确保背景色跟随主题 -->
+			<div class="flex h-full min-h-screen flex-col px-8 pt-4 md:pt-8 w-screen md:w-72 md:min-w-72 md:max-w-72 bg-accent-base/5 border-r border-special-light">
+				<!-- 侧边栏模块 1: 推荐文章 -->
+				<div class="mb-6 bg-accent-base/10 rounded-lg border-2 border-special-light p-4 shadow-md">
+					<h5 class="font-semibold text-accent-base mb-2">Recommended Posts</h5>
+					<ul id="recommended-posts" class="text-sm font-medium text-light">
+						<li class="px-2 py-1 hover:bg-accent-base/5 rounded-lg">
+							<a href="/posts/post-without-tags/" class="hover:text-accent-two">
+								A post without tags
+							</a>
+						</li>
+						<li class="px-2 py-1 hover:bg-accent-base/5 rounded-lg">
+							<a href="/posts/example-of-60-chars-master-header-and-various-headings/" class="hover:text-accent-two">
+								Example of 60 chars Master Header and other Various Headings
+							</a>
+						</li>
+						<li class="px-2 py-1 hover:bg-accent-base/5 rounded-lg">
+							<a href="/posts/post-without-content/" class="hover:text-accent-two">
+								This post doesn't have any content
+							</a>
+						</li>
+						<li class="px-2 py-1 hover:bg-accent-base/5 rounded-lg">
+							<a href="/posts/fifth-post/" class="hover:text-accent-two">
+								Fifth Post
+							</a>
+						</li>
+						<li class="px-2 py-1 hover:bg-accent-base/5 rounded-lg">
+							<a href="/posts/fourth-post/" class="hover:text-accent-two">
+								Fourth Post
+							</a>
+						</li>
+						<li class="px-2 py-1 hover:bg-accent-base/5 rounded-lg">
+							<a href="/posts/first-post/" class="hover:text-accent-two">
+								First Post
+							</a>
+						</li>
+					</ul>
+				</div>
+
+				<!-- 侧边栏模块 2: 分类 -->
+				<div class="mb-6 bg-accent-base/10 rounded-lg border-2 border-special-light p-4 shadow-md">
+					<h5 class="font-semibold text-accent-base mb-2">Categories</h5>
+					<ul class="text-sm font-medium text-light">
+						<li class="px-2 py-1 hover:bg-accent-base/5 rounded-lg">
+							<a href="/category/tutorials/" class="hover:text-accent-two">
+								Tutorials
+							</a>
+						</li>
+						<li class="px-2 py-1 hover:bg-accent-base/5 rounded-lg">
+							<a href="/category/documentation/" class="hover:text-accent-two">
+								Documentation
+							</a>
+						</li>
+						<li class="px-2 py-1 hover:bg-accent-base/5 rounded-lg">
+							<a href="/category/updates/" class="hover:text-accent-two">
+								Updates
+							</a>
+						</li>
+					</ul>
+				</div>
+
+				<!-- 侧边栏模块 3: 标签 - 改为动态随机标签 -->
+				<div class="mb-6 bg-accent-base/10 rounded-lg border-2 border-special-light p-4 shadow-md">
+					<h5 class="font-semibold text-accent-base mb-2">Tags</h5>
+					<div id="random-tags" class="flex flex-wrap gap-2" data-tags={JSON.stringify(uniqueTags)}>
+						<!-- 标签将通过JavaScript动态生成和随机化 -->
+					</div>
+				</div>
+				
+				<!-- 添加一个底部间隔，确保内容不会太靠近底部 -->
+				<div class="pb-8"></div>
+			</div>
+		</aside>
+		
+		<!-- 折叠后的展开按钮 - 与侧边栏在相同位置 -->
+		<button
+			id="expand-sidebar"
+			class="fixed hidden z-20 top-20 left-0 h-8 w-8 bg-accent-base/5 hover:bg-accent-base/10 border border-special-light rounded-lg items-center justify-center shadow-md transition-all duration-300"
+			aria-label="Expand Sidebar"
+		>
+			<Icon class="h-6 w-6" name="mdi:chevron-right" />
+		</button>
+	</div>
+
+	<!-- 内容区域 - 文章网格 -->
+	<div class="container mx-auto py-8 min-h-screen flex flex-col h-full" style="margin-top: -5.5rem">
+		<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 flex-grow">
+			{
+				sortedPosts.map((post) => {
+					// 从文件路径中提取文件名作为slug
+					const id = post.id;
+					// 移除扩展名并将空格替换为连字符
+					const slug = id.replace(/\.md(\.md)?$/, '').replace(/\s+/g, '-').toLowerCase();
+					
+					return (
+						<article class="bg-accent-base/5 rounded-lg overflow-hidden border border-special-light shadow-md hover:shadow-lg transition-shadow">
+							<a href={`/posts/${slug}/`} class="block">
+								{post.data.ogImage && (
+									<div class="h-48 overflow-hidden">
+										<img 
+											src={post.data.ogImage} 
+											alt={post.data.title} 
+											class="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+										/>
+									</div>
+								)}
+								<div class="p-5">
+									<div class="flex justify-between items-center text-sm text-lighter mb-2">
+										<time datetime={post.data.publishDate.toISOString()}>
+											{getFormattedDate(post.data.publishDate)}
+										</time>
+										{post.data.category && (
+											<span class="text-xs px-2 py-1 rounded-full bg-accent-base/10 text-accent-base">
+												{post.data.category}
+											</span>
+										)}
+									</div>
+									<h2 class="text-xl font-semibold mb-2 text-accent-base hover:text-accent-two transition-colors">
+										{post.data.title}
+									</h2>
+									{post.data.description && (
+										<p class="text-sm line-clamp-3 text-light">
+											{post.data.description}
+										</p>
+									)}
+								</div>
+							</a>
+						</article>
+					);
+				})
+			}
+		</div>
+		
+		<!-- 分页控件 -->
+		{totalPages > 1 && (
+			<div class="flex justify-center items-center mt-10 mb-6">
+				<div class="flex space-x-2">
+					{currentPage > 1 && (
+						<a 
+							href={currentPage === 2 ? "/" : `/page/${currentPage - 1}`}
+							class="px-4 py-2 rounded-md bg-accent-base/10 hover:bg-accent-base/20 text-accent-base transition-colors"
+						>
+							<Icon class="h-5 w-5" name="mdi:chevron-left" />
+						</a>
+					)}
+					
+					{Array.from({ length: totalPages }).map((_, index) => {
+						const pageNum = index + 1;
+						const pageUrl = pageNum === 1 ? "/" : `/page/${pageNum}`;
+						return (
+							<a 
+								href={pageUrl}
+								class={`px-4 py-2 rounded-md transition-colors ${
+									currentPage === pageNum 
+										? "bg-accent-base text-white" 
+										: "bg-accent-base/10 hover:bg-accent-base/20 text-accent-base"
+								}`}
+							>
+								{pageNum}
+							</a>
+						);
+					})}
+					
+					{currentPage < totalPages && (
+						<a 
+							href={`/page/${currentPage + 1}`}
+							class="px-4 py-2 rounded-md bg-accent-base/10 hover:bg-accent-base/20 text-accent-base transition-colors"
+						>
+							<Icon class="h-5 w-5" name="mdi:chevron-right" />
+						</a>
+					)}
+				</div>
+			</div>
+		)}
+	</div>
+</PageLayout>
+
+<!-- 随机标签生成脚本 -->
+<script>
+	// 随机标签生成函数
+	function generateRandomTags() {
+		const tagsContainer = document.getElementById('random-tags');
+		if (!tagsContainer) return;
+
+		// 从data-tags属性获取所有可能的标签
+		let allTags: string[] = [];
+		try {
+			allTags = JSON.parse(tagsContainer.getAttribute('data-tags') || '[]');
+		} catch (e) {
+			console.error('Error parsing tags:', e);
+			return;
+		}
+
+		// 如果没有标签，显示提示信息
+		if (!allTags.length) {
+			tagsContainer.innerHTML = '<div class="text-lighter italic">No tags available</div>';
+			return;
+		}
+
+		// 随机打乱标签顺序 - 使用Fisher-Yates算法
+		for (let i = allTags.length - 1; i > 0; i--) {
+			const j = Math.floor(Math.random() * (i + 1));
+			[allTags[i], allTags[j]] = [allTags[j], allTags[i]];
+		}
+
+		// 选择前12个标签，或者如果标签总数少于12个，则全部显示
+		const randomTags = allTags.slice(0, Math.min(12, allTags.length));
+		
+		// 清空现有内容
+		tagsContainer.innerHTML = '';
+		
+		// 生成标签HTML
+		randomTags.forEach((tag: string) => {
+			const tagLink = document.createElement('a');
+			tagLink.href = `/tags/${tag.toLowerCase().replace(/\s+/g, '-')}/`;
+			tagLink.className = 'px-2 py-1 text-xs rounded-full bg-color-150 hover:bg-color-200 text-accent';
+			tagLink.textContent = tag;
+			tagsContainer.appendChild(tagLink);
+		});
+	}
+
+	// 页面加载时生成随机标签
+	document.addEventListener('DOMContentLoaded', generateRandomTags);
+</script>
+
+<!-- 侧边栏功能脚本 -->
+<script>
+	// Wait for the content to fully load
+	document.addEventListener("DOMContentLoaded", () => {
+		// 侧边栏功能
+		const sidebar = document.getElementById("custom-sidebar");
+		const collapseBtn = document.getElementById("collapse-panel");
+		const expandBtn = document.getElementById("expand-sidebar");
+		const togglePanelMobileBtn = document.getElementById("toggle-panel-mobile");
+		const mainContainer = document.getElementById("container");
+		
+		// 获取侧边栏初始位置信息
+		let sidebarPosition = {
+			top: '80px', // 默认值 (md:top-20)
+			left: '0px'  // 默认值
+		};
+		
+		if (sidebar) {
+			// 记录初始位置
+			const rect = sidebar.getBoundingClientRect();
+			sidebarPosition.top = `${rect.top}px`;
+			sidebarPosition.left = `${rect.left}px`;
+			
+			// 移除相对定位类
+			sidebar.classList.remove('lg:relative');
+		}
+
+		// 检查localStorage中保存的侧边栏状态
+		const isSidebarCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
+		
+		// 如果之前是收起状态，则自动收起侧边栏
+		if (isSidebarCollapsed && sidebar && expandBtn) {
+			// 隐藏侧边栏
+			sidebar.style.display = 'none';
+			
+			// 显示展开按钮
+			expandBtn.style.display = 'flex';
+		}
+		
+		// 侧边栏收起/展开功能
+		if (sidebar && collapseBtn && expandBtn) {
+			// 收起侧边栏
+			collapseBtn.addEventListener('click', () => {
+				if (sidebar && expandBtn) {
+					// 隐藏侧边栏
+					sidebar.style.display = 'none';
+					
+					// 调整展开按钮位置，与侧边栏上角位置一致
+					expandBtn.style.top = sidebarPosition.top;
+					expandBtn.style.left = sidebarPosition.left;
+					
+					// 显示展开按钮
+					expandBtn.style.display = 'flex';
+					
+					// 保存侧边栏收起状态到localStorage
+					localStorage.setItem('sidebarCollapsed', 'true');
+				}
+			});
+			
+			// 展开侧边栏
+			expandBtn.addEventListener('click', () => {
+				if (sidebar && expandBtn) {
+					// 显示侧边栏
+					sidebar.style.display = 'grid';
+					
+					// 隐藏展开按钮
+					expandBtn.style.display = 'none';
+					
+					// 保存侧边栏展开状态到localStorage
+					localStorage.setItem('sidebarCollapsed', 'false');
+				}
+			});
+		}
+		
+		// 添加移动端侧边栏切换按钮功能（如果按钮存在）
+		if (togglePanelMobileBtn && sidebar && expandBtn) {
+			togglePanelMobileBtn.addEventListener('click', () => {
+				if (sidebar.style.display === 'none') {
+					// 如果侧边栏是隐藏的，则显示
+					sidebar.style.display = 'grid';
+					expandBtn.style.display = 'none';
+				} else {
+					// 如果侧边栏是可见的，则隐藏
+					sidebar.style.display = 'none';
+					// 显示展开按钮
+					expandBtn.style.display = 'flex';
+				}
+			});
+		}
+
+		// 动态调整侧边栏位置，保持与内容区域的间距
+		function adjustSidebarPosition() {
+			if (sidebar && mainContainer && window.innerWidth >= 768) { // 仅在中等及以上屏幕执行
+				// 获取内容容器的位置信息
+				const containerRect = mainContainer.getBoundingClientRect();
+				const containerLeftEdge = containerRect.left;
+				
+				// 侧边栏宽度 (72px = 18rem)
+				const sidebarWidth = 288;
+				
+				// 计算侧边栏应该的left值：内容左边缘 - 间距 - 侧边栏宽度
+				const gap = 8;
+				const newLeft = Math.max(0, containerLeftEdge - gap - sidebarWidth);
+				
+				// 更新侧边栏位置
+				sidebar.style.left = `${newLeft}px`;
+				
+				// 更新保存的位置信息
+				sidebarPosition.left = `${newLeft}px`;
+				
+				// 如果展开按钮可见，同步更新其位置
+				if (expandBtn && expandBtn.style.display === 'flex') {
+					expandBtn.style.left = `${newLeft}px`;
+				}
+			}
+		}
+
+		// 初始调整
+		adjustSidebarPosition();
+		
+		// 窗口大小变化时重新调整
+		window.addEventListener('resize', adjustSidebarPosition);
+	});
+</script> 
