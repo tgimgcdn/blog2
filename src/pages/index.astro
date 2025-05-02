@@ -4,13 +4,29 @@ import { Icon } from "astro-icon/components";
 import { getCollection, type CollectionEntry } from "astro:content";
 import { getFormattedDate } from "@/utils/date";
 
-// 获取所有文章
-const allPosts = await getCollection("post");
+// 获取分页参数
+const { page = 1 } = Astro.url.searchParams;
+const currentPage = parseInt(page.toString()) || 1;
+const articlesPerPage = 9;
+
+// 获取所有文章（包括子文件夹，但排除local-gitignore文件夹）
+const allPosts = await getCollection("post", ({ id }) => {
+	return !id.startsWith("local-gitignore/");
+});
+
+// 计算分页信息
+const totalArticles = allPosts.length;
+const totalPages = Math.ceil(totalArticles / articlesPerPage);
 
 // 按发布日期从新到旧排序
-const sortedPosts = allPosts
-	.sort((a: CollectionEntry<"post">, b: CollectionEntry<"post">) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf())
-	.slice(0, 9); // 只获取最新的9篇文章
+const sortedAllPosts = allPosts.sort((a: CollectionEntry<"post">, b: CollectionEntry<"post">) => 
+	b.data.publishDate.valueOf() - a.data.publishDate.valueOf()
+);
+
+// 获取当前页的文章
+const startIndex = (currentPage - 1) * articlesPerPage;
+const endIndex = startIndex + articlesPerPage;
+const sortedPosts = sortedAllPosts.slice(startIndex, endIndex);
 
 // 提取所有文章的标签并去重
 const allTags = new Set<string>();
@@ -241,6 +257,47 @@ const uniqueTags = Array.from(allTags);
 				})
 			}
 		</div>
+		
+		<!-- 分页控件 -->
+		{totalPages > 1 && (
+			<div class="flex justify-center items-center mt-10 mb-6">
+				<div class="flex space-x-2">
+					{currentPage > 1 && (
+						<a 
+							href={`/?page=${currentPage - 1}`} 
+							class="px-4 py-2 rounded-md bg-accent-base/10 hover:bg-accent-base/20 text-accent-base transition-colors"
+						>
+							<Icon class="h-5 w-5" name="mdi:chevron-left" />
+						</a>
+					)}
+					
+					{Array.from({ length: totalPages }).map((_, index) => {
+						const pageNum = index + 1;
+						return (
+							<a 
+								href={`/?page=${pageNum}`}
+								class={`px-4 py-2 rounded-md transition-colors ${
+									currentPage === pageNum 
+										? "bg-accent-base text-white" 
+										: "bg-accent-base/10 hover:bg-accent-base/20 text-accent-base"
+								}`}
+							>
+								{pageNum}
+							</a>
+						);
+					})}
+					
+					{currentPage < totalPages && (
+						<a 
+							href={`/?page=${currentPage + 1}`} 
+							class="px-4 py-2 rounded-md bg-accent-base/10 hover:bg-accent-base/20 text-accent-base transition-colors"
+						>
+							<Icon class="h-5 w-5" name="mdi:chevron-right" />
+						</a>
+					)}
+				</div>
+			</div>
+		)}
 	</div>
 </PageLayout>
 
