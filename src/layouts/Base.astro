@@ -39,8 +39,12 @@ const {
 				color: rgba(115, 138, 148, 0.6) !important;
 			}
 			pre [data-line] {
-				display: flex !important;
-				padding-left: 1rem !important;
+				display: grid !important;
+				grid-template-columns: 3rem 1fr !important;
+			}
+			pre [data-line] > *:not(::before) {
+				grid-column: 2 !important;
+				padding-left: 2rem !important;
 			}
 		</style>
 	</head>
