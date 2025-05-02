@@ -8,8 +8,7 @@ figure[data-rehype-pretty-code-figure] pre code,
 pre code {
 	counter-reset: line;
 	position: relative;
-	display: grid;
-	grid-template-columns: 3rem 1fr; /* 行号区域固定宽度3rem，内容区域自适应 */
+	display: block; /* 使用block而不是grid，更直接的布局 */
 	overflow-x: auto;
 }
 
@@ -19,45 +18,31 @@ pre code[data-line-numbers] > [data-line]::before {
 	counter-increment: line;
 	content: counter(line);
 	display: inline-block;
-	width: 2.5rem;
-	padding-right: 0.5rem;
-	margin-right: 0.5rem;
+	width: 3rem;
 	text-align: right;
+	padding-right: 1rem;
 	color: rgba(115, 138, 148, 0.6);
 	position: sticky;
 	left: 0;
 	background-color: var(--code-bg);
 	border-right: 1px solid rgba(115, 138, 148, 0.2);
-	z-index: 1;
+	user-select: none; /* 防止行号被选择 */
 }
 
 /* 调整行内间距和高度 */
 figure[data-rehype-pretty-code-figure] code > [data-line],
 pre code > [data-line] {
+	display: block;
 	min-height: 1.5rem;
-	display: grid;
-	grid-template-columns: subgrid;
-	grid-column: 1 / -1;
+	padding-left: 3rem; /* 确保代码内容从行号区域之后开始 */
 	position: relative;
 }
 
-/* 确保行号垂直对齐 */
-figure[data-rehype-pretty-code-figure] code[data-line-numbers] > [data-line]::before,
-pre code[data-line-numbers] > [data-line]::before {
-	position: absolute;
-	left: 0;
-	top: 0;
-	height: 100%;
-	display: flex;
-	align-items: center;
-	justify-content: flex-end;
-}
-
-/* 调整代码内容的位置 - 确保内容只在第二列 */
-figure[data-rehype-pretty-code-figure] code[data-line-numbers] > [data-line] > *:not(::before),
-pre code[data-line-numbers] > [data-line] > *:not(::before) {
-	grid-column: 2;
-	margin-left: 0.5rem;
+/* 重要：设置内容块，防止内容侵入行号 */
+figure[data-rehype-pretty-code-figure] code > [data-line] > span,
+pre code > [data-line] > span {
+	display: inline-block;
+	margin-left: 1rem; /* 确保与行号有明确间隔 */
 }
 
 @font-face {
