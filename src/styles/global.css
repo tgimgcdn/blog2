@@ -345,19 +345,33 @@ pre code[data-line-numbers] > [data-line] > *:not(::before) {
 			/* Стиль для содержимого кода */
 			> code {
 				counter-reset: line;
+				display: grid !important;
+				grid-template-columns: 3rem 1fr !important;
 
 				/* Для блоков с номерами строк */
 				&[data-line-numbers] {
 					> [data-line]::before {
 						counter-increment: line;
 						content: counter(line);
-						@apply mr-4 inline-block w-4 text-right text-lightest;
+						@apply mr-4 inline-block w-8 text-right text-lightest;
+						position: sticky;
+						left: 0;
+						z-index: 2;
 					}
 				}
 
 				/* Для каждой строки в блоке кода */
 				> [data-line] {
-					@apply pl-0 pr-4 h-6 bg-transparent flex items-center; /* 修改px-4为pl-0 pr-4，移除左内边距 */
+					display: grid !important;
+					grid-template-columns: subgrid;
+					grid-column: 1 / -1;
+					@apply h-6 bg-transparent;
+				}
+				
+				/* 确保代码内容不会侵入行号区域 */
+				> [data-line] > *:not(::before) {
+					grid-column: 2 !important;
+					padding-left: 2rem !important;
 				}
 
 				/* Для выделенных строк */
