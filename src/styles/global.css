@@ -8,6 +8,9 @@ figure[data-rehype-pretty-code-figure] pre code,
 pre code {
 	counter-reset: line;
 	position: relative;
+	display: grid;
+	grid-template-columns: minmax(2.5rem, auto) 1fr;
+	overflow-x: auto;
 }
 
 /* 为每行代码添加行号 */
@@ -17,20 +20,24 @@ pre code[data-line-numbers] > [data-line]::before {
 	content: counter(line);
 	display: inline-block;
 	width: 2rem;
-	margin-right: 1rem;
+	padding-right: 0.5rem;
+	margin-right: 0.5rem;
 	text-align: right;
 	color: rgba(115, 138, 148, 0.6);
-	position: absolute;
+	position: sticky;
 	left: 0;
-	padding-left: 0.5rem;
+	background-color: var(--code-bg);
+	border-right: 1px solid rgba(115, 138, 148, 0.2);
 }
 
 /* 调整行内间距和高度 */
 figure[data-rehype-pretty-code-figure] code > [data-line],
 pre code > [data-line] {
-	padding-left: 3rem;
+	padding-left: 0.5rem;
 	min-height: 1.5rem;
-	display: block;
+	display: grid;
+	grid-template-columns: subgrid;
+	grid-column: 1 / -1;
 	position: relative;
 }
 
