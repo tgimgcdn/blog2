@@ -20,6 +20,18 @@ allPosts.forEach((postItem: CollectionEntry<"post">) => {
 const uniqueTags = Array.from(allTags);
 ---
 
+<!-- 自定义图标尺寸样式 -->
+<style>
+.icon-small {
+  font-size: 14px !important;
+  width: 14px !important;
+  height: 14px !important;
+  min-width: 14px !important;
+  min-height: 14px !important;
+  line-height: 14px !important;
+}
+</style>
+
 <!-- 防止侧边栏闪现的内联脚本 -->
 <script is:inline>
 	// 在DOM渲染前检查侧边栏状态并应用
@@ -77,11 +89,9 @@ const uniqueTags = Array.from(allTags);
 		id="collapse-panel"
 		class="absolute z-20 top-0 -right-0 h-8 w-8 flex items-center justify-center rounded-tr-none rounded-br-none rounded-lg bg-accent-base/5 text-accent-base hover:bg-accent-base/10 border border-special-light shadow-md"
 		aria-label="Collapse Sidebar"
+		style="font-size: 14px; line-height: 14px;"
 	>
-		<!-- 使用内联SVG替代Icon组件 -->
-		<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-			<polyline points="15 18 9 12 15 6"></polyline>
-		</svg>
+		<Icon class="icon-small" name="mdi:chevron-left" />
 	</button>
 	
 	<!-- 背景渐变效果 - 只在内容区域显示 -->
@@ -164,11 +174,9 @@ const uniqueTags = Array.from(allTags);
 	id="expand-sidebar"
 	class="fixed hidden z-20 top-20 left-0 h-8 w-8 bg-accent-base/5 hover:bg-accent-base/10 border border-special-light rounded-tl-none rounded-bl-none rounded-lg items-center justify-center shadow-md transition-all duration-300"
 	aria-label="Expand Sidebar"
+	style="font-size: 14px; line-height: 14px;"
 >
-	<!-- 使用内联SVG替代Icon组件 -->
-	<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-		<polyline points="9 18 15 12 9 6"></polyline>
-	</svg>
+	<Icon class="icon-small" name="mdi:chevron-right" />
 </button>
 
 <!-- 随机标签生成脚本 -->
@@ -217,6 +225,42 @@ const uniqueTags = Array.from(allTags);
 
 	// 页面加载时生成随机标签
 	document.addEventListener('DOMContentLoaded', generateRandomTags);
+</script>
+
+<!-- 修复图标大小的脚本 -->
+<script>
+	// 确保页面加载后图标大小正确
+	document.addEventListener('DOMContentLoaded', () => {
+		// 获取所有icon-small类的元素
+		const smallIcons = document.querySelectorAll('.icon-small');
+		
+		// 对每个元素应用样式
+		smallIcons.forEach(icon => {
+			if (icon instanceof HTMLElement) {
+				icon.style.cssText = `
+					width: 14px !important;
+					height: 14px !important;
+					min-width: 14px !important;
+					min-height: 14px !important;
+					font-size: 14px !important;
+					line-height: 14px !important;
+				`;
+				
+				// 检查是否有子元素，如SVG
+				const svg = icon.querySelector('svg');
+				if (svg instanceof SVGElement) {
+					svg.setAttribute('width', '14');
+					svg.setAttribute('height', '14');
+					svg.style.cssText = `
+						width: 14px !important;
+						height: 14px !important;
+						min-width: 14px !important;
+						min-height: 14px !important;
+					`;
+				}
+			}
+		});
+	});
 </script>
 
 <!-- 侧边栏功能脚本 -->
