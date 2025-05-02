@@ -371,7 +371,7 @@ pre code[data-line-numbers] > [data-line] > *:not(::before) {
 				/* 确保代码内容不会侵入行号区域 */
 				> [data-line] > *:not(::before) {
 					grid-column: 2 !important;
-					padding-left: 2rem !important;
+					padding-left: 0.5rem !important;
 				}
 
 				/* Для выделенных строк */
