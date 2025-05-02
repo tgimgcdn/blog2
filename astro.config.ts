@@ -23,6 +23,7 @@ import {
   transformerMetaHighlight,
   transformerNotationDiff,
 } from "@shikijs/transformers";
+import { getHighlighter } from "shiki";
 
 // https://astro.build/config
 export default defineConfig({
