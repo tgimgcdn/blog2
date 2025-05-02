@@ -23,6 +23,26 @@ const {
 	<head>
 		<BaseHead articleDate={articleDate} description={description} ogImage={ogImage} title={title} />
 		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/viewerjs@1.11.7/dist/viewer.min.css" />
+		
+		<!-- 内联样式确保代码行号显示 -->
+		<style is:inline>
+			pre code {
+				counter-reset: line !important;
+			}
+			pre [data-line]::before {
+				counter-increment: line !important;
+				content: counter(line) "" !important;
+				display: inline-block !important;
+				width: 2rem !important;
+				margin-right: 1rem !important;
+				text-align: right !important;
+				color: rgba(115, 138, 148, 0.6) !important;
+			}
+			pre [data-line] {
+				display: flex !important;
+				padding-left: 1rem !important;
+			}
+		</style>
 	</head>
 	<body class="min-w-4xl relative m-auto min-h-screen w-full max-w-6xl grow bg-bgColor">
 		<ThemeProvider />
@@ -212,6 +232,29 @@ const {
 				if (buttonsPanel) {
 					buttonsPanel.classList.add('fixed', 'z-50');
 				}
+			});
+
+			// 确保代码块有行号
+			document.addEventListener('DOMContentLoaded', () => {
+				// 查找所有代码块
+				const codeBlocks = document.querySelectorAll('pre code');
+				
+				// 为每个代码块添加行号属性
+				codeBlocks.forEach(codeBlock => {
+					if (!codeBlock.hasAttribute('data-line-numbers')) {
+						codeBlock.setAttribute('data-line-numbers', 'true');
+					}
+					
+					// 确保每行都有data-line属性
+					const content = codeBlock.innerHTML;
+					if (!content.includes('data-line')) {
+						const lines = content.split('\n');
+						const newContent = lines.map(line => 
+							`<span data-line>${line}</span>`
+						).join('\n');
+						codeBlock.innerHTML = newContent;
+					}
+				});
 			});
 		</script>
 	</body>
