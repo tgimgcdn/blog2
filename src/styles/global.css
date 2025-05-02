@@ -57,7 +57,7 @@ pre code[data-line-numbers] > [data-line]::before {
 figure[data-rehype-pretty-code-figure] code[data-line-numbers] > [data-line] > *:not(::before),
 pre code[data-line-numbers] > [data-line] > *:not(::before) {
 	grid-column: 2;
-	padding-left: 2rem;
+	padding-left: 2rem !important; /* 增加!important确保不被覆盖 */
 }
 
 @font-face {
@@ -357,7 +357,7 @@ pre code[data-line-numbers] > [data-line] > *:not(::before) {
 
 				/* Для каждой строки в блоке кода */
 				> [data-line] {
-					@apply px-4 h-6 bg-transparent flex items-center;
+					@apply pl-0 pr-4 h-6 bg-transparent flex items-center; /* 修改px-4为pl-0 pr-4，移除左内边距 */
 				}
 
 				/* Для выделенных строк */
