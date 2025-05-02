@@ -41,6 +41,24 @@ pre code > [data-line] {
 	position: relative;
 }
 
+/* 确保行号垂直对齐 */
+figure[data-rehype-pretty-code-figure] code[data-line-numbers] > [data-line]::before,
+pre code[data-line-numbers] > [data-line]::before {
+	position: absolute;
+	left: 0;
+	top: 0;
+	height: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+}
+
+/* 调整代码内容的位置 */
+figure[data-rehype-pretty-code-figure] code[data-line-numbers] > [data-line],
+pre code[data-line-numbers] > [data-line] {
+	padding-left: 2.5rem;
+}
+
 @font-face {
 	font-family: "SFProRounded";
 	src: url("../assets/fonts/SF-Pro-Rounded-Regular.latin.base.ttf") format("truetype");
