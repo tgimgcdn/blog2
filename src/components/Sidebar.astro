@@ -78,7 +78,7 @@ const uniqueTags = Array.from(allTags);
 		class="absolute z-20 top-0 -right-0 h-8 w-8 flex items-center justify-center rounded-tr-none rounded-br-none rounded-lg bg-accent-base/5 text-accent-base hover:bg-accent-base/10 border border-special-light shadow-md"
 		aria-label="Collapse Sidebar"
 	>
-		<Icon class="h-5 w-5" name="mdi:chevron-left" />
+		<Icon class="h-4 w-4" name="mdi:chevron-left" />
 	</button>
 	
 	<!-- 背景渐变效果 - 只在内容区域显示 -->
@@ -86,38 +86,38 @@ const uniqueTags = Array.from(allTags);
 	</div>
 	
 	<!-- 侧边栏内容区 - 确保背景色跟随主题 -->
-	<div class="flex flex-col px-2 pt-4 md:pt-8 w-screen md:w-72 md:min-w-72 md:max-w-72 bg-accent-base/5 border-r border-special-light">
+	<div class="flex flex-col px-1 pt-4 md:pt-8 w-screen md:w-72 md:min-w-72 md:max-w-72 bg-accent-base/5 border-r border-special-light">
 		<!-- 侧边栏模块 1: 推荐文章 -->
-		<div class="mb-6 bg-accent-base/10 rounded-lg border-2 border-special-light px-2 py-4 shadow-md w-full">
+		<div class="mb-6 bg-accent-base/10 rounded-lg border-2 border-special-light px-1 py-4 shadow-md w-full">
 			<h5 class="font-semibold text-accent-base mb-2 px-2">Recommended Posts</h5>
-			<ul id="recommended-posts" class="text-sm font-medium text-light">
-				<li class="px-2 py-1 hover:bg-accent-base/5 rounded-lg">
-					<a href="/posts/post-without-tags/" class="hover:text-accent-two">
+			<ul id="recommended-posts" class="text-sm font-medium text-light w-full">
+				<li class="w-full px-2 py-1 hover:bg-accent-base/5 rounded-lg">
+					<a href="/posts/post-without-tags/" class="hover:text-accent-two block w-full">
 						A post without tags
 					</a>
 				</li>
-				<li class="px-2 py-1 hover:bg-accent-base/5 rounded-lg">
-					<a href="/posts/example-of-60-chars-master-header-and-various-headings/" class="hover:text-accent-two">
+				<li class="w-full px-2 py-1 hover:bg-accent-base/5 rounded-lg">
+					<a href="/posts/example-of-60-chars-master-header-and-various-headings/" class="hover:text-accent-two block w-full">
 						Example of 60 chars Master Header and other Various Headings
 					</a>
 				</li>
-				<li class="px-2 py-1 hover:bg-accent-base/5 rounded-lg">
-					<a href="/posts/post-without-content/" class="hover:text-accent-two">
+				<li class="w-full px-2 py-1 hover:bg-accent-base/5 rounded-lg">
+					<a href="/posts/post-without-content/" class="hover:text-accent-two block w-full">
 						This post doesn't have any content
 					</a>
 				</li>
-				<li class="px-2 py-1 hover:bg-accent-base/5 rounded-lg">
-					<a href="/posts/fifth-post/" class="hover:text-accent-two">
+				<li class="w-full px-2 py-1 hover:bg-accent-base/5 rounded-lg">
+					<a href="/posts/fifth-post/" class="hover:text-accent-two block w-full">
 						Fifth Post
 					</a>
 				</li>
-				<li class="px-2 py-1 hover:bg-accent-base/5 rounded-lg">
-					<a href="/posts/fourth-post/" class="hover:text-accent-two">
+				<li class="w-full px-2 py-1 hover:bg-accent-base/5 rounded-lg">
+					<a href="/posts/fourth-post/" class="hover:text-accent-two block w-full">
 						Fourth Post
 					</a>
 				</li>
-				<li class="px-2 py-1 hover:bg-accent-base/5 rounded-lg">
-					<a href="/posts/first-post/" class="hover:text-accent-two">
+				<li class="w-full px-2 py-1 hover:bg-accent-base/5 rounded-lg">
+					<a href="/posts/first-post/" class="hover:text-accent-two block w-full">
 						First Post
 					</a>
 				</li>
@@ -125,21 +125,21 @@ const uniqueTags = Array.from(allTags);
 		</div>
 
 		<!-- 侧边栏模块 2: 分类 -->
-		<div class="mb-6 bg-accent-base/10 rounded-lg border-2 border-special-light px-2 py-4 shadow-md w-full">
+		<div class="mb-6 bg-accent-base/10 rounded-lg border-2 border-special-light px-1 py-4 shadow-md w-full">
 			<h5 class="font-semibold text-accent-base mb-2 px-2">Categories</h5>
-			<ul class="text-sm font-medium text-light">
-				<li class="px-2 py-1 hover:bg-accent-base/5 rounded-lg">
-					<a href="/category/tutorials/" class="hover:text-accent-two">
+			<ul class="text-sm font-medium text-light w-full">
+				<li class="w-full px-2 py-1 hover:bg-accent-base/5 rounded-lg">
+					<a href="/category/tutorials/" class="hover:text-accent-two block w-full">
 						Tutorials
 					</a>
 				</li>
-				<li class="px-2 py-1 hover:bg-accent-base/5 rounded-lg">
-					<a href="/category/documentation/" class="hover:text-accent-two">
+				<li class="w-full px-2 py-1 hover:bg-accent-base/5 rounded-lg">
+					<a href="/category/documentation/" class="hover:text-accent-two block w-full">
 						Documentation
 					</a>
 				</li>
-				<li class="px-2 py-1 hover:bg-accent-base/5 rounded-lg">
-					<a href="/category/updates/" class="hover:text-accent-two">
+				<li class="w-full px-2 py-1 hover:bg-accent-base/5 rounded-lg">
+					<a href="/category/updates/" class="hover:text-accent-two block w-full">
 						Updates
 					</a>
 				</li>
@@ -147,9 +147,9 @@ const uniqueTags = Array.from(allTags);
 		</div>
 
 		<!-- 侧边栏模块 3: 标签 - 改为动态随机标签 -->
-		<div class="mb-6 bg-accent-base/10 rounded-lg border-2 border-special-light px-2 py-4 shadow-md w-full">
+		<div class="mb-6 bg-accent-base/10 rounded-lg border-2 border-special-light px-1 py-4 shadow-md w-full">
 			<h5 class="font-semibold text-accent-base mb-2 px-2">Tags</h5>
-			<div id="random-tags" class="flex flex-wrap gap-2 px-2" data-tags={JSON.stringify(uniqueTags)}>
+			<div id="random-tags" class="flex flex-wrap gap-2 px-2 w-full" data-tags={JSON.stringify(uniqueTags)}>
 				<!-- 标签将通过JavaScript动态生成和随机化 -->
 			</div>
 		</div>
@@ -162,7 +162,7 @@ const uniqueTags = Array.from(allTags);
 	class="fixed hidden z-20 top-20 left-0 h-8 w-8 bg-accent-base/5 hover:bg-accent-base/10 border border-special-light rounded-tl-none rounded-bl-none rounded-lg items-center justify-center shadow-md transition-all duration-300"
 	aria-label="Expand Sidebar"
 >
-	<Icon class="h-5 w-5" name="mdi:chevron-right" />
+	<Icon class="h-4 w-4" name="mdi:chevron-right" />
 </button>
 
 <!-- 随机标签生成脚本 -->
