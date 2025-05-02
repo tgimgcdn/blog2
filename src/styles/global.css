@@ -9,7 +9,7 @@ pre code {
 	counter-reset: line;
 	position: relative;
 	display: grid;
-	grid-template-columns: minmax(2.5rem, auto) 1fr;
+	grid-template-columns: 2.5rem 1fr;
 	overflow-x: auto;
 }
 
