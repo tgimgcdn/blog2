@@ -3,6 +3,7 @@ import PageLayout from "@/layouts/Base.astro";
 import { Icon } from "astro-icon/components";
 import { getCollection, type CollectionEntry } from "astro:content";
 import { getFormattedDate } from "@/utils/date";
+import Sidebar from "@/components/Sidebar.astro";
 
 // 从URL路径获取当前页码
 export async function getStaticPaths() {
@@ -126,102 +127,7 @@ const uniqueTags = Array.from(allTags);
 
 	<!-- SeriesPanel is inserted into the named slot "sidebar" -->
 	<div slot="sidebar">
-		<aside
-			id="custom-sidebar"
-			class="grid lg:block z-10 fixed top-16 md:top-20 left-0 w-72 shadow-[5px_0px_10px_rgba(0,0,0,0.05)] transition-all duration-300 ease-in-out"
-		>	
-			<!-- 向左的三角形 - 收起按钮 - 放在侧边栏右上角 -->
-			<button
-				id="collapse-panel"
-				class="absolute z-20 top-0 -right-0 h-8 w-8 flex items-center justify-center rounded-tr-none rounded-br-none rounded-lg bg-accent-base/5 text-accent-base hover:bg-accent-base/10 border border-special-light shadow-md"
-				aria-label="Collapse Sidebar"
-			>
-				<Icon class="h-6 w-6" name="mdi:chevron-left" />
-			</button>
-			
-			<!-- 背景渐变效果 - 只在内容区域显示 -->
-			<div class="absolute -z-10 top-0 w-screen md:w-72 md:min-w-72 md:max-w-72 h-full bg-gradient-to-b from-orange-300 via-pink-300 to-purple-300 opacity-30 dark:opacity-0">
-			</div>
-			
-			<!-- 侧边栏内容区 - 确保背景色跟随主题 -->
-			<div class="flex flex-col px-8 pt-4 md:pt-8 w-screen md:w-72 md:min-w-72 md:max-w-72 bg-accent-base/5 border-r border-special-light">
-				<!-- 侧边栏模块 1: 推荐文章 -->
-				<div class="mb-6 bg-accent-base/10 rounded-lg border-2 border-special-light p-4 shadow-md">
-					<h5 class="font-semibold text-accent-base mb-2">Recommended Posts</h5>
-					<ul id="recommended-posts" class="text-sm font-medium text-light">
-						<li class="px-2 py-1 hover:bg-accent-base/5 rounded-lg">
-							<a href="/posts/post-without-tags/" class="hover:text-accent-two">
-								A post without tags
-							</a>
-						</li>
-						<li class="px-2 py-1 hover:bg-accent-base/5 rounded-lg">
-							<a href="/posts/example-of-60-chars-master-header-and-various-headings/" class="hover:text-accent-two">
-								Example of 60 chars Master Header and other Various Headings
-							</a>
-						</li>
-						<li class="px-2 py-1 hover:bg-accent-base/5 rounded-lg">
-							<a href="/posts/post-without-content/" class="hover:text-accent-two">
-								This post doesn't have any content
-							</a>
-						</li>
-						<li class="px-2 py-1 hover:bg-accent-base/5 rounded-lg">
-							<a href="/posts/fifth-post/" class="hover:text-accent-two">
-								Fifth Post
-							</a>
-						</li>
-						<li class="px-2 py-1 hover:bg-accent-base/5 rounded-lg">
-							<a href="/posts/fourth-post/" class="hover:text-accent-two">
-								Fourth Post
-							</a>
-						</li>
-						<li class="px-2 py-1 hover:bg-accent-base/5 rounded-lg">
-							<a href="/posts/first-post/" class="hover:text-accent-two">
-								First Post
-							</a>
-						</li>
-					</ul>
-				</div>
-
-				<!-- 侧边栏模块 2: 分类 -->
-				<div class="mb-6 bg-accent-base/10 rounded-lg border-2 border-special-light p-4 shadow-md">
-					<h5 class="font-semibold text-accent-base mb-2">Categories</h5>
-					<ul class="text-sm font-medium text-light">
-						<li class="px-2 py-1 hover:bg-accent-base/5 rounded-lg">
-							<a href="/category/tutorials/" class="hover:text-accent-two">
-								Tutorials
-							</a>
-						</li>
-						<li class="px-2 py-1 hover:bg-accent-base/5 rounded-lg">
-							<a href="/category/documentation/" class="hover:text-accent-two">
-								Documentation
-							</a>
-						</li>
-						<li class="px-2 py-1 hover:bg-accent-base/5 rounded-lg">
-							<a href="/category/updates/" class="hover:text-accent-two">
-								Updates
-							</a>
-						</li>
-					</ul>
-				</div>
-
-				<!-- 侧边栏模块 3: 标签 - 改为动态随机标签 -->
-				<div class="mb-6 bg-accent-base/10 rounded-lg border-2 border-special-light p-4 shadow-md">
-					<h5 class="font-semibold text-accent-base mb-2">Tags</h5>
-					<div id="random-tags" class="flex flex-wrap gap-2" data-tags={JSON.stringify(uniqueTags)}>
-						<!-- 标签将通过JavaScript动态生成和随机化 -->
-					</div>
-				</div>
-			</div>
-		</aside>
-		
-		<!-- 折叠后的展开按钮 - 与侧边栏在相同位置 -->
-		<button
-			id="expand-sidebar"
-			class="fixed hidden z-20 top-20 left-0 h-8 w-8 bg-accent-base/5 hover:bg-accent-base/10 border border-special-light rounded-tl-none rounded-bl-none rounded-lg items-center justify-center shadow-md transition-all duration-300"
-			aria-label="Expand Sidebar"
-		>
-			<Icon class="h-6 w-6" name="mdi:chevron-right" />
-		</button>
+		<Sidebar />
 	</div>
 
 	<!-- 内容区域 - 文章网格 -->
