@@ -1,434 +1,265 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+---
+import BaseHead from "@/components/BaseHead.astro";
+import SkipLink from "@/components/SkipLink.astro";
+import ThemeProvider from "@/components/ThemeProvider.astro";
+import Header from "@/components/layout/Header.astro";
+import Footer from "@/components/layout/Footer.astro";
+import { siteConfig } from "@/site.config";
+import type { SiteMeta } from "@/types";
 
-/* 代码行号样式 */
-/* 为代码块添加行号容器样式 */
-figure[data-rehype-pretty-code-figure] pre code,
-pre code {
-	counter-reset: line;
-	position: relative;
-	display: grid;
-	grid-template-columns: 3rem 1fr; /* 行号区域固定宽度3rem，内容区域自适应 */
-	overflow-x: auto;
+interface Props {
+	meta: SiteMeta;
 }
 
-/* 为每行代码添加行号 */
-figure[data-rehype-pretty-code-figure] code[data-line-numbers] > [data-line]::before,
-pre code[data-line-numbers] > [data-line]::before {
-	counter-increment: line;
-	content: counter(line);
-	display: inline-block;
-	width: 2.5rem;
-	padding-right: 0.5rem;
-	margin-right: 0.5rem;
-	text-align: right;
-	color: rgba(115, 138, 148, 0.6);
-	position: sticky;
-	left: 0;
-	background-color: var(--code-bg);
-	border-right: 1px solid rgba(115, 138, 148, 0.2);
-	z-index: 1;
-}
+const {
+	meta: { articleDate, description = siteConfig.description, ogImage, title },
+} = Astro.props;
+---
 
-/* 调整行内间距和高度 */
-figure[data-rehype-pretty-code-figure] code > [data-line],
-pre code > [data-line] {
-	min-height: 1.5rem;
-	display: grid;
-	grid-template-columns: subgrid;
-	grid-column: 1 / -1;
-	position: relative;
-}
-
-/* 确保行号垂直对齐 */
-figure[data-rehype-pretty-code-figure] code[data-line-numbers] > [data-line]::before,
-pre code[data-line-numbers] > [data-line]::before {
-	position: absolute;
-	left: 0;
-	top: 0;
-	height: 100%;
-	display: flex;
-	align-items: center;
-	justify-content: flex-end;
-}
-
-/* 调整代码内容的位置 - 确保内容只在第二列 - 简单的一行修复 */
-figure[data-rehype-pretty-code-figure] code[data-line-numbers] > [data-line] > *:not(::before),
-pre code[data-line-numbers] > [data-line] > *:not(::before) {
-	grid-column: 2;
-	padding-left: 2rem !important; /* 增加!important确保不被覆盖 */
-}
-
-@font-face {
-	font-family: "SFProRounded";
-	src: url("../assets/fonts/SF-Pro-Rounded-Regular.latin.base.ttf") format("truetype");
-	font-weight: 400;
-	font-style: normal;
-	/* font-display: swap; */
-}
-
-@font-face {
-	font-family: "SFProRounded";
-	src: url("../assets/fonts/SF-Pro-Rounded-Medium.latin.base.ttf") format("truetype");
-	font-weight: 500;
-	font-style: normal;
-	/* font-display: swap; */
-}
-
-@font-face {
-	font-family: "SFProRounded";
-	src: url("../assets/fonts/SF-Pro-Rounded-Semibold.latin.base.ttf") format("truetype");
-	font-weight: 600;
-	font-style: normal;
-	/* font-display: swap; */
-}
-
-@font-face {
-	font-family: "SFProRounded";
-	src: url("../assets/fonts/SF-Pro-Rounded-Bold.latin.base.ttf") format("truetype");
-	font-weight: 700;
-	font-style: normal;
-	/* font-display: swap; */
-}
-
-@font-face {
-	font-family: "SFProRounded";
-	src: url("../assets/fonts/SF-Pro-Rounded-Regular.latin.extend.ttf") format("truetype");
-	font-weight: 400;
-	font-style: normal;
-	/* font-display: swap; */
-}
-
-@font-face {
-	font-family: "SFProRounded";
-	src: url("../assets/fonts/SF-Pro-Rounded-Medium.latin.extend.ttf") format("truetype");
-	font-weight: 500;
-	font-style: normal;
-	/* font-display: swap; */
-}
-
-@font-face {
-	font-family: "SFProRounded";
-	src: url("../assets/fonts/SF-Pro-Rounded-Semibold.latin.extend.ttf") format("truetype");
-	font-weight: 600;
-	font-style: normal;
-	/* font-display: swap; */
-}
-
-@font-face {
-	font-family: "SFProRounded";
-	src: url("../assets/fonts/SF-Pro-Rounded-Bold.latin.extend.ttf") format("truetype");
-	font-weight: 700;
-	font-style: normal;
-	/* font-display: swap; */
-}
-
-@font-face {
-	font-family: "CascadiaCode";
-	src: url("../assets/fonts/CascadiaCode.ttf") format("truetype");
-	font-weight: 400;
-	font-style: normal;
-	font-display: swap;
-}
-
-@layer base {
-	:root,
-	:root[data-theme="light"] {
-		color-scheme: light;
-
-		/* Для того чтобы текст имел оттенок фона --fg-hue: var(--hue) и --bg-hue: var(--hue) */
-		/* Для того чтобы текст имел оттенок фона --fg-saturation: var(--saturation) и --bg-saturation: var(--saturation) */
+<html
+	class="overflow-x-hidden grid scroll-pt-20 scroll-smooth font-sans text-textColor text-xl md:text-base antialiased"
+	lang={siteConfig.lang}
+>
+	<head>
+		<BaseHead articleDate={articleDate} description={description} ogImage={ogImage} title={title} />
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/viewerjs@1.11.7/dist/viewer.min.css" />
 		
-		/*** ОСНОВНЫЕ ЦВЕТА (Базовый, фон, акценты, текст) ***/
-		/* Базовый цвет-оттенок темы */
-		--hue: 200deg; /* Общий базовый цвет-оттенок элементов темы */
-		--saturation: 10%; /* Общая базовая насыщенность элементов темы, 0% - нет оттенка цвета */
-		
-		/* Фон (background) */
-		--bg-hue: var(--hue); /* Цвет-оттенок фона */
-		--bg-saturation: var(--saturation); /* Насыщенность оттенка фона и некоторых др. элементов, 0% - нет оттенка */
-		--bg-brightness: 96%; /* Ярксть фона, 100% - абсолюнто белый */
-
-		/* Акценты */
-		--theme-accent-base: var(--bg-hue) 53% 27%; /* Основной акцентный цвет */
-		--theme-accent-one: var(--bg-hue) 53% 27%; /* Первый дополнительный акцентный цвет */
-		--theme-accent-two: 351deg 66% 48%; /* Второй дополнительный акцентный цвет */
-		
-		/* Вариант */ /* --theme-accent-two: 344deg 63% 45%; */
-		
-		/* Текст (foreground, цвет-яркость текста рассчитывается ниже на базе --theme-fg) */
-		--fg-hue: var(--hue); /* Общий цвет-оттенок для рассчета градаций цвета */
-		--fg-saturation: var(--saturation); /* Общая насыщенность для рассчета градаций цвета с оттенком, 0% - нет оттенка */
-		--fg-brightness: 9%; /* Яркость для рассчета градаций цвета с оттенком, 0% - начиная от абсолютно черного */
-		--theme-text: var(--theme-color-500); /* Цвет-яркость текста уже с адаптацией под цвет фона */ 
-
-		/*** ВТОРОСТЕПЕННЫЕ ЦВЕТА (Внешние ссылки, нейтральный акцент, цитаты) ***/
-		--theme-link: var(--hue) 97% 31%; /* Цвет внешних ссылок */
-		--theme-accent: var(--theme-color-600); /* Нейтральный акцент, рассчитывается ниже на базе --theme-fg */
-		--theme-quote: var(--theme-text); /* Цвет цитат */
-		
-		/*** ДОПОЛНИТЕЛЬНЫЕ ЦВЕТА ***/
-		--theme-lightest: var(--theme-color-350);
-		--theme-lighter: var(--theme-color-400);
-		--theme-light: var(--theme-color-450);
-		
-		/*** СПЕЦИАЛЬНЫЕ ДЛЯ КАЖДОЙ ТЕМЫ ЦВЕТА ***/
-		--theme-special-lightest: hsl(var(--hue), var(--saturation), 100%);
-		--theme-special-lighter: hsl(var(--hue), var(--saturation), 98%);
-		--theme-special-light: hsl(var(--theme-bg));
-		--theme-special: var(--theme-color-75);
-		
-		/* Подсветка синтаксиса rehype-pretty-code */
-		pre code span {
-			color: var(--shiki-light) !important;
-			font-style: var(--shiki-light-font-style) !important;
-			font-weight: var(--shiki-light-font-weight) !important;
-			text-decoration: var(--shiki-light-text-decoration) !important;
-		}
-	}
-
-	:root[data-theme="dark"] {
-		color-scheme: dark;
-
-		/* Для того чтобы текст имел оттенок фона --fg-hue: var(--hue) и --bg-hue: var(--hue) */
-		/* Для того чтобы текст имел оттенок фона --fg-saturation: var(--saturation) и --bg-saturation: var(--saturation) */
-		
-		/* --theme-bg: 200deg 93% 10%; /* DeepBlue */
-		/* --theme-bg: 190deg 86% 8%; /* DeepGreen */
-		/* --theme-bg: 237deg 22% 20%; */
-		/* --theme-accent-one: 355deg 61% 88%; /* LightRose */
-		/* --theme-accent-two: 200deg 61% 71%; /* LightBlue */
-
-		/*** ОСНОВНЫЕ ЦВЕТА (Базовый, фон, акценты, текст) ***/
-		/* Базовый цвет-оттенок темы */
-		--hue: 200deg; /* Общий базовый цвет-оттенок элементов темы */
-		--saturation: 53%; /* Общая базовая насыщенность элементов темы, 0% - нет оттенка цвета */
-
-		/* Фон (background) */
-		--bg-hue: var(--hue); /* Цвет-оттенок фона */
-		--bg-saturation: var(--saturation); /* Насыщенность оттенка фона и некоторых др. элементов, 0% - нет оттенка */
-		--bg-brightness: 15%; /* Ярксть фона, 0% - черный */
-		/* Вариант 204deg 51% 14% */
-		/* Вариант 210deg 25% 15% */
-
-		/* Акценты */
-		--theme-accent-base: var(--hue) 10% 85%; 
-		--theme-accent-one: 50deg 49% 80%; /* Первый дополнительный акцентный цвет */
-		--theme-accent-two: 50deg 72% 63%; /* 50deg 72% 63% */ /* Второй дополнительный акцентный цвет (был 45deg 80% 50%) */
-		/* --theme-accent-two: 0deg 75% 89%; */
-		/* --theme-accent-base: var(--hue) 97% 71%; */
-
-		/* Текст (foreground, цвет-яркость текста рассчитывается ниже на базе --theme-fg) */
-		--fg-hue: var(--hue); /* Общий цвет-оттенок для рассчета градаций цвета */
-		--fg-saturation: var(--saturation); /* Общая насыщенность для рассчета градаций цвета с оттенком, 0% - нет оттенка */
-		--fg-brightness: 98%; /* Яркость для рассчета градаций цвета с оттенком, 100% - начиная от абсолютно белого */
-		--theme-text: var(--theme-color-500); /* Цвет-яркость текста адаптированного под цвет фона */ 
-
-		/*** ВТОРОСТЕПЕННЫЕ ЦВЕТА (Внкшние ссылки, нейтральный акцент, цитаты) ***/
-		--theme-link: var(--hue) 61% 71%; /* Цвет внешних ссылок */
-		--theme-accent: var(--theme-color-600); /* Нейтральный акцент относительно текста */
-		--theme-quote: var(--theme-text); /* Цвет цитат */
-
-		/*** ДОПОЛНИТЕЛЬНЫЕ ЦВЕТА ***/
-		--theme-lightest: var(--theme-color-350);
-		--theme-lighter: var(--theme-color-400);
-		--theme-light: var(--theme-color-450);
-
-		/*** СПЕЦИАЛЬНЫЕ ДЛЯ КАЖДОЙ ТЕМЫ ЦВЕТА (!отличающиеся настройки для разных тем) ***/
-		--theme-special-lightest: var(--theme-color-250);
-		--theme-special-lighter: var(--theme-color-200);
-		--theme-special-light: var(--theme-color-150);
-		--theme-special: hsl(var(--hue) var(--saturation) 0% / 0.150);
-
-		/* Подсветка синтаксиса */
-		pre code span {
-			color: var(--shiki-dark) !important;
-			font-style: var(--shiki-dark-font-style) !important;
-			font-weight: var(--shiki-dark-font-weight) !important;
-			text-decoration: var(--shiki-dark-text-decoration) !important;
-		}
-	}
-
-	/* Общие переменные */
-	:root {
-		--theme-bg: var(--bg-hue) var(--bg-saturation) var(--bg-brightness); /* Цвет фона */
-		--theme-fg: var(--fg-hue) var(--fg-saturation) var(--fg-brightness); /* Базовый цвет для рассчета градации цветов */
-
-		/* Градации базового цвета для текста и элементов */
-		--theme-color-900: hsl(var(--theme-fg) / 1.0000);
-		--theme-color-850: hsl(var(--theme-fg) / 0.9675);
-		--theme-color-800: hsl(var(--theme-fg) / 0.935);
-		--theme-color-750: hsl(var(--theme-fg) / 0.880);
-		--theme-color-700: hsl(var(--theme-fg) / 0.825);
-		--theme-color-650: hsl(var(--theme-fg) / 0.785);
-		--theme-color-600: hsl(var(--theme-fg) / 0.745);
-		--theme-color-550: hsl(var(--theme-fg) / 0.675);
-		--theme-color-500: hsl(var(--theme-fg) / 0.605);
-		--theme-color-450: hsl(var(--theme-fg) / 0.500);
-		--theme-color-400: hsl(var(--theme-fg) / 0.395);
-		--theme-color-350: hsl(var(--theme-fg) / 0.290);
-		--theme-color-300: hsl(var(--theme-fg) / 0.185);
-		--theme-color-250: hsl(var(--theme-fg) / 0.150);
-		--theme-color-200: hsl(var(--theme-fg) / 0.115);
-		--theme-color-150: hsl(var(--theme-fg) / 0.080);
-		--theme-color-100: hsl(var(--theme-fg) / 0.045);
-		--theme-color-75: hsl(var(--theme-fg) / 0.03375);
-		--theme-color-50: hsl(var(--theme-fg) / 0.0225);
-
-		/* Переменные подсветки блоков кода rehype-pretty-code */
-		--code-inline-bg: var(--theme-color-150);
-		--code-bg: var(--theme-special);
-		--code-title-bg: var(--theme-color-200);
-		--code-line-highlight: var(--theme-color-150);
-		--code-line-diff-add: rgba(72, 191, 145, 0.15);
-		--code-line-diff-remove: rgba(248, 85, 82, 0.15);
-	}
-
-	html {
-		letter-spacing: 0.025em;
-	}
-
-	h1 {
-		@apply text-2xl md:pt-[0.0rem] !important;
-	}
-	h2 {
-		@apply text-xl md:pt-[0.215rem] !important;
-	}
-	h3 {
-		@apply text-lg md:pt-[0.250rem] !important; /* было 0.260 проверить!!! */
-	}
-	h4 {
-		@apply text-base md:pt-[0.425rem] !important;
-	}
-	h5 {
-		@apply text-base md:pt-[0.425rem] !important;
-	}
-	h6 {
-		@apply text-base md:pt-[0.425rem] !important;
-	}
-	
-	h1, h2, h3, h4, h5, h6 {
-		@apply min-h-8 h-auto !important;
-	}
-
-	/* Нужно для кнопки копирования кода при отключенном rehype-pretty-code */
-	/*
-	pre {
-		@apply relative;
-	}
-	*/
-}
-
-:root {
-	/* Стиль для блоков кода rehype-pretty-code */
-	figure[data-rehype-pretty-code-figure] {
-		@apply relative m-0 rounded-lg overflow-auto;
-
-		figcaption {
-			@apply m-0;
-		}
-
-		/* Стиль для заголовков в блоках кода */
-		[data-rehype-pretty-code-title] {
-			@apply break-words bg-[var(--code-title-bg)] border-b border-bgColor text-textColor px-4 flex items-center text-sm h-10;
-
-			& + pre {
-				@apply m-0 rounded-t-none; /* Убираем верхний отступ, если есть заголовок */
-				}
-		}
-
-		/* Стиль для блоков кода */
-		pre {
-			@apply m-0 static px-0 py-2 max-h-[612px] text-sm;
-
-			/* Стиль для содержимого кода */
-			> code {
-				counter-reset: line;
+		<!-- 内联样式确保代码行号显示 -->
+		<style is:inline>
+			pre code {
+				counter-reset: line !important;
+			}
+			pre [data-line]::before {
+				counter-increment: line !important;
+				content: counter(line) "" !important;
+				display: inline-block !important;
+				width: 2rem !important;
+				margin-right: 1rem !important;
+				text-align: right !important;
+				color: rgba(115, 138, 148, 0.6) !important;
+			}
+			pre [data-line] {
 				display: grid !important;
 				grid-template-columns: 3rem 1fr !important;
+			}
+			pre [data-line] > *:not(::before) {
+				grid-column: 2 !important;
+				padding-left: 2rem !important;
+			}
+		</style>
+	</head>
+	<body class="min-w-4xl relative m-auto min-h-screen w-full max-w-6xl grow bg-bgColor">
+		<ThemeProvider />
+		<SkipLink />
 
-				/* Для блоков с номерами строк */
-				&[data-line-numbers] {
-					> [data-line]::before {
-						counter-increment: line;
-						content: counter(line);
-						@apply mr-4 inline-block w-8 text-right text-lightest;
-						position: sticky;
-						left: 0;
-						z-index: 2;
-					}
-				}
+		<!-- Background 
+			TODO: This approach is not optimal and requires improvements. 
+  			- Too many absolutely positioned elements can affect performance. 
+  		-->	
+		<div class="fixed top-0 left-1/2 -ml-[50vw] min-h-screen w-screen pointer-events-none blur-2xl">
+			<div class="absolute top-[-90%] right-[25%] w-[75%] h-full bg-gradient-to-b from-blue-300 via-pink-300 to-transparent rounded-full opacity-40 dark:opacity-5"></div>
+			<div class="absolute top-[-90%] left-[25%] w-[75%] h-full bg-gradient-to-b from-blue-300 via-pink-300 to-transparent rounded-full opacity-40 dark:opacity-5"></div>
+			<div class="absolute top-[-85%] right-[25%] w-[55%] h-full bg-gradient-to-b from-purple-300 via-blue-300 to-transparent rounded-full opacity-40 dark:opacity-5"></div>
+			<div class="absolute top-[-85%] left-[25%] w-[55%] h-full bg-gradient-to-b from-indigo-300 via-orange-300 to-transparent rounded-full opacity-40 dark:opacity-5"></div>
+			<div class="absolute top-[-75%] left-[-25%] w-[65%] h-full bg-gradient-to-b from-blue-300 via-pink-300 to-transparent rounded-full opacity-30 dark:opacity-5"></div>
+			<div class="absolute top-[-75%] right-[-25%] w-[65%] h-full bg-gradient-to-b from-purple-300 via-blue-300 to-transparent rounded-full opacity-30 dark:opacity-5"></div>
+			<div class="absolute top-[-85%] left-[-30%] w-[85%] h-full bg-gradient-to-b from-indigo-300 via-orange-300 to-transparent rounded-full opacity-60 dark:opacity-5"></div>
+			<div class="absolute top-[-85%] right-[-30%] w-[85%] h-full bg-gradient-to-b from-orange-300 via-indigo-300 to-transparent rounded-full opacity-60 dark:opacity-5"></div>
+		</div>
+	
+		<div class="relative flex min-h-screen w-full">
+			<!-- Sidebar for Docs Series -->
+			<slot name="sidebar" />
+			<!-- Main container for the page content -->
+			<div id="container" class="min-w-3xl relative m-auto max-w-4xl grow">
+				<div class="m-auto grid min-h-screen md:grid-rows-[auto_auto_1fr] px-4 md:px-8 md:pt-4">
+					<Header />
+					<main id="main" class="relative flex-grow mt-32 md:mt-[3.5rem]">
+						<slot />
+					</main>
+					<Footer />
+				</div>
+			</div>
+		</div>
 
-				/* Для каждой строки в блоке кода */
-				> [data-line] {
-					display: grid !important;
-					grid-template-columns: subgrid;
-					grid-column: 1 / -1;
-					@apply h-6 bg-transparent;
+		<script>
+			function initializeViewer() {
+				// 检测是否为移动设备
+				const isMobile = window.innerWidth < 768 || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+				
+				// 如果是移动设备，不初始化图片查看器
+				if (isMobile) {
+					console.log('Mobile device detected, image viewer disabled');
+					return;
 				}
 				
-				/* 确保代码内容不会侵入行号区域 */
-				> [data-line] > *:not(::before) {
-					grid-column: 2 !important;
-					padding-left: 0.5rem !important;
+				// 获取所有图片
+				const images = document.querySelectorAll('img[data-viewer]');
+				
+				if (images.length > 0) {
+					// 创建一个图片容器
+					const container = document.createElement('div');
+					container.id = 'viewer-container';
+					container.style.display = 'none';
+					document.body.appendChild(container);
+					
+					// 将图片添加到容器中
+					images.forEach(img => {
+						const clone = img.cloneNode(true);
+						container.appendChild(clone);
+					});
+					
+					// 初始化查看器
+					// @ts-ignore
+					const viewer = new window.Viewer(container, {
+						inline: false,
+						button: true,
+						navbar: true,
+						title: true,
+						toolbar: {
+							zoomIn: true,
+							zoomOut: true,
+							oneToOne: true,
+							reset: true,
+							prev: true,
+							play: true,
+							next: true,
+							rotateLeft: true,
+							rotateRight: true,
+							flipHorizontal: true,
+							flipVertical: true,
+						},
+						rotatable: true,
+						scalable: true,
+						zoomable: true,
+						movable: true,
+						keyboard: true,
+						url: 'src'
+					});
+					
+					// 为每个图片添加点击事件
+					images.forEach((img, index) => {
+						// @ts-ignore
+						img.style.cursor = 'pointer';
+						img.addEventListener('click', (e) => {
+							e.preventDefault();
+							viewer.view(index);
+						});
+					});
 				}
-
-				/* Для выделенных строк */
-				[data-highlighted-line] {
-					background-color: var(--code-line-highlight);
-				}
-
-				[data-highlighted-line-id="add"] {
-					background-color: var(--code-line-diff-add);
-				}
-
-				[data-highlighted-line-id="remove"] {
-					background-color: var(--code-line-diff-remove);
-				}
-
-				/* Для выделенных символов */
-				[data-highlighted-chars] > span {
-					@apply py-[4px];
-				}
-
-				/* Для различий в строках (реализовано выше) */
-				/*
-				.diff {
-					&.add {
-						background-color: var(--code-line-diff-add);
-					}
-					&.remove {
-						background-color: var(--code-line-diff-remove);
-					}
-				}
-				*/
 			}
-		}
-	}
 
-	/* Основной стиль для блока pre */
-	pre {
-		@apply bg-[var(--code-bg)] text-[var(--theme-text)] rounded-lg leading-loose m-0 relative;
-		/* @apply bg-[var(--code-bg)] text-[var(--theme-accent)] rounded-lg leading-loose m-0; */
-	}
+			// 使用 CDN 版本的 viewerjs
+			const script = document.createElement('script');
+			script.src = 'https://cdn.jsdelivr.net/npm/viewerjs@1.11.7/dist/viewer.min.js';
+			script.onload = () => {
+				// 如果 DOM 已经加载完成，直接初始化
+				if (document.readyState === 'complete' || document.readyState === 'interactive') {
+					initializeViewer();
+				} else {
+					// 否则等待 DOM 加载完成
+					document.addEventListener('DOMContentLoaded', initializeViewer);
+				}
+			};
+			
+			script.onerror = (error) => {
+				console.error('Failed to load viewer.js:', error);
+			};
+			
+			document.body.appendChild(script);
 
-	/* Стиль для инлайнового кода (rehype pretty code переопределяет стили в tailwind.config.css) */
-	:not(pre) > code {
-		@apply bg-[var(--code-inline-bg)] px-2 py-1 text-sm rounded-lg;
-	}
+			// 移动端切换按钮的 JavaScript 代码
+			document.addEventListener('DOMContentLoaded', () => {
+				// 检测是否为移动设备
+				const isMobile = window.innerWidth < 768 || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+				
+				// 如果是移动设备，隐藏所有移动端控制按钮
+				if (isMobile) {
+					const mobileButtons = [
+						document.getElementById('toggle-panel-mobile'),
+						document.getElementById('toggle-toc-mobile')
+					];
+					
+					mobileButtons.forEach(btn => {
+						if (btn) btn.style.display = 'none';
+					});
+					
+					return;
+				}
+				
+				// 以下代码只在桌面设备上执行
+				// 系列面板切换
+				const togglePanelMobile = document.getElementById('toggle-panel-mobile');
+				const seriesPanel = document.getElementById('series-panel');
+				const closePanel = document.getElementById('close-panel');
 
-	/* Стиль для кнопки копирования кода rehype-pretty-copy */
-	button.rehype-pretty-copy {
-		@apply fixed top-1 right-1 bg-transparent m-auto size-8 rounded-md p-1 backdrop-blur-none;
-		filter: brightness(var(--brightness)) saturate(0%);
-	}
-}
+				if (togglePanelMobile && seriesPanel) {
+					togglePanelMobile.addEventListener('click', () => {
+						seriesPanel.classList.toggle('hidden');
+					});
+				}
 
-/* ПЕРЕПРОВЕРИТЬ !!! */
-@layer components {
-	/* Переопределение стилей для <mark> в статье */
-	article mark {
-		@apply bg-transparent;
-	}
-}
+				if (closePanel && seriesPanel) {
+					closePanel.addEventListener('click', () => {
+						seriesPanel.classList.add('hidden');
+					});
+				}
+
+				// 目录面板切换
+				const toggleTocMobile = document.getElementById('toggle-toc-mobile');
+				const tocPanel = document.getElementById('toc-panel');
+
+				if (toggleTocMobile && tocPanel) {
+					toggleTocMobile.addEventListener('click', () => {
+						tocPanel.classList.toggle('hidden');
+					});
+				}
+
+				// 回到顶部按钮
+				const toTopButton = document.getElementById('to-top-button');
+				if (toTopButton) {
+					window.addEventListener('scroll', () => {
+						if (window.scrollY > 300) {
+							toTopButton.setAttribute('data-show', 'true');
+						} else {
+							toTopButton.setAttribute('data-show', 'false');
+						}
+					});
+
+					toTopButton.addEventListener('click', () => {
+						window.scrollTo({ top: 0, behavior: 'smooth' });
+					});
+				}
+
+				// 修复按钮面板样式
+				const buttonsPanel = document.getElementById('buttons-panel');
+				if (buttonsPanel) {
+					buttonsPanel.classList.add('fixed', 'z-50');
+				}
+			});
+
+			// 确保代码块有行号
+			document.addEventListener('DOMContentLoaded', () => {
+				// 查找所有代码块
+				const codeBlocks = document.querySelectorAll('pre code');
+				
+				// 为每个代码块添加行号属性
+				codeBlocks.forEach(codeBlock => {
+					if (!codeBlock.hasAttribute('data-line-numbers')) {
+						codeBlock.setAttribute('data-line-numbers', 'true');
+					}
+					
+					// 确保每行都有data-line属性
+					const content = codeBlock.innerHTML;
+					if (!content.includes('data-line')) {
+						const lines = content.split('\n');
+						const newContent = lines.map(line => 
+							`<span data-line>${line}</span>`
+						).join('\n');
+						codeBlock.innerHTML = newContent;
+					}
+				});
+			});
+		</script>
+	</body>
+</html>
