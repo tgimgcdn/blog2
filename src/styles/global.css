@@ -6,28 +6,28 @@
 /* 为代码块添加行号容器样式 */
 figure[data-rehype-pretty-code-figure] pre code,
 pre code {
-	counter-reset: line !important;
+	counter-reset: line;
 }
 
 /* 为每行代码添加行号 */
-figure[data-rehype-pretty-code-figure] [data-line]::before,
-pre [data-line]::before {
-	counter-increment: line !important;
-	content: counter(line) "" !important;
-	display: inline-block !important;
-	width: 2rem !important;
-	margin-right: 1rem !important;
-	text-align: right !important;
-	color: rgba(115, 138, 148, 0.6) !important;
+figure[data-rehype-pretty-code-figure] code[data-line-numbers] > [data-line]::before,
+pre code[data-line-numbers] > [data-line]::before {
+	counter-increment: line;
+	content: counter(line);
+	display: inline-block;
+	width: 1.5rem;
+	margin-right: 1rem;
+	text-align: right;
+	color: rgba(115, 138, 148, 0.6);
 }
 
 /* 调整行内间距和高度 */
-figure[data-rehype-pretty-code-figure] [data-line],
-pre [data-line] {
-	padding-left: 1rem !important;
-	min-height: 1.5rem !important;
-	display: flex !important;
-	align-items: center !important;
+figure[data-rehype-pretty-code-figure] code > [data-line],
+pre code > [data-line] {
+	padding-left: 1rem;
+	min-height: 1.5rem;
+	display: flex;
+	align-items: center;
 }
 
 @font-face {
