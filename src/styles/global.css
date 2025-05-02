@@ -9,7 +9,7 @@ pre code {
 	counter-reset: line;
 	position: relative;
 	display: grid;
-	grid-template-columns: minmax(3rem, 3rem) 1fr; /* 固定行号区域宽度为3rem */
+	grid-template-columns: 3rem 1fr; /* 行号区域固定宽度3rem，内容区域自适应 */
 	overflow-x: auto;
 }
 
@@ -28,13 +28,12 @@ pre code[data-line-numbers] > [data-line]::before {
 	left: 0;
 	background-color: var(--code-bg);
 	border-right: 1px solid rgba(115, 138, 148, 0.2);
-	z-index: 2; /* 提高z-index确保行号显示在内容上方 */
+	z-index: 1;
 }
 
 /* 调整行内间距和高度 */
 figure[data-rehype-pretty-code-figure] code > [data-line],
 pre code > [data-line] {
-	padding-left: 0;
 	min-height: 1.5rem;
 	display: grid;
 	grid-template-columns: subgrid;
@@ -52,24 +51,13 @@ pre code[data-line-numbers] > [data-line]::before {
 	display: flex;
 	align-items: center;
 	justify-content: flex-end;
-	box-sizing: border-box; /* 确保边框包含在宽度内 */
 }
 
-/* 调整代码内容的位置 */
-figure[data-rehype-pretty-code-figure] code[data-line-numbers] > [data-line],
-pre code[data-line-numbers] > [data-line] {
-	grid-column: 2; /* 确保代码内容仅在第二列显示 */
-	padding-left: 1rem; /* 代码内容左侧填充 */
-	position: relative;
-	z-index: 1;
-	box-sizing: border-box;
-}
-
-/* 确保代码行的每个部分有正确的间距和布局 */
-figure[data-rehype-pretty-code-figure] code > [data-line] > *,
-pre code > [data-line] > * {
-	padding-left: 0;
+/* 调整代码内容的位置 - 确保内容只在第二列 */
+figure[data-rehype-pretty-code-figure] code[data-line-numbers] > [data-line] > *:not(::before),
+pre code[data-line-numbers] > [data-line] > *:not(::before) {
 	grid-column: 2;
+	margin-left: 0.5rem;
 }
 
 @font-face {
