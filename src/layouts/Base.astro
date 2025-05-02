@@ -60,6 +60,15 @@ const {
 
 		<script>
 			function initializeViewer() {
+				// 检测是否为移动设备
+				const isMobile = window.innerWidth < 768 || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+				
+				// 如果是移动设备，不初始化图片查看器
+				if (isMobile) {
+					console.log('Mobile device detected, image viewer disabled');
+					return;
+				}
+				
 				// 获取所有图片
 				const images = document.querySelectorAll('img[data-viewer]');
 				
@@ -137,6 +146,24 @@ const {
 
 			// 移动端切换按钮的 JavaScript 代码
 			document.addEventListener('DOMContentLoaded', () => {
+				// 检测是否为移动设备
+				const isMobile = window.innerWidth < 768 || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+				
+				// 如果是移动设备，隐藏所有移动端控制按钮
+				if (isMobile) {
+					const mobileButtons = [
+						document.getElementById('toggle-panel-mobile'),
+						document.getElementById('toggle-toc-mobile')
+					];
+					
+					mobileButtons.forEach(btn => {
+						if (btn) btn.style.display = 'none';
+					});
+					
+					return;
+				}
+				
+				// 以下代码只在桌面设备上执行
 				// 系列面板切换
 				const togglePanelMobile = document.getElementById('toggle-panel-mobile');
 				const seriesPanel = document.getElementById('series-panel');
