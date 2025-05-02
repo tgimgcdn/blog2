@@ -115,7 +115,7 @@ const uniqueTags = Array.from(allTags);
 			<!-- 向左的三角形 - 收起按钮 - 放在侧边栏右上角 -->
 			<button
 				id="collapse-panel"
-				class="absolute z-20 top-0 -right-0 h-8 w-8 flex items-center justify-center rounded-lg bg-accent-base/5 text-accent-base hover:bg-accent-base/10 border border-special-light shadow-md"
+				class="absolute z-20 top-0 -right-0 h-8 w-8 flex items-center justify-center rounded-tr-none rounded-br-none rounded-lg bg-accent-base/5 text-accent-base hover:bg-accent-base/10 border border-special-light shadow-md"
 				aria-label="Collapse Sidebar"
 			>
 				<Icon class="h-6 w-6" name="mdi:chevron-left" />
@@ -187,7 +187,7 @@ const uniqueTags = Array.from(allTags);
 				</div>
 
 				<!-- 侧边栏模块 3: 标签 - 改为动态随机标签 -->
-				<div class="mb-6 bg-accent-base/10 rounded-lg border-2 border-special-light p-4 shadow-md">
+				<div class="bg-accent-base/10 rounded-lg border-2 border-special-light p-4 shadow-md">
 					<h5 class="font-semibold text-accent-base mb-2">Tags</h5>
 					<div id="random-tags" class="flex flex-wrap gap-2" data-tags={JSON.stringify(uniqueTags)}>
 						<!-- 标签将通过JavaScript动态生成和随机化 -->
@@ -202,7 +202,7 @@ const uniqueTags = Array.from(allTags);
 		<!-- 折叠后的展开按钮 - 与侧边栏在相同位置 -->
 		<button
 			id="expand-sidebar"
-			class="fixed hidden z-20 top-20 left-0 h-8 w-8 bg-accent-base/5 hover:bg-accent-base/10 border border-special-light rounded-lg items-center justify-center shadow-md transition-all duration-300"
+			class="fixed hidden z-20 top-20 left-0 h-8 w-8 bg-accent-base/5 hover:bg-accent-base/10 border border-special-light rounded-tl-none rounded-bl-none rounded-lg items-center justify-center shadow-md transition-all duration-300"
 			aria-label="Expand Sidebar"
 		>
 			<Icon class="h-6 w-6" name="mdi:chevron-right" />
