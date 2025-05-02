@@ -110,6 +110,8 @@ export default defineConfig({
           keepBackground: true, // 保持背景样式
           grid: false, // 不使用网格布局
           transformers: [transformerNotationDiff(), transformerMetaHighlight()],
+          lineNumbers: true, // 为所有代码块启用行号
+          showLineNumbers: true, // 显示行号
         },
       ],
       rehypeUnwrapImages,
