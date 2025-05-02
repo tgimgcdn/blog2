@@ -1,3 +1,4 @@
+---
 import PageLayout from "@/layouts/Base.astro";
 import { Icon } from "astro-icon/components";
 import { getCollection, type CollectionEntry } from "astro:content";
@@ -55,6 +56,7 @@ allPosts.forEach((postItem: CollectionEntry<"post">) => {
 
 // 将Set转换为数组
 const uniqueTags = Array.from(allTags);
+---
 
 <PageLayout meta={{ title: `Page ${currentPage}` }}>
 	<!-- 防止侧边栏闪现的内联脚本 -->
