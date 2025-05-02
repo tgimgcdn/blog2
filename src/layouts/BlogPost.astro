@@ -38,6 +38,31 @@ const uniqueTags = Array.from(allTags);
 	<script is:inline>
 		// 在DOM渲染前检查侧边栏状态并应用
 		(function() {
+			// 检测是否为移动设备
+			const isMobile = window.innerWidth < 768 || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+			
+			// 如果是移动设备，则禁用侧边栏功能
+			if (isMobile) {
+				// 创建样式元素，禁用侧边栏和相关按钮
+				const style = document.createElement('style');
+				style.id = 'mobile-disable-features';
+				style.textContent = `
+					#custom-sidebar { display: none !important; }
+					#expand-sidebar { display: none !important; }
+					#collapse-panel { display: none !important; }
+					#toggle-toc-mobile { display: none !important; }
+					
+					/* 阻止图片点击放大 */
+					.prose img { pointer-events: none !important; cursor: default !important; }
+				`;
+				document.head.appendChild(style);
+				
+				// 设置移动设备标记
+				localStorage.setItem('isMobileDevice', 'true');
+				return;
+			}
+			
+			// 桌面设备正常显示侧边栏，除非被收起
 			const isSidebarCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
 			if (isSidebarCollapsed) {
 				// 创建样式元素
