@@ -1,11 +1,158 @@
 ---
 import PageLayout from "@/layouts/Base.astro";
+import { Icon } from "astro-icon/components";
+import { getCollection } from "astro:content";
+
+// 获取所有文章标签
+const allPosts = await getCollection("post");
+// 提取所有文章的标签并去重
+const allTags = new Set<string>();
+allPosts.forEach((postItem: any) => {
+	if (postItem.data.tags && Array.isArray(postItem.data.tags)) {
+		postItem.data.tags.forEach((tag: string) => allTags.add(tag));
+	}
+});
+// 将Set转换为数组
+const uniqueTags = Array.from(allTags);
 ---
 
 <PageLayout meta={{ title: "Home" }}>
+	<!-- 在首页添加侧边栏但隐藏收起/展开按钮 -->
+	<div slot="sidebar">
+		<aside
+			id="custom-sidebar"
+			class="grid lg:block z-10 min-h-screen fixed top-16 md:top-20 left-0 w-72 shadow-[5px_0px_10px_rgba(0,0,0,0.05)] transition-all duration-300 ease-in-out"
+		>	
+			<!-- 背景渐变效果 - 只在内容区域显示 -->
+			<div class="fixed -z-10 top-0 w-screen md:w-72 md:min-w-72 md:max-w-72 h-screen bg-gradient-to-b from-orange-300 via-pink-300 to-purple-300 opacity-30 dark:opacity-0">
+			</div>
+			
+			<!-- 侧边栏内容区 - 确保背景色跟随主题 -->
+			<div class="flex h-full min-h-screen flex-col px-8 pt-4 md:pt-8 w-screen md:w-72 md:min-w-72 md:max-w-72 bg-accent-base/5 border-r border-special-light">
+				<!-- 侧边栏模块 1: 推荐文章 -->
+				<div class="mb-6 bg-accent-base/10 rounded-lg border-2 border-special-light p-4 shadow-md">
+					<h5 class="font-semibold text-accent-base mb-2">Recommended Posts</h5>
+					<ul id="recommended-posts" class="text-sm font-medium text-light">
+						<li class="px-2 py-1 hover:bg-accent-base/5 rounded-lg">
+							<a href="/posts/post-without-tags/" class="hover:text-accent-two">
+								A post without tags
+							</a>
+						</li>
+						<li class="px-2 py-1 hover:bg-accent-base/5 rounded-lg">
+							<a href="/posts/example-of-60-chars-master-header-and-various-headings/" class="hover:text-accent-two">
+								Example of 60 chars Master Header and other Various Headings
+							</a>
+						</li>
+						<li class="px-2 py-1 hover:bg-accent-base/5 rounded-lg">
+							<a href="/posts/post-without-content/" class="hover:text-accent-two">
+								This post doesn't have any content
+							</a>
+						</li>
+						<li class="px-2 py-1 hover:bg-accent-base/5 rounded-lg">
+							<a href="/posts/fifth-post/" class="hover:text-accent-two">
+								Fifth Post
+							</a>
+						</li>
+						<li class="px-2 py-1 hover:bg-accent-base/5 rounded-lg">
+							<a href="/posts/fourth-post/" class="hover:text-accent-two">
+								Fourth Post
+							</a>
+						</li>
+						<li class="px-2 py-1 hover:bg-accent-base/5 rounded-lg">
+							<a href="/posts/first-post/" class="hover:text-accent-two">
+								First Post
+							</a>
+						</li>
+					</ul>
+				</div>
+
+				<!-- 侧边栏模块 2: 分类 -->
+				<div class="mb-6 bg-accent-base/10 rounded-lg border-2 border-special-light p-4 shadow-md">
+					<h5 class="font-semibold text-accent-base mb-2">Categories</h5>
+					<ul class="text-sm font-medium text-light">
+						<li class="px-2 py-1 hover:bg-accent-base/5 rounded-lg">
+							<a href="/category/tutorials/" class="hover:text-accent-two">
+								Tutorials
+							</a>
+						</li>
+						<li class="px-2 py-1 hover:bg-accent-base/5 rounded-lg">
+							<a href="/category/documentation/" class="hover:text-accent-two">
+								Documentation
+							</a>
+						</li>
+						<li class="px-2 py-1 hover:bg-accent-base/5 rounded-lg">
+							<a href="/category/updates/" class="hover:text-accent-two">
+								Updates
+							</a>
+						</li>
+					</ul>
+				</div>
+
+				<!-- 侧边栏模块 3: 标签 - 改为动态随机标签 -->
+				<div class="mb-6 bg-accent-base/10 rounded-lg border-2 border-special-light p-4 shadow-md">
+					<h5 class="font-semibold text-accent-base mb-2">Tags</h5>
+					<div id="random-tags" class="flex flex-wrap gap-2" data-tags={JSON.stringify(uniqueTags)}>
+						<!-- 标签将通过JavaScript动态生成和随机化 -->
+					</div>
+				</div>
+				
+				<!-- 添加一个底部间隔，确保内容不会太靠近底部 -->
+				<div class="pb-8"></div>
+			</div>
+		</aside>
+	</div>
+
 	<!-- 空白首页 - 准备重新设计 -->
-	<div class="container mx-auto py-8">
+	<div class="container mx-auto py-8 ml-72">
 		<!-- 这里是空白的内容区域，可以根据需求重新设计 -->
 	</div>
 </PageLayout>
+
+<!-- 随机标签生成脚本 -->
+<script>
+	// 随机标签生成函数
+	function generateRandomTags() {
+		const tagsContainer = document.getElementById('random-tags');
+		if (!tagsContainer) return;
+
+		// 从data-tags属性获取所有可能的标签
+		let allTags = [];
+		try {
+			allTags = JSON.parse(tagsContainer.getAttribute('data-tags') || '[]');
+		} catch (e) {
+			console.error('Error parsing tags:', e);
+			return;
+		}
+
+		// 如果没有标签，显示提示信息
+		if (!allTags.length) {
+			tagsContainer.innerHTML = '<div class="text-lighter italic">No tags available</div>';
+			return;
+		}
+
+		// 随机打乱标签顺序 - 使用Fisher-Yates算法
+		for (let i = allTags.length - 1; i > 0; i--) {
+			const j = Math.floor(Math.random() * (i + 1));
+			[allTags[i], allTags[j]] = [allTags[j], allTags[i]];
+		}
+
+		// 选择前12个标签，或者如果标签总数少于12个，则全部显示
+		const randomTags = allTags.slice(0, Math.min(12, allTags.length));
+		
+		// 清空现有内容
+		tagsContainer.innerHTML = '';
+		
+		// 生成标签HTML
+		randomTags.forEach((tag: string) => {
+			const tagLink = document.createElement('a');
+			tagLink.href = `/tags/${tag.toLowerCase().replace(/\s+/g, '-')}/`;
+			tagLink.className = 'px-2 py-1 text-xs rounded-full bg-color-150 hover:bg-color-200 text-accent';
+			tagLink.textContent = tag;
+			tagsContainer.appendChild(tagLink);
+		});
+	}
+
+	// 页面加载时生成随机标签
+	document.addEventListener('DOMContentLoaded', generateRandomTags);
+</script>
 
