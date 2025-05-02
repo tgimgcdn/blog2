@@ -53,11 +53,11 @@ pre code[data-line-numbers] > [data-line]::before {
 	justify-content: flex-end;
 }
 
-/* 调整代码内容的位置 - 确保内容只在第二列 */
+/* 调整代码内容的位置 - 确保内容只在第二列 - 简单的一行修复 */
 figure[data-rehype-pretty-code-figure] code[data-line-numbers] > [data-line] > *:not(::before),
 pre code[data-line-numbers] > [data-line] > *:not(::before) {
 	grid-column: 2;
-	margin-left: 0.5rem;
+	padding-left: 0.5rem;
 }
 
 @font-face {
