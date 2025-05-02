@@ -55,37 +55,12 @@ import { Icon } from "astro-icon/components";
 				class="top-20 text-sm mx-auto ml-4 ml-auto hidden flex-col items-end justify-center gap-x-4 rounded-md bg-bgColor font-medium text-accent-two shadow backdrop-blur group-[.menu-open]:z-50 group-[.menu-open]:flex sm:static sm:z-auto sm:flex-row sm:items-center sm:rounded-none sm:bg-transparent sm:shadow-none sm:backdrop-blur-none md:flex"
 				id="main-navigation-menu"
 			>	
-				<!--				
-				<a
-					aria-current={Astro.url.pathname === "/" ? "page" : false}
-					class="flex gap-x-1 h-8 items-center justify-center rounded-lg underline-offset-2 hover:underline"
-					href="/"
-				>	
-					<Icon
-						class="size-4 drop-shadow-[0px_1.5px_1.5px_rgba(0,0,0,0.175)]"
-						name="solar:home-2-bold"
-					/>
-					Home
-				</a>
-				<a
-					aria-current={Astro.url.pathname === "/" ? "page" : false}
-					class="flex gap-x-1 h-8 items-center justify-center rounded-lg underline-offset-2 hover:underline"
-					href="/"
-				>	
-					<Icon
-						class="size-4 drop-shadow-[0px_1.5px_1.5px_rgba(0,0,0,0.175)]"
-						name="solar:archive-bold"
-					/>
-					Blog
-				</a>
-				-->
-
-				<!-- Ссылки меню -->
+				<!-- 调整桌面版菜单项间距和布局，确保菜单项较多也能正常显示 -->
 				{
 					menuLinks.map((link) => (
 						<a
 							aria-current={Astro.url.pathname === link.path ? "page" : false}
-							class="underline-offset-2 hover:underline"
+							class="underline-offset-2 hover:underline whitespace-nowrap sm:px-2 sm:text-xs md:text-sm lg:px-3"
 							data-astro-prefetch
 							href={link.path}
 						>
@@ -95,7 +70,7 @@ import { Icon } from "astro-icon/components";
 				}
 				
 				<a
-					class="flex h-8 items-center rounded-lg bg-accent-base/5 px-4 text-accent-base underline-offset-2 hover:bg-accent-base/10"
+					class="flex h-8 items-center rounded-lg bg-accent-base/5 px-3 sm:px-2 sm:text-xs md:text-sm lg:px-4 text-accent-base underline-offset-2 hover:bg-accent-base/10 whitespace-nowrap"
 					data-astro-prefetch
 					href="/posts/citrus-docs/intro/"
 				>
@@ -187,7 +162,7 @@ import { Icon } from "astro-icon/components";
 	</div>
 </header>
 
-<div id="drawer" class="fixed inset-0 z-10 hidden" aria-hidden="true">
+<div id="drawer" class="fixed inset-0 z-10 hidden overflow-x-hidden" aria-hidden="true">
 	<div
 		id="drawer-body"
 		class="absolute inset-0 -translate-y-full transform bg-bgColor transition-all duration-300 ease-in-out"
@@ -213,15 +188,15 @@ import { Icon } from "astro-icon/components";
 		
 		<nav
 			aria-label="Mobile navigation menu"
-			class="text-lg absolute inset-0 flex flex-col items-center justify-center gap-y-4 text-center font-medium text-accent-two"
+			class="text-lg absolute inset-0 flex flex-col items-center justify-center gap-y-4 text-center font-medium text-accent-two overflow-x-hidden"
 			id="nav-menu-mobile"
 		>
-			<!-- Ссылки меню -->
+			<!-- 链接在移动端显示为按钮风格，保证不会横向溢出 -->
 			{
 				menuLinks.map((link) => (
 					<a
 						aria-current={Astro.url.pathname === link.path ? "page" : false}
-						class="underline-offset-2 hover:underline"
+						class="w-full max-w-[200px] py-2 px-4 rounded-lg underline-offset-2 hover:underline hover:bg-accent-base/5"
 						data-astro-prefetch
 						href={link.path}
 					>
@@ -230,7 +205,7 @@ import { Icon } from "astro-icon/components";
 				))
 			}
 			<a
-				class="flex h-8 items-center rounded-lg bg-accent-base/5 px-4 text-accent-base underline-offset-2 hover:bg-accent-base/10"
+				class="w-full max-w-[200px] py-2 flex h-10 items-center justify-center rounded-lg bg-accent-base/5 px-4 text-accent-base underline-offset-2 hover:bg-accent-base/10"
 				data-astro-prefetch
 				href="/series/citrus-docs"
 			>
