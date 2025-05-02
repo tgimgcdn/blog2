@@ -193,46 +193,52 @@ const uniqueTags = Array.from(allTags);
 		</button>
 	</div>
 
-	<!-- 内容区域 - 3x3文章网格 -->
-	<div class="container mx-auto py-8">
-		<h1 class="text-3xl font-bold mb-8 text-accent-base text-center">最新文章</h1>
+	<!-- 内容区域 - 文章网格 -->
+	<div class="container mx-auto py-8 min-h-screen">
 		<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 			{
-				sortedPosts.map((post) => (
-					<article class="bg-accent-base/5 rounded-lg overflow-hidden border border-special-light shadow-md hover:shadow-lg transition-shadow">
-						<a href={`/posts/${post.slug}/`} class="block">
-							{post.data.ogImage && (
-								<div class="h-48 overflow-hidden">
-									<img 
-										src={post.data.ogImage} 
-										alt={post.data.title} 
-										class="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
-									/>
-								</div>
-							)}
-							<div class="p-5">
-								<div class="flex justify-between items-center text-sm text-lighter mb-2">
-									<time datetime={post.data.publishDate.toISOString()}>
-										{getFormattedDate(post.data.publishDate)}
-									</time>
-									{post.data.category && (
-										<span class="text-xs px-2 py-1 rounded-full bg-accent-base/10 text-accent-base">
-											{post.data.category}
-										</span>
+				sortedPosts.map((post) => {
+					// 从文件路径中提取文件名作为slug
+					const id = post.id;
+					// 移除扩展名并将空格替换为连字符
+					const slug = id.replace(/\.md(\.md)?$/, '').replace(/\s+/g, '-').toLowerCase();
+					
+					return (
+						<article class="bg-accent-base/5 rounded-lg overflow-hidden border border-special-light shadow-md hover:shadow-lg transition-shadow">
+							<a href={`/posts/${slug}/`} class="block">
+								{post.data.ogImage && (
+									<div class="h-48 overflow-hidden">
+										<img 
+											src={post.data.ogImage} 
+											alt={post.data.title} 
+											class="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+										/>
+									</div>
+								)}
+								<div class="p-5">
+									<div class="flex justify-between items-center text-sm text-lighter mb-2">
+										<time datetime={post.data.publishDate.toISOString()}>
+											{getFormattedDate(post.data.publishDate)}
+										</time>
+										{post.data.category && (
+											<span class="text-xs px-2 py-1 rounded-full bg-accent-base/10 text-accent-base">
+												{post.data.category}
+											</span>
+										)}
+									</div>
+									<h2 class="text-xl font-semibold mb-2 text-accent-base hover:text-accent-two transition-colors">
+										{post.data.title}
+									</h2>
+									{post.data.description && (
+										<p class="text-sm line-clamp-3 text-light">
+											{post.data.description}
+										</p>
 									)}
 								</div>
-								<h2 class="text-xl font-semibold mb-2 text-accent-base hover:text-accent-two transition-colors">
-									{post.data.title}
-								</h2>
-								{post.data.description && (
-									<p class="text-sm line-clamp-3 text-light">
-										{post.data.description}
-									</p>
-								)}
-							</div>
-						</a>
-					</article>
-				))
+							</a>
+						</article>
+					);
+				})
 			}
 		</div>
 	</div>
