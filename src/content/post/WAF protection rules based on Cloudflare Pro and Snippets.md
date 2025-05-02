@@ -184,6 +184,143 @@ export default {
         }
     },
 };
+
+以下内容为测试
+export default {
+    async fetch(request) {
+        const clientIp = request.headers.get('cf-connecting-ip') || "";
+        const ua = request.headers.get('user-agent') || "";
+        const secretKey = "h*dUm|mdS^6=QB)y";
+
+        // 组合并生成哈希值
+        const signatureBase = `${clientIp}${ua}${secretKey}`;
+        const encoder = new TextEncoder();
+        const data = encoder.encode(signatureBase);
+        const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+
+        let cookies = request.headers.get('Cookie') || "";
+
+        // 检查是否包含特定的 Cookie
+        if (cookies.includes(hashHex)) {
+            // 如果已经包含，直接返回原始请求
+            return await fetch(request);
+        } else {
+            // 否则生成重定向响应
+            const newResponse = new Response(null, {
+                status: 302,
+                headers: {
+                    "Set-Cookie": `_test=${hashHex}; Path=/; HttpOnly`,
+                    "Location": request.url,
+                }
+            });
+            return newResponse;
+        }
+    },
+};
+
+export default {
+    async fetch(request) {
+        const clientIp = request.headers.get('cf-connecting-ip') || "";
+        const ua = request.headers.get('user-agent') || "";
+        const secretKey = "h*dUm|mdS^6=QB)y";
+
+        // 组合并生成哈希值
+        const signatureBase = `${clientIp}${ua}${secretKey}`;
+        const encoder = new TextEncoder();
+        const data = encoder.encode(signatureBase);
+        const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+
+        let cookies = request.headers.get('Cookie') || "";
+
+        // 检查是否包含特定的 Cookie
+        if (cookies.includes(hashHex)) {
+            // 如果已经包含，直接返回原始请求
+            return await fetch(request);
+        } else {
+            // 否则生成重定向响应
+            const newResponse = new Response(null, {
+                status: 302,
+                headers: {
+                    "Set-Cookie": `_test=${hashHex}; Path=/; HttpOnly`,
+                    "Location": request.url,
+                }
+            });
+            return newResponse;
+        }
+    },
+};
+
+export default {
+    async fetch(request) {
+        const clientIp = request.headers.get('cf-connecting-ip') || "";
+        const ua = request.headers.get('user-agent') || "";
+        const secretKey = "h*dUm|mdS^6=QB)y";
+
+        // 组合并生成哈希值
+        const signatureBase = `${clientIp}${ua}${secretKey}`;
+        const encoder = new TextEncoder();
+        const data = encoder.encode(signatureBase);
+        const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+
+        let cookies = request.headers.get('Cookie') || "";
+
+        // 检查是否包含特定的 Cookie
+        if (cookies.includes(hashHex)) {
+            // 如果已经包含，直接返回原始请求
+            return await fetch(request);
+        } else {
+            // 否则生成重定向响应
+            const newResponse = new Response(null, {
+                status: 302,
+                headers: {
+                    "Set-Cookie": `_test=${hashHex}; Path=/; HttpOnly`,
+                    "Location": request.url,
+                }
+            });
+            return newResponse;
+        }
+    },
+};
+
+export default {
+    async fetch(request) {
+        const clientIp = request.headers.get('cf-connecting-ip') || "";
+        const ua = request.headers.get('user-agent') || "";
+        const secretKey = "h*dUm|mdS^6=QB)y";
+
+        // 组合并生成哈希值
+        const signatureBase = `${clientIp}${ua}${secretKey}`;
+        const encoder = new TextEncoder();
+        const data = encoder.encode(signatureBase);
+        const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+
+        let cookies = request.headers.get('Cookie') || "";
+
+        // 检查是否包含特定的 Cookie
+        if (cookies.includes(hashHex)) {
+            // 如果已经包含，直接返回原始请求
+            return await fetch(request);
+        } else {
+            // 否则生成重定向响应
+            const newResponse = new Response(null, {
+                status: 302,
+                headers: {
+                    "Set-Cookie": `_test=${hashHex}; Path=/; HttpOnly`,
+                    "Location": request.url,
+                }
+            });
+            return newResponse;
+        }
+    },
+};
 ```
 
 根据实际情况，匹配snippets生效规则。
