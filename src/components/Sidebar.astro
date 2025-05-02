@@ -78,7 +78,13 @@ const uniqueTags = Array.from(allTags);
 		class="absolute z-20 top-0 -right-0 h-8 w-8 flex items-center justify-center rounded-tr-none rounded-br-none rounded-lg bg-accent-base/5 text-accent-base hover:bg-accent-base/10 border border-special-light shadow-md"
 		aria-label="Collapse Sidebar"
 	>
-		<Icon class="h-4 w-4" name="mdi:chevron-left" />
+		<div class="w-4 h-4 flex items-center justify-center overflow-hidden">
+			<Icon 
+				class="h-4 w-4 transform scale-80" 
+				name="mdi:chevron-left" 
+				style="width: 16px; height: 16px; max-width: 16px; max-height: 16px;" 
+			/>
+		</div>
 	</button>
 	
 	<!-- 背景渐变效果 - 只在内容区域显示 -->
@@ -162,7 +168,13 @@ const uniqueTags = Array.from(allTags);
 	class="fixed hidden z-20 top-20 left-0 h-8 w-8 bg-accent-base/5 hover:bg-accent-base/10 border border-special-light rounded-tl-none rounded-bl-none rounded-lg items-center justify-center shadow-md transition-all duration-300"
 	aria-label="Expand Sidebar"
 >
-	<Icon class="h-4 w-4" name="mdi:chevron-right" />
+	<div class="w-4 h-4 flex items-center justify-center overflow-hidden">
+		<Icon 
+			class="h-4 w-4 transform scale-80" 
+			name="mdi:chevron-right" 
+			style="width: 16px; height: 16px; max-width: 16px; max-height: 16px;" 
+		/>
+	</div>
 </button>
 
 <!-- 随机标签生成脚本 -->
