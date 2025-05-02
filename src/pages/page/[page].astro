@@ -240,15 +240,13 @@ const uniqueTags = Array.from(allTags);
 					return (
 						<article class="bg-accent-base/5 rounded-lg overflow-hidden border border-special-light shadow-md hover:shadow-lg transition-shadow">
 							<a href={`/posts/${slug}/`} class="block">
-								{post.data.ogImage && (
-									<div class="h-48 overflow-hidden">
-										<img 
-											src={post.data.ogImage} 
-											alt={post.data.title} 
-											class="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
-										/>
-									</div>
-								)}
+								<div class="h-48 overflow-hidden">
+									<img 
+										src={post.data.ogImage || "/social-card.webp"} 
+										alt={post.data.title} 
+										class="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+									/>
+								</div>
 								<div class="p-5">
 									<div class="flex justify-between items-center text-sm text-lighter mb-2">
 										<time datetime={post.data.publishDate.toISOString()}>
