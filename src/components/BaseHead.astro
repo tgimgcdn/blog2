@@ -16,7 +16,17 @@ const socialImageURL = new URL(ogImage ? ogImage : "/social-card.png", Astro.url
 
 <meta charset="utf-8" />
 <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+<meta http-equiv="X-UA-Compatible" content="ie=edge" />
 <title>{siteTitle}</title>
+
+{/* 性能优化：预连接到关键域 */}
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="dns-prefetch" href="https://cdn.jsdelivr.net" />
+
+{/* 预加载关键资源 */}
+<link rel="preload" href="/fonts/SF-Pro-Rounded-Regular.latin.base.ttf" as="font" type="font/ttf" crossorigin />
+<link rel="preload" href={socialImageURL} as="image" />
 
 {/* Icons */}
 <link href="/icon.svg" rel="icon" type="image/svg+xml" />
@@ -41,7 +51,7 @@ const socialImageURL = new URL(ogImage ? ogImage : "/social-card.png", Astro.url
 <meta content={siteConfig.author} name="author" />
 
 {/* Theme Colour */}
-<meta content="" name="theme-color" />
+<meta content="#2bbc8a" name="theme-color" />
 
 {/* Open Graph / Facebook */}
 <meta content={articleDate ? "article" : "website"} property="og:type" />
@@ -86,3 +96,21 @@ const socialImageURL = new URL(ogImage ? ogImage : "/social-card.png", Astro.url
 }
 
 <meta content={Astro.generator} name="generator" />
+
+{/* 确保Web字体加载期间文本可见 */}
+<style is:inline>
+  /* 优化关键渲染路径的内联CSS */
+  body {
+    font-display: swap;
+    visibility: visible;
+    opacity: 1;
+  }
+  
+  /* 添加明确的文本颜色和背景色对比度 */
+  .text-gray-600 {
+    color: #4B5563 !important; /* 更深的灰色，提高对比度 */
+  }
+  .dark .dark\:text-gray-400 {
+    color: #9CA3AF !important; /* 更亮的灰色，提高暗模式对比度 */
+  }
+</style>
