@@ -1,4 +1,4 @@
-import fs from "node:fs";
+import fs from "fs";
 import mdx from "@astrojs/mdx";
 import sitemap from "@astrojs/sitemap";
 import tailwind from "@astrojs/tailwind";
