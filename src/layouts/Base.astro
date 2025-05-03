@@ -24,7 +24,7 @@ const {
 		<BaseHead articleDate={articleDate} description={description} ogImage={ogImage} title={title} />
 		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/viewerjs@1.11.7/dist/viewer.min.css" />
 		
-		<!-- 内联样式确保代码行号显示 -->
+		<!-- 内联样式确保代码行号显示 - 回退到更简单的样式 -->
 		<style is:inline>
 			pre code {
 				counter-reset: line !important;
@@ -38,13 +38,10 @@ const {
 				text-align: right !important;
 				color: rgba(115, 138, 148, 0.6) !important;
 			}
+			/* 使用flex布局而非grid */
 			pre [data-line] {
-				display: grid !important;
-				grid-template-columns: 3rem 1fr !important;
-			}
-			pre [data-line] > *:not(::before) {
-				grid-column: 2 !important;
-				padding-left: 2rem !important;
+				display: flex !important;
+				padding-left: 1rem !important;
 			}
 		</style>
 	</head>
