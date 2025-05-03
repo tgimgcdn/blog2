@@ -1,26 +1,46 @@
 ---
-import { menuLinks, siteConfig } from "@/site.config";
-
-const year = new Date().getFullYear();
+// 移除不需要的导入
 ---
 
 <footer
-	class="semibold mt-auto flex w-full flex-col items-center justify-center gap-y-2 pb-4 pt-8 text-center align-top text-accent sm:flex-row sm:justify-between sm:text-sm"
+	class="mt-auto flex w-full flex-col items-center justify-center gap-y-2 pb-4 pt-8 text-center"
 >
-	<div class="me-0 font-semibold sm:me-4">
-		&copy; {siteConfig.author}
-		{year}.<span class="inline-block">&nbsp;🚀&nbsp;Astro Citrus</span>
+	<div class="flex flex-wrap gap-4 text-sm text-gray-600 dark:text-gray-400">
+		<a href="/frame" class="flex items-center hover:text-blue-500 transition-colors">
+			<svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+				<path d="M2 4a2 2 0 012-2h12a2 2 0 012 2v12a2 2 0 01-2 2H4a2 2 0 01-2-2V4z"/>
+			</svg>
+			Frame
+		</a>
+		<a href="/theme" class="flex items-center hover:text-green-500 transition-colors">
+			<svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+				<path d="M10 2a8 8 0 100 16 8 8 0 000-16zM4 10h12"/>
+			</svg>
+			Theme
+		</a>
+		<a href="/seo-tools" class="flex items-center hover:text-yellow-500 transition-colors">
+			<svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+				<path d="M3 3h14v14H3V3z"/>
+			</svg>
+			SEO
+		</a>
+		<a href="/archives" class="flex items-center hover:text-purple-500 transition-colors">
+			<svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+				<path d="M5 4h10v2H5V4zm0 4h10v2H5V8zm0 4h10v2H5v-2z"/>
+			</svg>
+			Archives
+		</a>
 	</div>
-	<nav
-		aria-label="More on this site"
-		class="flex justify-between space-x-4 font-medium text-light md:w-[14rem] w-auto"
-	>
-		{
-			menuLinks.map((link) => (
-				<a class="underline-offset-2 hover:text-accent hover:underline" href={link.path}>
-					{link.title}
-				</a>
-			))
-		}
-	</nav>
+
+	<div class="text-sm text-gray-600 dark:text-gray-400 mt-2">
+		本站已稳定运行 <span id="run-days"></span> 天
+	</div>
+
+	<script>
+		const startDate = new Date('2023-01-01'); // 改成你的上线日期
+		const now = new Date();
+		const diffTime = Math.abs(now - startDate);
+		const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+		document.getElementById('run-days').textContent = diffDays;
+	</script>
 </footer>
