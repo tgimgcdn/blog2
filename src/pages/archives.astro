@@ -86,7 +86,7 @@ const monthNames: { [key: string]: string } = {
                   </span>
                 </h3>
                 
-                <ul class="space-y-3 pl-16">
+                <ul class="space-y-3">
                   {postsByYear[year][month].map((post) => {
                     // 从文件路径中提取文件名作为slug
                     const id = post.id;
@@ -101,28 +101,26 @@ const monthNames: { [key: string]: string } = {
                           <time class="text-sm text-lighter block w-14 pt-1">
                             {month}-{day}
                           </time>
-                          <div class="flex-1">
-                            <a 
-                              href={`/posts/${slug}/`} 
-                              class="text-base font-medium text-accent-base hover:text-accent-two transition-colors"
-                            >
-                              {post.data.title}
-                            </a>
-                            
-                            {post.data.tags && post.data.tags.length > 0 && (
-                              <div class="mt-1.5 flex flex-wrap gap-1.5">
-                                {post.data.tags.map((tag: string) => (
-                                  <a 
-                                    href={`/tags/${tag.toLowerCase().replace(/\s+/g, '-')}/`}
-                                    class="text-xs px-2 py-0.5 bg-color-150 hover:bg-color-200 rounded-full text-accent transition-colors"
-                                  >
-                                    #{tag}
-                                  </a>
-                                ))}
-                              </div>
-                            )}
-                          </div>
+                          <a 
+                            href={`/posts/${slug}/`} 
+                            class="flex-1 text-base font-medium text-accent-base hover:text-accent-two transition-colors"
+                          >
+                            {post.data.title}
+                          </a>
                         </div>
+                        
+                        {post.data.tags && post.data.tags.length > 0 && (
+                          <div class="hidden md:flex flex-wrap gap-1.5 ml-14 mt-1.5">
+                            {post.data.tags.map((tag: string) => (
+                              <a 
+                                href={`/tags/${tag.toLowerCase().replace(/\s+/g, '-')}/`}
+                                class="text-xs px-2 py-0.5 bg-color-150 hover:bg-color-200 rounded-full text-accent transition-colors"
+                              >
+                                #{tag}
+                              </a>
+                            ))}
+                          </div>
+                        )}
                       </li>
                     );
                   })}
