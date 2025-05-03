@@ -35,8 +35,8 @@ const {
 				counter-increment: line !important;
 				content: counter(line) "" !important;
 				display: inline-block !important;
-				width: 2.5rem !important;
-				margin-right: 1rem !important;
+				width: calc(1.5rem + min(1ch, 0.5rem) * var(--line-digits, 1)) !important; /* 自适应宽度 */
+				margin-right: 0.5rem !important;
 				text-align: right !important;
 				color: rgba(115, 138, 148, 0.6) !important;
 				position: absolute !important;
@@ -50,7 +50,7 @@ const {
 			pre [data-line] {
 				display: flex !important;
 				align-items: center !important;
-				padding-left: 3rem !important;
+				padding-left: calc(2rem + min(1ch, 0.5rem) * var(--line-digits, 1)) !important; /* 自适应左内边距 */
 				min-height: 1.5rem !important;
 				position: relative !important;
 			}
@@ -279,7 +279,7 @@ const {
 				}
 			});
 
-			// 确保代码块有行号
+			// 确保代码块有行号，并计算行数设置自适应宽度
 			document.addEventListener('DOMContentLoaded', () => {
 				// 查找所有代码块
 				const codeBlocks = document.querySelectorAll('pre code');
@@ -298,6 +298,17 @@ const {
 							`<span data-line>${line}</span>`
 						).join('\n');
 						codeBlock.innerHTML = newContent;
+						
+						// 设置行数CSS变量，用于自适应宽度
+						const lineCount = lines.length;
+						const lineDigits = lineCount > 999 ? 4 : lineCount > 99 ? 3 : lineCount > 9 ? 2 : 1;
+						codeBlock.setAttribute('style', `--line-digits: ${lineDigits};${codeBlock.getAttribute('style') || ''}`);
+					} else {
+						// 已有data-line，计算行数
+						const lines = codeBlock.querySelectorAll('[data-line]');
+						const lineCount = lines.length;
+						const lineDigits = lineCount > 999 ? 4 : lineCount > 99 ? 3 : lineCount > 9 ? 2 : 1;
+						codeBlock.setAttribute('style', `--line-digits: ${lineDigits};${codeBlock.getAttribute('style') || ''}`);
 					}
 				});
 			});
