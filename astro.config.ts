@@ -28,6 +28,10 @@ import {
 export default defineConfig({
   image: {
     domains: ["webmention.io"],
+    // 开启图像优化
+    service: {
+      entrypoint: 'astro/assets/services/sharp',
+    },
   },
   integrations: [
     icon(),
@@ -117,18 +121,38 @@ export default defineConfig({
       rehypeUnwrapImages,
     ],
   },
+  compressHTML: true, // 压缩HTML
   // https://docs.astro.build/en/guides/prefetch/
-  prefetch: true,
+  prefetch: {
+    prefetchAll: true, // 预获取所有链接
+    defaultStrategy: 'viewport', // 视口内的链接预取
+  },
+  build: {
+    inlineStylesheets: 'auto', // 自动内联样式表
+  },
   // ! Please remember to replace the following site property with your own domain
-  site: "http://astrocitrus.artemkutsan.pp.ua/",
+  site: "https://canjie.ggff.net/",
   vite: {
     build: {
       sourcemap: true, // Source maps generation
+      cssMinify: 'lightningcss', // 使用更快的CSS压缩
+      minify: 'terser', // 更彻底的JS压缩
+      terserOptions: {
+        compress: {
+          drop_console: true, // 删除console语句
+        },
+      },
     },
     optimizeDeps: {
       exclude: ["@resvg/resvg-js"],
     },
     plugins: [rawFonts([".ttf", ".woff"])],
+    css: {
+      devSourcemap: true,
+    },
+    ssr: {
+      noExternal: ['@astrojs/prism'],
+    },
   },
   env: {
     schema: {
