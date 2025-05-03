@@ -19,16 +19,29 @@ const socialImageURL = new URL(ogImage ? ogImage : "/social-card.png", Astro.url
 <meta http-equiv="X-UA-Compatible" content="ie=edge" />
 <title>{siteTitle}</title>
 
-{/* 性能优化：预连接到关键域 */}
+<!-- 预连接到关键域名 -->
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
 <link rel="dns-prefetch" href="https://cdn.jsdelivr.net" />
 
-{/* 预加载关键资源 */}
+<!-- 预加载关键资源 -->
 <link rel="preload" href="/fonts/SF-Pro-Rounded-Regular.latin.base.ttf" as="font" type="font/ttf" crossorigin />
 <link rel="preload" href={socialImageURL} as="image" />
 
-{/* Icons */}
+<!-- 预加载关键字体 -->
+<link
+  rel="preload"
+  href="/assets/fonts/SF-Pro-Rounded-Regular.latin.base.ttf"
+  as="font"
+  type="font/ttf"
+  crossorigin
+/>
+
+<!-- 预加载关键样式表 -->
+<link rel="preload" href="/_astro/_slug_.DLobKDZ6.css" as="style" />
+
+<!-- Icons -->
 <link href="/icon.svg" rel="icon" type="image/svg+xml" />
 {
 	import.meta.env.PROD && (
