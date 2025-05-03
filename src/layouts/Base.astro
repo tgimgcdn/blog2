@@ -24,11 +24,27 @@ const {
 		<BaseHead articleDate={articleDate} description={description} ogImage={ogImage} title={title} />
 		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/viewerjs@1.11.7/dist/viewer.min.css" />
 		
-		<!-- 确保代码块样式一致 - 关键样式移至global.css -->
+		<!-- 内联样式确保代码行号显示 -->
 		<style is:inline>
-			/* 仅保留必要的内联样式，减少与全局CSS的冲突 */
 			pre code {
 				counter-reset: line !important;
+			}
+			pre [data-line]::before {
+				counter-increment: line !important;
+				content: counter(line) "" !important;
+				display: inline-block !important;
+				width: 2rem !important;
+				margin-right: 1rem !important;
+				text-align: right !important;
+				color: rgba(115, 138, 148, 0.6) !important;
+			}
+			pre [data-line] {
+				display: grid !important;
+				grid-template-columns: 3rem 1fr !important;
+			}
+			pre [data-line] > *:not(::before) {
+				grid-column: 2 !important;
+				padding-left: 2rem !important;
 			}
 		</style>
 	</head>
