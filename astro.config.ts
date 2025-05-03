@@ -135,13 +135,15 @@ export default defineConfig({
   vite: {
     build: {
       sourcemap: true, // Source maps generation
-      // 使用简单配置
-      minify: true, // 使用内置压缩
-      // cssMinify: 'lightningcss', // 暂时禁用
-      // minify: 'terser', // 暂时禁用
+      cssMinify: 'lightningcss', // 使用LightningCSS压缩
+      minify: 'terser', // 使用terser压缩
       terserOptions: {
         compress: {
           drop_console: true, // 删除console语句
+          passes: 2, // 多次压缩以获得更好效果
+        },
+        format: {
+          comments: false, // 删除注释
         },
       },
     },
