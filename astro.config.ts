@@ -108,7 +108,7 @@ export default defineConfig({
           },
           defaultLang: "text", // 为未指定语言的代码块设置默认语言
           keepBackground: true, // 保持背景样式
-          grid: true, // 启用网格布局以支持CSS中的grid设置
+          grid: false, // 不使用网格布局
           transformers: [transformerNotationDiff(), transformerMetaHighlight()],
           lineNumbers: true, // 为所有代码块启用行号
           showLineNumbers: true, // 显示行号
