@@ -1,46 +1,51 @@
----
-// 移除不需要的导入
----
-
 <footer
 	class="mt-auto flex w-full flex-col items-center justify-center gap-y-2 pb-4 pt-8 text-center"
 >
-	<div class="flex flex-wrap gap-4 text-sm text-gray-600 dark:text-gray-400">
-		<a href="/frame" class="flex items-center hover:text-blue-500 transition-colors">
-			<svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-				<path d="M2 4a2 2 0 012-2h12a2 2 0 012 2v12a2 2 0 01-2 2H4a2 2 0 01-2-2V4z"/>
-			</svg>
-			Frame
-		</a>
-		<a href="/theme" class="flex items-center hover:text-green-500 transition-colors">
-			<svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-				<path d="M10 2a8 8 0 100 16 8 8 0 000-16zM4 10h12"/>
-			</svg>
-			Theme
-		</a>
-		<a href="/seo-tools" class="flex items-center hover:text-yellow-500 transition-colors">
-			<svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-				<path d="M3 3h14v14H3V3z"/>
-			</svg>
-			SEO
-		</a>
-		<a href="/archives" class="flex items-center hover:text-purple-500 transition-colors">
-			<svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-				<path d="M5 4h10v2H5V4zm0 4h10v2H5V8zm0 4h10v2H5v-2z"/>
-			</svg>
-			Archives
-		</a>
-	</div>
-
-	<div class="text-sm text-gray-600 dark:text-gray-400 mt-2">
-		本站已稳定运行 <span id="run-days"></span> 天
-	</div>
-
-	<script>
-		const startDate = new Date('2023-01-01'); // 改成你的上线日期
-		const now = new Date();
-		const diffTime = Math.abs(now - startDate);
-		const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-		document.getElementById('run-days').textContent = diffDays;
-	</script>
+<div class="flex flex-wrap gap-4 text-sm text-gray-600 dark:text-gray-400">
+	<a href="/frame" class="flex items-center hover:text-blue-500 transition-colors">
+	  <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+		<rect x="3" y="3" width="7" height="7" />
+		<rect x="14" y="3" width="7" height="7" />
+		<rect x="14" y="14" width="7" height="7" />
+		<rect x="3" y="14" width="7" height="7" />
+	  </svg>
+	  Frame
+	</a>
+  
+	<a href="/theme" class="flex items-center hover:text-green-500 transition-colors">
+	  <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+		<path d="M12 3v18M3 12h18" />
+	  </svg>
+	  Theme
+	</a>
+  
+	<a href="/seo-tools" class="flex items-center hover:text-yellow-500 transition-colors">
+	  <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+		<circle cx="12" cy="12" r="10" />
+		<path d="M12 6v6l4 2" />
+	  </svg>
+	  SEO
+	</a>
+  
+	<a href="/archives" class="flex items-center hover:text-purple-500 transition-colors">
+	  <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+		<path d="M4 4h16v4H4z" />
+		<path d="M4 8v12h16V8" />
+		<path d="M8 12h8" />
+	  </svg>
+	  Archives
+	</a>
+  </div>
+  
+  <div class="text-sm text-gray-600 dark:text-gray-400 mt-2">
+	本站已稳定运行 <span id="run-days"></span> 天
+  </div>
+  
+  <script>
+	const startDate = new Date('2023-01-01'); // 改成你的上线日期
+	const now = new Date();
+	const diffTime = Math.abs(now - startDate);
+	const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+	document.getElementById('run-days').textContent = diffDays;
+  </script>  
 </footer>
