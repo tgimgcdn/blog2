@@ -2,10 +2,30 @@
 	class="mt-auto flex w-full flex-col items-center justify-center gap-y-2 pb-4 pt-8 text-center"
 >
 <div class="flex flex-wrap gap-4 text-sm text-gray-600 dark:text-gray-400">
-  <a href="https://astro.build/" target="_blank" class="hover:text-blue-500 transition-colors">Frame</a>
-  <a href="/theme" class="hover:text-green-500 transition-colors">Theme</a>
-  <a href="/seo-tools" class="hover:text-yellow-500 transition-colors">SEO</a>
-  <a href="/archives" class="hover:text-purple-500 transition-colors">Archives</a>
+  <a href="https://astro.build/" target="_blank" rel="noopener noreferrer" class="flex items-center hover:text-blue-500 transition-colors" aria-label="Frame - 访问Astro官网">
+    <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+      <path d="M2 4a2 2 0 012-2h12a2 2 0 012 2v12a2 2 0 01-2 2H4a2 2 0 01-2-2V4z"/>
+    </svg>
+    <span>Frame</span>
+  </a>
+  <a href="/theme" class="flex items-center hover:text-green-500 transition-colors" aria-label="主题">
+    <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+      <path d="M10 2a8 8 0 100 16 8 8 0 000-16zM4 10h12"/>
+    </svg>
+    <span>Theme</span>
+  </a>
+  <a href="/seo-tools" class="flex items-center hover:text-yellow-500 transition-colors" aria-label="SEO工具">
+    <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+      <path d="M3 3h14v14H3V3z"/>
+    </svg>
+    <span>SEO</span>
+  </a>
+  <a href="/archives" class="flex items-center hover:text-purple-500 transition-colors" aria-label="归档页面">
+    <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+      <path d="M5 4h10v2H5V4zm0 4h10v2H5V8zm0 4h10v2H5v-2z"/>
+    </svg>
+    <span>Archives</span>
+  </a>
 </div>
 
 <div class="text-sm text-gray-600 dark:text-gray-400 mt-2">
@@ -15,8 +35,11 @@
 <script>
   const startDate = new Date('2023-01-01'); // 改成你的上线日期
   const now = new Date();
-  const diffTime = Math.abs(now - startDate);
+  const diffTime = Math.abs(now.getTime() - startDate.getTime());
   const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-  document.getElementById('run-days').textContent = diffDays;
+  const runDaysElement = document.getElementById('run-days');
+  if (runDaysElement) {
+    runDaysElement.textContent = String(diffDays);
+  }
 </script>
 </footer>
