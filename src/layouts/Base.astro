@@ -63,35 +63,26 @@ const {
 			
 			/* 修复复制按钮位置 - 匹配实际使用的按钮样式 */
 			pre button {
-				position: sticky !important; /* 改为sticky定位，使按钮跟随滚动 */
-				top: 0 !important;
-				right: 2px !important;
+				position: fixed !important; /* 改为fixed定位 */
 				margin: 0 !important;
-				z-index: 10 !important;
-				float: right !important; /* 确保按钮位于右侧 */
-				background-color: var(--code-bg) !important; /* 半透明背景 */
-				backdrop-filter: blur(4px) !important; /* 背景模糊效果 */
-				transition: opacity 0.2s !important; /* 平滑过渡效果 */
+				z-index: 100 !important; /* 提高z-index确保在最上层 */
+				background-color: var(--code-bg) !important;
+				backdrop-filter: blur(4px) !important; 
+				transition: all 0.2s !important;
+				opacity: 0.9 !important;
+				box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
 			}
 			
 			/* 单行代码情况 */
 			pre:has([data-line]:only-child) button {
 				position: absolute !important; /* 单行代码用absolute即可 */
 				top: 0 !important;
-			}
-			
-			/* 强制！important覆盖所有内联样式 */
-			pre button.top-2 {
-				top: 0 !important; /* 改为0以配合sticky定位 */
-			}
-			
-			pre button.right-2 {
 				right: 2px !important;
 			}
 			
-			pre:has([data-line]:only-child) button.top-2 {
-				top: 0 !important;
-				position: absolute !important; /* 单行代码用absolute */
+			/* 强制！important覆盖所有内联样式 - 不再需要 */
+			pre button.top-2, pre button.right-2 {
+				/* 这些类将由JavaScript控制 */
 			}
 		</style>
 	</head>
@@ -324,6 +315,9 @@ const {
 				// 查找所有代码块
 				const codeBlocks = document.querySelectorAll('pre');
 				
+				// 存储按钮和对应的代码块关系
+				const buttonToPreMap = new Map();
+				
 				codeBlocks.forEach(pre => {
 					// 获取复制按钮
 					const copyButton = pre.querySelector('button');
@@ -336,30 +330,66 @@ const {
 						// 单行代码使用absolute定位
 						copyButton.style.position = 'absolute';
 						copyButton.style.top = '0';
+						copyButton.style.right = '2px';
 					} else {
-						// 多行代码使用sticky定位
-						copyButton.style.position = 'sticky';
-						copyButton.style.top = '0';
-						copyButton.style.float = 'right';
+						// 多行代码需要特殊处理 - 使用fixed定位
+						copyButton.style.position = 'fixed';
 						
-						// 添加背景和模糊效果
+						// 记录按钮和pre的对应关系，用于updateButtonPosition
+						buttonToPreMap.set(copyButton, pre);
+						
+						// 初始化位置
+						updateButtonPosition(copyButton, pre);
+						
+						// 按钮样式
 						copyButton.style.backgroundColor = 'var(--code-bg)';
-						copyButton.style.backdropFilter = 'blur(4px)';
+						copyButton.style.borderRadius = '4px';
+						copyButton.style.padding = '2px 6px';
+						copyButton.style.fontSize = '0.75rem';
+					}
+				});
+				
+				// 监听滚动事件，更新按钮位置
+				function onScroll() {
+					buttonToPreMap.forEach((pre, button) => {
+						updateButtonPosition(button, pre);
+					});
+				}
+				
+				// 更新按钮位置函数
+				function updateButtonPosition(button, pre) {
+					// 获取代码块在视口中的位置
+					const rect = pre.getBoundingClientRect();
+					
+					// 检查代码块是否在视口中
+					if (rect.bottom < 0 || rect.top > window.innerHeight) {
+						// 代码块完全不在视口中，隐藏按钮
+						button.style.display = 'none';
+						return;
 					}
 					
-					// 监听代码块滚动事件，确保按钮可见
-					pre.addEventListener('scroll', () => {
-						// 如果是单行代码，不需要处理
-						if (isSingleLine) return;
-						
-						// 根据滚动位置调整按钮样式
-						if (pre.scrollTop > 5) {
-							copyButton.style.boxShadow = '0 2px 4px rgba(0,0,0,0.1)';
-						} else {
-							copyButton.style.boxShadow = 'none';
-						}
-					});
+					// 代码块可见，显示按钮
+					button.style.display = 'block';
+					
+					// 计算按钮应该的位置
+					const top = Math.max(rect.top, 0); // 不让按钮超出视口顶部
+					const right = window.innerWidth - rect.right + 2; // 距离右侧2px
+					
+					// 设置按钮位置
+					button.style.top = `${top}px`;
+					button.style.right = `${right}px`;
+				}
+				
+				// 监听滚动事件
+				window.addEventListener('scroll', onScroll, { passive: true });
+				
+				// 监听代码块自身的滚动事件
+				buttonToPreMap.forEach((pre, _) => {
+					pre.addEventListener('scroll', onScroll, { passive: true });
 				});
+				
+				// 监听窗口大小变化
+				window.addEventListener('resize', onScroll, { passive: true });
 			});
 		</script>
 	</body>
