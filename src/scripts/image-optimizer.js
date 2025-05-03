@@ -1,101 +1,108 @@
-// 图像优化脚本
-// 提供延迟加载、渐进式加载和尺寸优化功能
+/**
+ * 图像优化脚本
+ * 实现懒加载、自动图像尺寸和渐进式加载
+ */
 
-// 检查是否支持 Intersection Observer API
+// 检查是否支持原生懒加载
+const hasNativeLazyLoading = 'loading' in HTMLImageElement.prototype;
+
+// 检查是否支持IntersectionObserver
 const hasIntersectionObserver = 'IntersectionObserver' in window;
 
-// 检查是否支持 loading="lazy" 属性
-const hasNativeLoading = 'loading' in HTMLImageElement.prototype;
-
 /**
- * 图像延迟加载处理函数
- * @param {string} selector - 要延迟加载的图像的CSS选择器
+ * 设置图像懒加载
  */
 function setupLazyLoading(selector = 'img[loading="lazy"]') {
-  // 如果浏览器支持原生延迟加载，则直接返回
-  if (hasNativeLoading) {
-    console.log('[Images] Native lazy loading supported');
+  // 如果浏览器支持原生懒加载，无需额外处理
+  if (hasNativeLazyLoading) {
+    console.log('Native lazy loading supported');
     return;
   }
 
-  // 如果不支持 Intersection Observer，则立即加载所有图像
+  // 如果浏览器不支持IntersectionObserver，无法实现懒加载
   if (!hasIntersectionObserver) {
-    console.log('[Images] IntersectionObserver not supported, loading all images');
-    document.querySelectorAll(selector).forEach(img => {
-      if (img.dataset.src) {
-        img.src = img.dataset.src;
-      }
-      if (img.dataset.srcset) {
-        img.srcset = img.dataset.srcset;
-      }
-    });
+    console.log('IntersectionObserver not supported, cannot lazy load images');
     return;
   }
 
-  // 创建 Intersection Observer 实例
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      // 当图像进入视口时加载图像
+  // 获取所有需要懒加载的图像
+  const lazyImages = document.querySelectorAll(selector);
+  
+  if (lazyImages.length === 0) {
+    console.log('No lazy images found');
+    return;
+  }
+
+  // 创建观察者实例
+  const lazyImageObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
       if (entry.isIntersecting) {
-        const img = entry.target;
+        const lazyImage = entry.target;
         
-        // 加载图像
-        if (img.dataset.src) {
-          img.src = img.dataset.src;
-        }
-        if (img.dataset.srcset) {
-          img.srcset = img.dataset.srcset;
+        // 替换src属性
+        if (lazyImage.dataset.src) {
+          lazyImage.src = lazyImage.dataset.src;
         }
         
-        // 停止观察此图像
-        observer.unobserve(img);
+        // 替换srcset属性
+        if (lazyImage.dataset.srcset) {
+          lazyImage.srcset = lazyImage.dataset.srcset;
+        }
+        
+        // 移除data-*属性
+        lazyImage.removeAttribute('data-src');
+        lazyImage.removeAttribute('data-srcset');
+        
+        // 停止观察该元素
+        lazyImageObserver.unobserve(lazyImage);
       }
     });
   }, {
-    // 图像在距离视口 200px 时开始加载
-    rootMargin: '200px 0px',
-    threshold: 0.01
+    rootMargin: '200px 0px', // 提前200px开始加载
   });
 
-  // 观察所有延迟加载的图像
-  document.querySelectorAll(selector).forEach(img => {
-    observer.observe(img);
+  // 观察所有懒加载图像
+  lazyImages.forEach((lazyImage) => {
+    lazyImageObserver.observe(lazyImage);
   });
 }
 
 /**
- * 优化文档中的所有图像
+ * 优化所有图像
  */
 function optimizeAllImages() {
-  document.querySelectorAll('img').forEach(img => {
-    // 确保所有图像都有明确的宽高比
-    if (img.width && img.height && !img.style.aspectRatio) {
-      img.style.aspectRatio = `${img.width} / ${img.height}`;
+  // 获取所有图像
+  const images = document.querySelectorAll('img:not([data-no-optimize])');
+  
+  images.forEach((img) => {
+    // 确保图像有width和height属性，防止布局偏移
+    if (!img.hasAttribute('width') && !img.hasAttribute('height') && img.naturalWidth && img.naturalHeight) {
+      img.setAttribute('width', img.naturalWidth);
+      img.setAttribute('height', img.naturalHeight);
     }
     
-    // 对于没有width属性的图像，设置为auto以防止溢出
-    if (!img.hasAttribute('width') && !img.style.width) {
-      img.style.maxWidth = '100%';
-      img.style.height = 'auto';
+    // 添加loading="lazy"属性
+    if (!img.hasAttribute('loading') && !img.classList.contains('hero-image')) {
+      img.setAttribute('loading', 'lazy');
     }
     
-    // 添加 loading="lazy" 属性 (如果浏览器支持)
-    if (hasNativeLoading && !img.hasAttribute('loading') && !img.closest('picture') && !img.dataset.src) {
-      img.loading = 'lazy';
-    }
-    
-    // 添加 decoding="async" 属性以加快渲染速度
+    // 添加decoding="async"属性
     if (!img.hasAttribute('decoding')) {
-      img.decoding = 'async';
+      img.setAttribute('decoding', 'async');
+    }
+    
+    // 设置图像尺寸限制，防止过大图像
+    if (!img.style.maxWidth) {
+      img.style.maxWidth = '100%';
     }
   });
 }
 
 /**
- * 为图像添加淡入效果
+ * 设置图像淡入效果
  */
 function setupImageFadeIn() {
-  // 添加CSS过渡效果
+  // 应用样式
   const style = document.createElement('style');
   style.textContent = `
     img.lazy-image {
@@ -108,11 +115,22 @@ function setupImageFadeIn() {
   `;
   document.head.appendChild(style);
   
-  // 为需要淡入效果的图像添加加载监听器
-  document.querySelectorAll('img.lazy-image').forEach(img => {
+  // 获取所有图像
+  const images = document.querySelectorAll('img:not([data-no-fade])');
+  
+  images.forEach((img) => {
+    // 添加lazy-image类
+    img.classList.add('lazy-image');
+    
+    // 监听load事件
     img.addEventListener('load', () => {
       img.classList.add('loaded');
     });
+    
+    // 如果图像已经加载完成，立即添加loaded类
+    if (img.complete) {
+      img.classList.add('loaded');
+    }
   });
 }
 
@@ -120,45 +138,40 @@ function setupImageFadeIn() {
  * 初始化图像优化
  */
 export function initImageOptimizations() {
-  // 设置延迟加载
+  // 执行优化
   setupLazyLoading();
-  
-  // 优化所有图像
   optimizeAllImages();
-  
-  // 设置图像淡入效果
   setupImageFadeIn();
   
   // 监听DOM变化，处理动态添加的图像
-  if ('MutationObserver' in window) {
-    const observer = new MutationObserver((mutations) => {
-      let hasNewImages = false;
-      
-      mutations.forEach(mutation => {
-        if (mutation.type === 'childList') {
-          mutation.addedNodes.forEach(node => {
-            if (node.nodeName === 'IMG') {
+  const observer = new MutationObserver((mutations) => {
+    let hasNewImages = false;
+    
+    mutations.forEach((mutation) => {
+      if (mutation.type === 'childList') {
+        mutation.addedNodes.forEach((node) => {
+          if (node.nodeName === 'IMG') {
+            hasNewImages = true;
+          } else if (node.nodeType === 1) {
+            const images = node.querySelectorAll('img');
+            if (images.length > 0) {
               hasNewImages = true;
-            } else if (node.querySelectorAll) {
-              const images = node.querySelectorAll('img');
-              if (images.length > 0) {
-                hasNewImages = true;
-              }
             }
-          });
-        }
-      });
-      
-      if (hasNewImages) {
-        optimizeAllImages();
+          }
+        });
       }
     });
     
-    observer.observe(document.body, {
-      childList: true,
-      subtree: true
-    });
-  }
+    if (hasNewImages) {
+      optimizeAllImages();
+      setupImageFadeIn();
+    }
+  });
+  
+  observer.observe(document.body, {
+    childList: true,
+    subtree: true,
+  });
 }
 
 // 页面加载后初始化
