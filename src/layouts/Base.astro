@@ -61,22 +61,30 @@ const {
 				position: relative !important; /* 确保pre是定位上下文 */
 			}
 			
-			/* 修复复制按钮位置 */
-			pre button.copy-code {
+			/* 修复复制按钮位置 - 匹配实际使用的按钮样式 */
+			pre button {
 				position: absolute !important;
 				top: 2px !important;
 				right: 2px !important;
 				margin: 0 !important;
-				padding: 2px 6px !important;
-				border-radius: 4px !important;
-				font-size: 0.75rem !important;
 				z-index: 10 !important;
-				height: auto !important;
-				line-height: normal !important;
 			}
 			
-			/* 确保单行代码时按钮也正确定位 */
-			pre:has([data-line]:only-child) button.copy-code {
+			/* 修复单行代码的复制按钮位置 */
+			pre:has([data-line]:only-child) button {
+				top: 0 !important;
+			}
+			
+			/* 强制！important覆盖所有内联样式 */
+			pre button.top-2 {
+				top: 2px !important;
+			}
+			
+			pre button.right-2 {
+				right: 2px !important;
+			}
+			
+			pre:has([data-line]:only-child) button.top-2 {
 				top: 0 !important;
 			}
 		</style>
