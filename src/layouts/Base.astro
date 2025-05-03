@@ -39,20 +39,24 @@ const {
 				margin-right: 1rem !important;
 				text-align: right !important;
 				color: rgba(115, 138, 148, 0.6) !important;
-				position: absolute !important; /* 恢复绝对定位 */
-				left: 0 !important; /* 确保紧贴左侧 */
-				top: 0 !important; /* 确保垂直对齐 */
-				height: 100% !important; /* 确保覆盖整个行高 */
-				display: flex !important; /* 使用flex来垂直居中 */
-				align-items: center !important; /* 垂直居中 */
-				justify-content: flex-end !important; /* 右对齐文本 */
+				position: absolute !important;
+				left: 0 !important;
+				top: 0 !important;
+				height: 100% !important;
+				display: flex !important;
+				align-items: center !important;
+				justify-content: flex-end !important;
 			}
 			pre [data-line] {
 				display: flex !important;
 				align-items: center !important;
-				padding-left: 3rem !important; /* 保留这个增加的内边距，确保代码不侵入行号区域 */
+				padding-left: 3rem !important;
 				min-height: 1.5rem !important;
-				position: relative !important; /* 确保相对定位，这样行号的绝对定位才有参考点 */
+				position: relative !important;
+			}
+			/* 修复代码块顶部间隙 */
+			figure[data-rehype-pretty-code-figure] pre {
+				padding-top: 0 !important;
 			}
 		</style>
 	</head>
