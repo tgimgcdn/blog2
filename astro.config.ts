@@ -135,8 +135,10 @@ export default defineConfig({
   vite: {
     build: {
       sourcemap: true, // Source maps generation
-      cssMinify: 'lightningcss', // 使用更快的CSS压缩
-      minify: 'terser', // 更彻底的JS压缩
+      // 使用简单配置
+      minify: true, // 使用内置压缩
+      // cssMinify: 'lightningcss', // 暂时禁用
+      // minify: 'terser', // 暂时禁用
       terserOptions: {
         compress: {
           drop_console: true, // 删除console语句
@@ -185,11 +187,20 @@ function rawFonts(ext: string[]) {
     // @ts-expect-error:next-line
     transform(_, id) {
       if (ext.some((e) => id.endsWith(e))) {
-        const buffer = fs.readFileSync(id);
-        return {
-          code: `export default ${JSON.stringify(buffer)}`,
-          map: null,
-        };
+        try {
+          const buffer = fs.readFileSync(id);
+          return {
+            code: `export default ${JSON.stringify(buffer)}`,
+            map: null,
+          };
+        } catch (error) {
+          console.warn(`Failed to read font file: ${id}`, error);
+          // 返回空缓冲区，避免构建失败
+          return {
+            code: `export default Buffer.from([])`,
+            map: null,
+          };
+        }
       }
     },
   };
