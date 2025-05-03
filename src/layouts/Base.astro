@@ -63,21 +63,26 @@ const {
 			
 			/* 修复复制按钮位置 - 匹配实际使用的按钮样式 */
 			pre button {
-				position: absolute !important;
-				top: 2px !important;
+				position: sticky !important; /* 改为sticky定位，使按钮跟随滚动 */
+				top: 0 !important;
 				right: 2px !important;
 				margin: 0 !important;
 				z-index: 10 !important;
+				float: right !important; /* 确保按钮位于右侧 */
+				background-color: var(--code-bg) !important; /* 半透明背景 */
+				backdrop-filter: blur(4px) !important; /* 背景模糊效果 */
+				transition: opacity 0.2s !important; /* 平滑过渡效果 */
 			}
 			
-			/* 修复单行代码的复制按钮位置 */
+			/* 单行代码情况 */
 			pre:has([data-line]:only-child) button {
+				position: absolute !important; /* 单行代码用absolute即可 */
 				top: 0 !important;
 			}
 			
 			/* 强制！important覆盖所有内联样式 */
 			pre button.top-2 {
-				top: 2px !important;
+				top: 0 !important; /* 改为0以配合sticky定位 */
 			}
 			
 			pre button.right-2 {
@@ -86,6 +91,7 @@ const {
 			
 			pre:has([data-line]:only-child) button.top-2 {
 				top: 0 !important;
+				position: absolute !important; /* 单行代码用absolute */
 			}
 		</style>
 	</head>
@@ -310,6 +316,49 @@ const {
 						const lineDigits = lineCount > 999 ? 4 : lineCount > 99 ? 3 : lineCount > 9 ? 2 : 1;
 						codeBlock.setAttribute('style', `--line-digits: ${lineDigits};${codeBlock.getAttribute('style') || ''}`);
 					}
+				});
+			});
+
+			// 优化复制按钮的跟随滚动行为
+			document.addEventListener('DOMContentLoaded', () => {
+				// 查找所有代码块
+				const codeBlocks = document.querySelectorAll('pre');
+				
+				codeBlocks.forEach(pre => {
+					// 获取复制按钮
+					const copyButton = pre.querySelector('button');
+					if (!copyButton) return;
+					
+					// 检查是否是单行代码
+					const isSingleLine = pre.querySelectorAll('[data-line]').length <= 1;
+					
+					if (isSingleLine) {
+						// 单行代码使用absolute定位
+						copyButton.style.position = 'absolute';
+						copyButton.style.top = '0';
+					} else {
+						// 多行代码使用sticky定位
+						copyButton.style.position = 'sticky';
+						copyButton.style.top = '0';
+						copyButton.style.float = 'right';
+						
+						// 添加背景和模糊效果
+						copyButton.style.backgroundColor = 'var(--code-bg)';
+						copyButton.style.backdropFilter = 'blur(4px)';
+					}
+					
+					// 监听代码块滚动事件，确保按钮可见
+					pre.addEventListener('scroll', () => {
+						// 如果是单行代码，不需要处理
+						if (isSingleLine) return;
+						
+						// 根据滚动位置调整按钮样式
+						if (pre.scrollTop > 5) {
+							copyButton.style.boxShadow = '0 2px 4px rgba(0,0,0,0.1)';
+						} else {
+							copyButton.style.boxShadow = 'none';
+						}
+					});
 				});
 			});
 		</script>
