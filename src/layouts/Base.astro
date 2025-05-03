@@ -28,6 +28,8 @@ const {
 		<style is:inline>
 			pre code {
 				counter-reset: line !important;
+				position: relative !important;
+				overflow-x: auto !important;
 			}
 			pre [data-line]::before {
 				counter-increment: line !important;
@@ -37,10 +39,17 @@ const {
 				margin-right: 1rem !important;
 				text-align: right !important;
 				color: rgba(115, 138, 148, 0.6) !important;
+				border-right: 1px solid rgba(115, 138, 148, 0.2) !important;
+				position: sticky !important;
+				left: 0 !important;
+				z-index: 1 !important;
+				background-color: var(--code-bg) !important;
 			}
 			pre [data-line] {
 				display: flex !important;
-				padding-left: 1rem !important;
+				align-items: center !important;
+				padding-left: 3rem !important; /* 增加到3rem确保足够的空间 */
+				min-height: 1.5rem !important;
 			}
 		</style>
 	</head>
