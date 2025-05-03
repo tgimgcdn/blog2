@@ -13,6 +13,9 @@
     "format:imports": "biome check --formatter-enabled=false --write",
     "check": "astro check"
   },
+  "engines": {
+    "node": ">=18.14.1"
+  },
   "dependencies": {
     "@astrojs/mdx": "4.0.3",
     "@astrojs/rss": "4.0.11",
