@@ -54,10 +54,17 @@ pre code[data-line-numbers] > [data-line]::before {
 }
 
 /* 调整代码内容的位置 - 确保内容只在第二列 - 简单的一行修复 */
-figure[data-rehype-pretty-code-figure] code[data-line-numbers] > [data-line] > *:not(::before),
-pre code[data-line-numbers] > [data-line] > *:not(::before) {
+figure[data-rehype-pretty-code-figure] code[data-line-numbers] > [data-line] > *,
+pre code[data-line-numbers] > [data-line] > * {
 	grid-column: 2;
 	padding-left: 2rem !important; /* 增加!important确保不被覆盖 */
+}
+
+/* 特殊处理::before元素 */
+figure[data-rehype-pretty-code-figure] code[data-line-numbers] > [data-line]::before,
+pre code[data-line-numbers] > [data-line]::before {
+	grid-column: 1;
+	padding-left: 0;
 }
 
 @font-face {
