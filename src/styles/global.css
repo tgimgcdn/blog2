@@ -2,62 +2,95 @@
 @tailwind components;
 @tailwind utilities;
 
-/* 代码行号样式 */
-/* 为代码块添加行号容器样式 */
-figure[data-rehype-pretty-code-figure] pre code,
-pre code {
-	counter-reset: line;
-	position: relative;
-	display: grid;
-	grid-template-columns: 3rem 1fr; /* 行号区域固定宽度3rem，内容区域自适应 */
-	overflow-x: auto;
+/* 统一的代码块样式 - 避免重复和冲突 */
+/* 代码块容器 */
+figure[data-rehype-pretty-code-figure],
+pre {
+	@apply relative m-0 rounded-lg overflow-hidden bg-[var(--code-bg)] text-[var(--theme-text)];
+	max-height: 612px; /* 限制最大高度 */
 }
 
-/* 为每行代码添加行号 */
-figure[data-rehype-pretty-code-figure] code[data-line-numbers] > [data-line]::before,
+/* 代码标题 */
+[data-rehype-pretty-code-title] {
+	@apply break-words bg-[var(--code-title-bg)] border-b border-bgColor text-textColor px-4 flex items-center text-sm h-10;
+}
+
+/* 确保有标题的代码块顶部没有圆角 */
+[data-rehype-pretty-code-title] + pre {
+	@apply rounded-t-none;
+}
+
+/* 基础代码容器 */
+pre {
+	@apply py-2 px-0 m-0 leading-loose;
+}
+
+/* 代码内容 */
+pre > code {
+	display: grid !important;
+	grid-template-columns: 3rem 1fr !important;
+	counter-reset: line;
+	overflow-x: auto; /* 仅在代码内容上设置滚动 */
+	min-width: 100%; /* 确保充满容器 */
+}
+
+/* 代码行 */
+pre [data-line] {
+	display: grid !important;
+	grid-template-columns: subgrid;
+	grid-column: 1 / -1;
+	min-height: 1.5rem;
+	position: relative;
+}
+
+/* 行号 */
 pre code[data-line-numbers] > [data-line]::before {
 	counter-increment: line;
 	content: counter(line);
-	display: inline-block;
-	width: 2.5rem;
-	padding-right: 0.5rem;
-	margin-right: 0.5rem;
-	text-align: right;
-	color: rgba(115, 138, 148, 0.6);
+	display: inline-block !important;
+	width: 2rem !important;
+	margin-right: 1rem !important;
+	text-align: right !important;
+	color: rgba(115, 138, 148, 0.6) !important;
 	position: sticky;
 	left: 0;
 	background-color: var(--code-bg);
-	border-right: 1px solid rgba(115, 138, 148, 0.2);
 	z-index: 1;
 }
 
-/* 调整行内间距和高度 */
-figure[data-rehype-pretty-code-figure] code > [data-line],
-pre code > [data-line] {
-	min-height: 1.5rem;
-	display: grid;
-	grid-template-columns: subgrid;
-	grid-column: 1 / -1;
-	position: relative;
+/* 代码内容 - 确保其在第二列且不覆盖行号 */
+pre [data-line] > *:not(::before) {
+	grid-column: 2 !important;
+	padding-left: 1.5rem !important;
 }
 
-/* 确保行号垂直对齐 */
-figure[data-rehype-pretty-code-figure] code[data-line-numbers] > [data-line]::before,
-pre code[data-line-numbers] > [data-line]::before {
-	position: absolute;
-	left: 0;
-	top: 0;
-	height: 100%;
-	display: flex;
-	align-items: center;
-	justify-content: flex-end;
+/* 行高亮 */
+pre [data-highlighted-line] {
+	background-color: var(--code-line-highlight);
 }
 
-/* 调整代码内容的位置 - 确保内容只在第二列 - 简单的一行修复 */
-figure[data-rehype-pretty-code-figure] code[data-line-numbers] > [data-line] > *:not(::before),
-pre code[data-line-numbers] > [data-line] > *:not(::before) {
-	grid-column: 2;
-	padding-left: 2rem !important; /* 增加!important确保不被覆盖 */
+pre [data-highlighted-line-id="add"] {
+	background-color: var(--code-line-diff-add);
+}
+
+pre [data-highlighted-line-id="remove"] {
+	background-color: var(--code-line-diff-remove);
+}
+
+/* 字符高亮 */
+pre [data-highlighted-chars] > span {
+	@apply py-[4px];
+}
+
+/* 内联代码 */
+:not(pre) > code {
+	@apply bg-[var(--code-inline-bg)] px-2 py-1 text-sm rounded-lg;
+}
+
+/* 复制按钮 */
+.copy-code,
+button.rehype-pretty-copy {
+	@apply absolute flex items-center justify-center bg-bgColor h-6 font-medium overflow-hidden rounded-md text-light hover:text-accent-two font-sans text-sm font-medium top-2 right-2;
 }
 
 @font-face {
@@ -323,87 +356,21 @@ pre code[data-line-numbers] > [data-line] > *:not(::before) {
 :root {
 	/* Стиль для блоков кода rehype-pretty-code */
 	figure[data-rehype-pretty-code-figure] {
-		@apply relative m-0 rounded-lg overflow-auto;
+		/* 重用前面定义的样式，避免重复定义 */
+		@apply relative m-0 rounded-lg overflow-hidden;
 
 		figcaption {
 			@apply m-0;
 		}
 
-		/* Стиль для заголовков в блоках кода */
+		/* 重用前面定义的样式，避免重复定义 */
 		[data-rehype-pretty-code-title] {
 			@apply break-words bg-[var(--code-title-bg)] border-b border-bgColor text-textColor px-4 flex items-center text-sm h-10;
-
-			& + pre {
-				@apply m-0 rounded-t-none; /* Убираем верхний отступ, если есть заголовок */
-				}
 		}
 
-		/* Стиль для блоков кода */
+		/* 确保行号和代码内容区域显示正确 */
 		pre {
-			@apply m-0 static px-0 py-2 max-h-[612px] text-sm;
-
-			/* Стиль для содержимого кода */
-			> code {
-				counter-reset: line;
-				display: grid !important;
-				grid-template-columns: 3rem 1fr !important;
-
-				/* Для блоков с номерами строк */
-				&[data-line-numbers] {
-					> [data-line]::before {
-						counter-increment: line;
-						content: counter(line);
-						@apply mr-4 inline-block w-8 text-right text-lightest;
-						position: sticky;
-						left: 0;
-						z-index: 2;
-					}
-				}
-
-				/* Для каждой строки в блоке кода */
-				> [data-line] {
-					display: grid !important;
-					grid-template-columns: subgrid;
-					grid-column: 1 / -1;
-					@apply h-6 bg-transparent;
-				}
-				
-				/* 确保代码内容不会侵入行号区域 */
-				> [data-line] > *:not(::before) {
-					grid-column: 2 !important;
-					padding-left: 0.5rem !important;
-				}
-
-				/* Для выделенных строк */
-				[data-highlighted-line] {
-					background-color: var(--code-line-highlight);
-				}
-
-				[data-highlighted-line-id="add"] {
-					background-color: var(--code-line-diff-add);
-				}
-
-				[data-highlighted-line-id="remove"] {
-					background-color: var(--code-line-diff-remove);
-				}
-
-				/* Для выделенных символов */
-				[data-highlighted-chars] > span {
-					@apply py-[4px];
-				}
-
-				/* Для различий в строках (реализовано выше) */
-				/*
-				.diff {
-					&.add {
-						background-color: var(--code-line-diff-add);
-					}
-					&.remove {
-						background-color: var(--code-line-diff-remove);
-					}
-				}
-				*/
-			}
+			/* 基础样式已在前面定义 */
 		}
 	}
 
