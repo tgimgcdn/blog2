@@ -35,6 +35,9 @@ pre code[data-line-numbers] > [data-line]::before {
 figure[data-rehype-pretty-code-figure] code > [data-line],
 pre code > [data-line] {
 	min-height: 1.5rem;
+	display: grid;
+	grid-template-columns: subgrid;
+	grid-column: 1 / -1;
 	position: relative;
 }
 
@@ -352,9 +355,7 @@ pre code[data-line-numbers] > [data-line] > *:not(::before) {
 					}
 				}
 
-				/* Для каждой строки в блоке кода 
-                 * 使用flex布局，而不是grid布局 - 这是关键修改
-                 */
+				/* Для каждой строки в блоке кода */
 				> [data-line] {
 					@apply pl-0 pr-4 h-6 bg-transparent flex items-center; /* 修改px-4为pl-0 pr-4，移除左内边距 */
 				}
@@ -376,6 +377,18 @@ pre code[data-line-numbers] > [data-line] > *:not(::before) {
 				[data-highlighted-chars] > span {
 					@apply py-[4px];
 				}
+
+				/* Для различий в строках (реализовано выше) */
+				/*
+				.diff {
+					&.add {
+						background-color: var(--code-line-diff-add);
+					}
+					&.remove {
+						background-color: var(--code-line-diff-remove);
+					}
+				}
+				*/
 			}
 		}
 	}
@@ -383,14 +396,15 @@ pre code[data-line-numbers] > [data-line] > *:not(::before) {
 	/* Основной стиль для блока pre */
 	pre {
 		@apply bg-[var(--code-bg)] text-[var(--theme-text)] rounded-lg leading-loose m-0 relative;
+		/* @apply bg-[var(--code-bg)] text-[var(--theme-accent)] rounded-lg leading-loose m-0; */
 	}
 
-	/* Стиль для инлайнового кода */
+	/* Стиль для инлайнового кода (rehype pretty code переопределяет стили в tailwind.config.css) */
 	:not(pre) > code {
 		@apply bg-[var(--code-inline-bg)] px-2 py-1 text-sm rounded-lg;
 	}
 
-	/* Стиль для кнопки копирования кода */
+	/* Стиль для кнопки копирования кода rehype-pretty-copy */
 	button.rehype-pretty-copy {
 		@apply fixed top-1 right-1 bg-transparent m-auto size-8 rounded-md p-1 backdrop-blur-none;
 		filter: brightness(var(--brightness)) saturate(0%);
