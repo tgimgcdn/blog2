@@ -9,19 +9,19 @@ interface Props {
   eager?: boolean;
 }
 
-const { src, alt, width, height, class: className, eager = false } = Astro.props;
+const { src, alt, width, height, class: className = "", eager = false } = Astro.props;
 
 // 确定是远程URL还是本地图像路径
 const isRemoteImage = src.startsWith('http') || src.startsWith('//');
 
-// 自动检测宽高比
-const aspectRatio = width && height ? width / height : undefined;
-
-// 如果未指定宽高，使用默认尺寸
+// 设置默认尺寸
 const imageWidth = width || 800;
-const imageHeight = height || (aspectRatio ? Math.round(imageWidth / aspectRatio) : undefined);
+const imageHeight = height || 600;
 
-// 获取图像格式
+// 计算宽高比
+const aspectRatio = width && height ? `${width} / ${height}` : undefined;
+
+// 如果是GIF则保留格式，否则转换为WebP
 const format = src.toLowerCase().endsWith(".gif") ? "gif" : "webp";
 
 {isRemoteImage ? (
