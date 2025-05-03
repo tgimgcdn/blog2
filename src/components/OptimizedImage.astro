@@ -1,0 +1,53 @@
+import { Image } from "astro:assets";
+
+interface Props {
+  src: string;
+  alt: string;
+  width?: number;
+  height?: number;
+  class?: string;
+  eager?: boolean;
+}
+
+const { src, alt, width, height, class: className, eager = false } = Astro.props;
+
+// 确定是远程URL还是本地图像路径
+const isRemoteImage = src.startsWith('http') || src.startsWith('//');
+
+// 自动检测宽高比
+const aspectRatio = width && height ? width / height : undefined;
+
+// 如果未指定宽高，使用默认尺寸
+const imageWidth = width || 800;
+const imageHeight = height || (aspectRatio ? Math.round(imageWidth / aspectRatio) : undefined);
+
+// 获取图像格式
+const format = src.toLowerCase().endsWith(".gif") ? "gif" : "webp";
+
+{isRemoteImage ? (
+  <picture>
+    <source srcset={src.replace(/\.(jpg|jpeg|png)$/i, '.avif')} type="image/avif" />
+    <source srcset={src.replace(/\.(jpg|jpeg|png)$/i, '.webp')} type="image/webp" />
+    <img 
+      src={src} 
+      alt={alt} 
+      width={imageWidth} 
+      height={imageHeight}
+      class={className}
+      loading={eager ? "eager" : "lazy"}
+      decoding={eager ? "sync" : "async"}
+      style={aspectRatio ? `aspect-ratio: ${aspectRatio};` : undefined}
+    />
+  </picture>
+) : (
+  <Image 
+    src={src} 
+    alt={alt} 
+    width={imageWidth} 
+    height={imageHeight}
+    class={className}
+    loading={eager ? "eager" : "lazy"}
+    format={format}
+    quality={80}
+  />
+)} 
